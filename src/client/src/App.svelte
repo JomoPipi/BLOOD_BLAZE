@@ -20,3 +20,10 @@
 {:else}
 	<GameClient {socket} {username}/>
 {/if}
+
+<style lang="scss">
+	
+	:global(*) {
+		user-select: none;
+	}
+</style>

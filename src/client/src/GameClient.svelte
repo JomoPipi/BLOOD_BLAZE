@@ -1,5 +1,7 @@
 
 <script lang="ts">
+    import JoyPad from "./uielements/JoyPad.svelte";
+
     export let socket : ClientSocket
     export let username : string
 
@@ -7,11 +9,10 @@
 </script>
 
 <canvas/>
-username: {username}
-<br>
-<div>
-    <button>A</button>
-    <button>B</button>
+<h2>{username}</h2>
+<div style={'border:10px solid cyan'}>
+    <JoyPad/>
+    <JoyPad/>
 </div>
 
 <style lang="scss">
@@ -22,12 +23,19 @@ username: {username}
         box-sizing: border-box;
         padding: 0.5rem;
     }
-    button {
-        width: 45%;
-        font-size: 2rem;
+    h2 {
+        color: white;
     }
+    // JoyPad {
+    //     width: 45%;
+    //     font-size: 2rem;
+    //     border: 2px solid blue;
+    // }
     div {
         display: flex;
         justify-content: center;
+        text-align: center;
+        margin: 0;
+        padding: 0;
     }
 </style>

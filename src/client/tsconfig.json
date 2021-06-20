@@ -11,7 +11,8 @@
     "noImplicitOverride": true, 
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
   }
 }
 /* THE TSCONFIG FOR SVELTE - SEE THE OTHER TSCONFIG FOR THE FULL LIST OF OPTIONS */
