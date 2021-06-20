@@ -2,21 +2,21 @@
 <script lang="ts">
 	export let blaze : string
 	import Nomination from './Nomination.svelte'
+	import GameClient from './GameClient.svelte'
 
 	const socket = io()
 
 	console.log('client poop ===',poop)
 
-	let approved = false
+	let username = ''
 	function proceed(name : string) {
 		console.log('Welcome to the game,', name + '!')
-		approved = true
+		username = name
 	}
 </script>
 
-{#if !approved}
+{#if username.length === 0}
 	<Nomination {proceed} {socket} {blaze}/>
 {:else}
-<!-- <Arena  -->
-	<div>Awesome! 😋😋😋😋😋😋😋😋😋 </div>
+	<GameClient {socket} {username}/>
 {/if}

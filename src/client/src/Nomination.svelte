@@ -18,7 +18,7 @@ import { onMount } from "svelte";
 
 
 
-	function sendChatMessage(e : Event) {
+	function tryUsername(e : Event) {
 		e.preventDefault()
 		const input = 
 			(e.target as HTMLElement)
@@ -46,15 +46,16 @@ import { onMount } from "svelte";
 	</div>
 	<div>
 		<span class="inner">
-			<form type="text" action="" on:submit={sendChatMessage}>
+			<form type="text" action="" on:submit={tryUsername}>
 				<input autocomplete="off" 
 					placeholder="Enter your name" 
-					pattern="[A-Za-z0-9 _]*" on:keypress={sanitizeText}/>
+					pattern="[A-Za-z0-9 _]*" 
+					on:keypress={sanitizeText}/>
 				<button> GO </button>
 			</form>
 		<span/>
 	</div>
-	<bloodblaze></bloodblaze>
+	<bloodblaze/>
 </main>
 
 <style lang="scss">
