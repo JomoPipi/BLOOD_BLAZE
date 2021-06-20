@@ -1,9 +1,22 @@
 
 <script lang="ts">
+import { onMount } from "svelte";
 
-	export let name : string
+	export let proceed : (name : string) => void
+	export let blaze : string
+	export let socket : ClientSocket
 
-	const socket = io()
+	onMount(() => {
+		socket.on('nomination', ([success, name]) => {
+			if (success)
+			{
+				proceed(name)
+			}
+			alert(success ? `Welcome, ${name}!` : `Sorry, "${name}" is not available.`)
+		})
+	})
+
+
 
 	function sendChatMessage(e : Event) {
 		e.preventDefault()
@@ -28,7 +41,7 @@
 
 <main>
 	<div class="title">
-		<h1> BLOOD {name} </h1>
+		<h1> BLOOD {blaze} </h1>
 		<h2> A Devastating Bloodbath of Boundless Mortality </h2>
 	</div>
 	<div>

@@ -1,7 +1,7 @@
 
 type ServerToClientSocketEvents = keyof ServerToClientMessageTypes
 type ServerToClientMessageTypes = {
-  nameApprovalDecision : boolean
+  nomination : [boolean, string]
   renderData : RenderData
 }
 

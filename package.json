@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "jest",
+    "setup": "npm install && cd src/client && npm install && cd ../..",
     "dev-client": "cd src/client && npx rollup -c -w",
     "dev-server": "concurrently npm:dev-server:*",
     "dev-server:compile": "tsc -w",
@@ -26,6 +27,15 @@
       "NODE_ENV": "development"
     },
     "ext": "js,json,ts"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ]
   },
   "repository": {
     "type": "git",

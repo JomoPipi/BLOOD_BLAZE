@@ -30,19 +30,12 @@ io.on('connection', (_socket) => {
 
     // Create a new player, maybe?
     socket.on('nomination', name => {
-        if (game.addPlayer(name))
-        {
-            console.log('added player',name)
-        }
-        else
-        {
-            console.log('player already exists:',name)
-        }
+        socket.emit('nomination', [game.addPlayer(name), name])
     })
 });
 
 
 
-server.listen(80, () => console.log('SERVER IS LISTENING!'))
+server.listen(5000, () => console.log('SERVER IS LISTENING!'))
 
 export {}
