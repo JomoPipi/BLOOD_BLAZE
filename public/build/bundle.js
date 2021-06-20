@@ -640,7 +640,7 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			canvas_1 = element("canvas");
-    			add_location(canvas_1, file$1, 55, 0, 1497);
+    			add_location(canvas_1, file$1, 55, 0, 1509);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -709,8 +709,8 @@ var app = (function () {
     			const l = +canvas.offsetLeft;
     			const t = +canvas.offsetTop;
     			const margin = 5;
-    			point[0] = clamp(margin, e.touches[0].clientX - l, W - margin);
-    			point[1] = clamp(margin, e.touches[0].clientY - t, H - margin);
+    			point[0] = clamp(margin, e.targetTouches[0].clientX - l, W - margin);
+    			point[1] = clamp(margin, e.targetTouches[0].clientY - t, H - margin);
     			render();
     			callback && callback();
     		}
@@ -813,7 +813,7 @@ var app = (function () {
     function create_fragment$1(ctx) {
     	let canvas;
     	let t0;
-    	let h2;
+    	let center;
     	let t1;
     	let t2;
     	let div;
@@ -828,20 +828,19 @@ var app = (function () {
     		c: function create() {
     			canvas = element("canvas");
     			t0 = space();
-    			h2 = element("h2");
+    			center = element("center");
     			t1 = text(/*username*/ ctx[0]);
     			t2 = space();
     			div = element("div");
     			create_component(joypad0.$$.fragment);
     			t3 = space();
     			create_component(joypad1.$$.fragment);
-    			attr_dev(canvas, "class", "svelte-ff1kf3");
+    			attr_dev(canvas, "class", "svelte-vttro1");
     			add_location(canvas, file, 7, 0, 159);
-    			attr_dev(h2, "class", "svelte-ff1kf3");
-    			add_location(h2, file, 8, 0, 170);
-    			attr_dev(div, "style", "border:10px solid cyan");
-    			attr_dev(div, "class", "svelte-ff1kf3");
-    			add_location(div, file, 9, 0, 191);
+    			attr_dev(center, "class", "svelte-vttro1");
+    			add_location(center, file, 8, 0, 170);
+    			attr_dev(div, "class", "svelte-vttro1");
+    			add_location(div, file, 9, 0, 199);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -849,8 +848,8 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, canvas, anchor);
     			insert_dev(target, t0, anchor);
-    			insert_dev(target, h2, anchor);
-    			append_dev(h2, t1);
+    			insert_dev(target, center, anchor);
+    			append_dev(center, t1);
     			insert_dev(target, t2, anchor);
     			insert_dev(target, div, anchor);
     			mount_component(joypad0, div, null);
@@ -875,7 +874,7 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(canvas);
     			if (detaching) detach_dev(t0);
-    			if (detaching) detach_dev(h2);
+    			if (detaching) detach_dev(center);
     			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(div);
     			destroy_component(joypad0);

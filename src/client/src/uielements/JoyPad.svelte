@@ -38,10 +38,10 @@ import { onMount } from "svelte";
             const t = +canvas.offsetTop
             const margin = 5
             point[0] = 
-            clamp(margin, e.touches[0]!.clientX - l, W - margin)
+            clamp(margin, e.targetTouches[0]!.clientX - l, W - margin)
 
             point[1] =
-            clamp(margin, e.touches[0]!.clientY - t, H - margin)
+            clamp(margin, e.targetTouches[0]!.clientY - t, H - margin)
             render()
 
             callback && callback()

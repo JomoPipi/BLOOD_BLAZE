@@ -9,8 +9,8 @@
 </script>
 
 <canvas/>
-<h2>{username}</h2>
-<div style={'border:10px solid cyan'}>
+<center>{username}</center>
+<div>
     <JoyPad/>
     <JoyPad/>
 </div>
@@ -23,14 +23,12 @@
         box-sizing: border-box;
         padding: 0.5rem;
     }
-    h2 {
+    center {
         color: white;
     }
-    // JoyPad {
-    //     width: 45%;
-    //     font-size: 2rem;
-    //     border: 2px solid blue;
-    // }
+    div {
+        border: 1rem solid rgba(255, 0, 0, 0.226);
+    }
     div {
         display: flex;
         justify-content: center;
