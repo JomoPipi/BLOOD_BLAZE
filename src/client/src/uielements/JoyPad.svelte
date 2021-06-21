@@ -1,6 +1,6 @@
 
 <script lang="ts">
-import { onMount } from "svelte";
+    import { onMount } from "svelte";
 
     let canvas : HTMLCanvasElement
     let W : number
@@ -12,7 +12,7 @@ import { onMount } from "svelte";
     export let callback : (x : number, y : number) => void = () => 0
 
     onMount(() => {
-        W = canvas.width = size
+        W = canvas.width = size / PHI
         H = canvas.height = size / PHI
         ctx = canvas.getContext('2d')!
         point = [W/2, H/2]
@@ -73,3 +73,9 @@ import { onMount } from "svelte";
 </script>
 
 <canvas bind:this={canvas}></canvas>
+
+<style lang="scss">
+    canvas {
+        border-radius: 10px;
+    }
+</style>

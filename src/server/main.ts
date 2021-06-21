@@ -41,9 +41,7 @@ io.on('connection', (_socket) => {
         console.log('accepted new user,',name)
         username = name
         socket.on('controlsInput', data => {
-            const { leftJoystick: { x, y }} = data
-            
-            game.updatePlayerInputs(username, x, y)
+            game.updatePlayerInputs(username, data)
         })
     })
 });

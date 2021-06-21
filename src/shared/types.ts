@@ -34,11 +34,13 @@ interface ClientSocket {
 }
 
 type Joystick = { x : number, y : number }//, active : boolean }
-type ControlsInput = {
+type ControlsInput = Partial<{
   leftJoystick : Joystick,
+  rightThumbpad : { angle : number }
+  isShooting : boolean
   // rightJoyStick : Joystick
   // isReloading : boolean
-}
+}>
 
 interface FrequentPlayerRenderData {
   x : number
