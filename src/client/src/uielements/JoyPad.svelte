@@ -2,7 +2,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
 
-
     let canvas : HTMLCanvasElement
     let W : number
     let H : number
@@ -10,10 +9,11 @@ import { onMount } from "svelte";
     let point : [number, number]
 
     const size = window.innerWidth / 2.5
-    export let callback : Function = () => 0
+    export let callback : (x : number, y : number) => void = () => 0
 
     onMount(() => {
-        W = H = canvas.width = canvas.height = size
+        W = canvas.width = size
+        H = canvas.height = size / PHI
         ctx = canvas.getContext('2d')!
         point = [W/2, H/2]
 
@@ -24,15 +24,10 @@ import { onMount } from "svelte";
         
         render()
 
-        // canvas.onmousedown = doUntilMouseUp({ mousemove })
-        canvas.ontouchmove = mousemove
-        canvas.ontouchend = () => {
-            point[0] = W/2
-            point[1] = H/2
-            render()
-        }
+        canvas.ontouchmove = touchmove
+        canvas.ontouchend =  touchend
         
-        function mousemove(e : TouchEvent) {
+        function touchmove(e : TouchEvent) {
 
             const l = +canvas.offsetLeft
             const t = +canvas.offsetTop
@@ -44,9 +39,16 @@ import { onMount } from "svelte";
             clamp(margin, e.targetTouches[0]!.clientY - t, H - margin)
             render()
 
-            callback && callback()
+            callback(2 * (point[0] / W - 0.5), 2 * (point[1] / H - 0.5))
         }
-
+        
+        function touchend() { 
+            point[0] = W/2
+            point[1] = H/2
+            render() 
+            
+            return callback(0, 0)
+        }
     })
 
     function render() {

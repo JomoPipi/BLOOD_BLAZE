@@ -2,7 +2,7 @@
 type ServerToClientSocketEvents = keyof ServerToClientMessageTypes
 type ServerToClientMessageTypes = {
   nomination : [boolean, string]
-  renderData : RenderData
+  renderGameLoop : FrequentRenderData
 }
 
 type ClientToServerSocketEvents = keyof ClientToServerMessageTypes
@@ -33,11 +33,23 @@ interface ClientSocket {
     (event : T, data : ClientToServerMessageTypes[T]) : void
 }
 
-type Joystick = { x : number, y : number, active : boolean }
+type Joystick = { x : number, y : number }//, active : boolean }
 type ControlsInput = {
   leftJoystick : Joystick,
-  rightJoyStick : Joystick
-  isReloading : boolean
+  // rightJoyStick : Joystick
+  // isReloading : boolean
 }
 
-type RenderData = any // TODO
+interface FrequentPlayerRenderData {
+  x : number
+  y : number
+  angle : number
+  // isSpeaking : boolean
+  isShooting : boolean
+  isGettingShot : boolean
+}
+type FrequentRenderData = Record<string, FrequentPlayerRenderData>
+
+// interface ObjectConstructor {
+//   keys<set extends string>(o : { readonly [key in set] : any }) : set[]
+// }
