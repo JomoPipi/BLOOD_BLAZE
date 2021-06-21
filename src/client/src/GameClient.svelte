@@ -14,7 +14,7 @@
         canvas.height = window.innerWidth
         canvas.width = window.innerWidth
 
-        socket.on('renderGameLoop', players => {
+        socket.on('renderGameLoop', ([players, bullets]) => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             Object.keys(players).forEach(username => {
                 const p = players[username]!
@@ -31,6 +31,11 @@
                 ctx.fillStyle = '#40f'
                 ctx.fillText(username, x - 17, y - 17)
             })
+            ctx.fillStyle = '#537'
+            for (const { x, y } of bullets)
+            {
+                circle(x * canvas.width, y * canvas.height, 2)
+            }
         })
 
         function circle(x : number, y : number, r : number) {
@@ -61,9 +66,6 @@
 
 <style lang="scss">
     canvas {
-        // border: 1rem solid rgba(255, 0, 0, 0.226);
-        // box-sizing: border-box;
-        // padding: 0.5rem;
         background: rgb(243, 238, 255);
     }
     center {

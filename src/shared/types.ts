@@ -50,7 +50,7 @@ interface FrequentPlayerRenderData {
   isShooting : boolean
   isGettingShot : boolean
 }
-type FrequentRenderData = Record<string, FrequentPlayerRenderData>
+type FrequentRenderData = [Record<string, FrequentPlayerRenderData>, { x : number, y : number }[]]
 
 // interface ObjectConstructor {
 //   keys<set extends string>(o : { readonly [key in set] : any }) : set[]

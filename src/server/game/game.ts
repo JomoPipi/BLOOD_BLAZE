@@ -5,11 +5,20 @@ type Player = {
     angle : number
     leftJoypadX : number
     leftJoypadY : number
+    isShooting : boolean
+}
+type Bullet = {
+    x : number
+    y : number
+    speedX : number
+    speedY : number
+    owner : string
 }
 const SPEED_FACTOR = 0.0002
 export class Game {
 
     private players : Record<string, Player> = {}
+    private bullets : Bullet[] = []
 
     addPlayer = (name : string) => this.playerExists(name)
         ? false
@@ -48,9 +57,10 @@ export class Game {
             const { angle } = data.rightThumbpad
             p.angle = angle
         }
-        if (data.isShooting)
+        if (data.isShooting !== undefined)
         {
-            // console.log('pow pow!')
+            p.isShooting = data.isShooting
+            // console.log('pow pow!') //! ///////////////////////////
         }
     }
     moveObjects(timeDelta : number) {
@@ -59,12 +69,31 @@ export class Game {
             const p = this.players[name]!
             p.x = clamp(0, p.x + p.leftJoypadX * timeDelta * SPEED_FACTOR, 1)
             p.y = clamp(0, p.y + p.leftJoypadY * timeDelta * SPEED_FACTOR, 1)
+
+            if (p.isShooting)
+            {
+                console.log('ow about here?')
+                this.shootBullet(name)
+            }
+        }
+        for (const b of this.bullets)
+        {
+            b.x += b.speedX
+            b.y += b.speedY
         }
     }
-    getRenderData() { return this.players }
+    getRenderData() { return [this.players, this.bullets] }
+    shootBullet(ownerUsername : string) {
+        const p = this.players[ownerUsername]!
+        const speed = 0.02
+        const speedX = speed * Math.cos(p.angle)
+        const speedY = speed * Math.sin(p.angle)
+        const b = { x : p.x, y: p.y, speedX, speedY, owner: ownerUsername }
+        this.bullets.push(b)
+    }
 
     private playerExists = (name : string) => name in this.players
     private createNewPlayer() : Player { 
-        return { x : 0, y : 0, leftJoypadX : 0, leftJoypadY : 0, angle : 0 }
+        return { x: 0, y: 0, leftJoypadX: 0, leftJoypadY: 0, angle: 0, isShooting: false }
     }
 }

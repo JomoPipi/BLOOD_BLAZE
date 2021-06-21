@@ -998,11 +998,11 @@ var app = (function () {
     			t3 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-kwv345");
-    			add_location(center, file, 46, 0, 1474);
+    			add_location(center, file, 50, 0, 1635);
     			attr_dev(canvas_1, "class", "svelte-kwv345");
-    			add_location(canvas_1, file, 47, 0, 1503);
+    			add_location(canvas_1, file, 51, 0, 1664);
     			attr_dev(div, "class", "svelte-kwv345");
-    			add_location(div, file, 48, 0, 1533);
+    			add_location(div, file, 52, 0, 1694);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1070,7 +1070,7 @@ var app = (function () {
     		$$invalidate(1, canvas.height = window.innerWidth, canvas);
     		$$invalidate(1, canvas.width = window.innerWidth, canvas);
 
-    		socket.on("renderGameLoop", players => {
+    		socket.on("renderGameLoop", ([players, bullets]) => {
     			ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     			Object.keys(players).forEach(username => {
@@ -1085,6 +1085,12 @@ var app = (function () {
     				ctx.fillStyle = "#40f";
     				ctx.fillText(username, x - 17, y - 17);
     			});
+
+    			ctx.fillStyle = "#537";
+
+    			for (const { x, y } of bullets) {
+    				circle(x * canvas.width, y * canvas.height, 2);
+    			}
     		});
 
     		function circle(x, y, r) {
