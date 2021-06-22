@@ -7,13 +7,12 @@
     let H : number
     let ctx : CanvasRenderingContext2D
     
-    const size = window.innerWidth / 2.5
+    const size = window.innerWidth / 2.5 / PHI
     export let callback : (angle : number, active : boolean) => void = () => 0
     let angle : number = 0
 
     onMount(() => {
-        W = canvas.width = size
-        H = canvas.height = size / PHI
+        W = canvas.width = H = canvas.height = size
         ctx = canvas.getContext('2d')!
         
 
@@ -43,14 +42,15 @@
         ctx.clearRect(0,0,W,H)
         ctx.strokeStyle = 'red'
         
+        const r = 40
+        const [x,y] = [Math.cos(angle) * r + W/2, Math.sin(angle) * r + H/2]
         ctx.beginPath()
-        const [x,y] = [Math.cos(angle) * 40 + W/2, Math.sin(angle) * 40 + H/2]
-        ctx.arc(x, y, 10, 0, 7)
-        ctx.fill()
-        ctx.beginPath()
-        ctx.arc(W/2, H/2, 40, 0, 7)
+        ctx.arc(W/2, H/2, r, 0, 7)
         ctx.closePath()
         ctx.stroke()
+        ctx.beginPath()
+        ctx.arc(x, y, 6, 0, 7)
+        ctx.fill()
     }
 </script>
 
@@ -58,6 +58,6 @@
 
 <style lang="scss">
     canvas {
-        border-radius: 10px;
+        border-radius: 50%;
     }
 </style>

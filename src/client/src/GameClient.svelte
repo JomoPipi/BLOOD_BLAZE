@@ -73,12 +73,11 @@
     }
     div {
         border: 1rem solid rgba(255, 0, 0, 0.226);
-    }
-    div {
         display: flex;
-        justify-content: space-around;
-        text-align: center;
+        justify-content: space-evenly;
+        align-items: center;
         margin: 0;
         padding: 0;
+        background-color: rgb(71, 61, 61);
     }
 </style>

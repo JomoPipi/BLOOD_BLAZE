@@ -14,7 +14,7 @@ type Bullet = {
     speedY : number
     owner : string
 }
-const SPEED_FACTOR = 0.0002
+const SPEED_FACTOR = 0.0008
 export class Game {
 
     private players : Record<string, Player> = {}
@@ -72,15 +72,14 @@ export class Game {
 
             if (p.isShooting)
             {
-                console.log('ow about here?')
                 this.shootBullet(name)
             }
         }
-        for (const b of this.bullets)
-        {
+        this.bullets = this.bullets.filter(b => {
             b.x += b.speedX
             b.y += b.speedY
-        }
+            return 0 <= b.x && b.x <= 1 && 0 <= b.y && b.y <= 1
+        })
     }
     getRenderData() { return [this.players, this.bullets] }
     shootBullet(ownerUsername : string) {
@@ -90,10 +89,11 @@ export class Game {
         const speedY = speed * Math.sin(p.angle)
         const b = { x : p.x, y: p.y, speedX, speedY, owner: ownerUsername }
         this.bullets.push(b)
+        console.log('nBullets =',this.bullets.length)
     }
 
     private playerExists = (name : string) => name in this.players
     private createNewPlayer() : Player { 
-        return { x: 0, y: 0, leftJoypadX: 0, leftJoypadY: 0, angle: 0, isShooting: false }
+        return { x: .5, y: .5, leftJoypadX: 0, leftJoypadY: 0, angle: 0, isShooting: false }
     }
 }
