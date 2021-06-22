@@ -14,6 +14,7 @@ type Bullet = {
     speedY : number
     owner : string
 }
+// const BULLET_COOLDOWN = 100
 const SPEED_FACTOR = 0.0008
 export class Game {
 

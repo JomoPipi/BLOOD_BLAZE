@@ -2,7 +2,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import DirectionPad from "./uielements/DirectionPad.svelte";
-    import JoyPad from "./uielements/JoyPad.svelte";
+    import Joystick from "./uielements/Joystick.svelte";
 
     export let socket : ClientSocket
     export let username : string
@@ -60,7 +60,7 @@
 <center>{username}</center>
 <canvas bind:this={canvas}/>
 <div>
-    <JoyPad callback={moveLeftJoyPad}/>
+    <Joystick callback={moveLeftJoyPad}/>
     <DirectionPad callback={moveRightPad}/>
 </div>
 

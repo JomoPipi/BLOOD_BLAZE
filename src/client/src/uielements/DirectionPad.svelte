@@ -23,8 +23,9 @@
         
         render()
 
+        canvas.ontouchstart = () => callback(angle, true)
         canvas.ontouchmove = touchmove
-        canvas.ontouchend = () => callback(0, false)
+        canvas.ontouchend = () => callback(angle, false)
         
         function touchmove(e : TouchEvent) {
             const l = +canvas.offsetLeft
