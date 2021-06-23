@@ -32,9 +32,8 @@ import { onMount } from "svelte";
 	}
 
 	function sanitizeText(event : any) {
-		setTimeout(() =>
-			event.target.value = 
-			event.target.value.replace(/[^A-Za-z0-9 _]/g, ''))
+		event.target.value = 
+		event.target.value.replace(/[^A-Za-z0-9 _]/g, '')
 	}
 
 </script>
@@ -50,7 +49,7 @@ import { onMount } from "svelte";
 				<input autocomplete="off" 
 					placeholder="Enter your name" 
 					pattern="[A-Za-z0-9 _]*" 
-					on:keypress={sanitizeText}/>
+					on:keyup={sanitizeText}/>
 				<button> GO </button>
 			</form>
 		<span/>

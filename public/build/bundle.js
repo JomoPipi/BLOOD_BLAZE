@@ -431,30 +431,30 @@ var app = (function () {
     			t8 = space();
     			bloodblaze = element("bloodblaze");
     			attr_dev(h1, "class", "svelte-1ggq3y7");
-    			add_location(h1, file$4, 30, 2, 744);
+    			add_location(h1, file$4, 30, 2, 726);
     			attr_dev(h2, "class", "svelte-1ggq3y7");
-    			add_location(h2, file$4, 31, 2, 772);
+    			add_location(h2, file$4, 31, 2, 754);
     			attr_dev(div0, "class", "title svelte-1ggq3y7");
-    			add_location(div0, file$4, 29, 1, 721);
+    			add_location(div0, file$4, 29, 1, 703);
     			attr_dev(input, "autocomplete", "off");
     			attr_dev(input, "placeholder", "Enter your name");
     			attr_dev(input, "pattern", "[A-Za-z0-9 _]*");
     			attr_dev(input, "class", "svelte-1ggq3y7");
-    			add_location(input, file$4, 36, 4, 933);
+    			add_location(input, file$4, 36, 4, 915);
     			attr_dev(button, "class", "svelte-1ggq3y7");
-    			add_location(button, file$4, 40, 4, 1069);
+    			add_location(button, file$4, 40, 4, 1048);
     			attr_dev(form, "type", "text");
     			attr_dev(form, "action", "");
-    			add_location(form, file$4, 35, 3, 875);
-    			add_location(span0, file$4, 42, 2, 1106);
+    			add_location(form, file$4, 35, 3, 857);
+    			add_location(span0, file$4, 42, 2, 1085);
     			attr_dev(span1, "class", "inner svelte-1ggq3y7");
-    			add_location(span1, file$4, 34, 2, 850);
+    			add_location(span1, file$4, 34, 2, 832);
     			attr_dev(div1, "class", "svelte-1ggq3y7");
-    			add_location(div1, file$4, 33, 1, 841);
+    			add_location(div1, file$4, 33, 1, 823);
     			attr_dev(bloodblaze, "class", "svelte-1ggq3y7");
-    			add_location(bloodblaze, file$4, 44, 1, 1125);
+    			add_location(bloodblaze, file$4, 44, 1, 1104);
     			attr_dev(main, "class", "svelte-1ggq3y7");
-    			add_location(main, file$4, 28, 0, 712);
+    			add_location(main, file$4, 28, 0, 694);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -481,7 +481,7 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input, "keypress", sanitizeText, false, false, false),
+    					listen_dev(input, "keyup", sanitizeText, false, false, false),
     					listen_dev(form, "submit", /*tryUsername*/ ctx[1], false, false, false)
     				];
 
@@ -512,7 +512,7 @@ var app = (function () {
     }
 
     function sanitizeText(event) {
-    	setTimeout(() => event.target.value = event.target.value.replace(/[^A-Za-z0-9 _]/g, ""));
+    	event.target.value = event.target.value.replace(/[^A-Za-z0-9 _]/g, "");
     }
 
     function instance$4($$self, $$props, $$invalidate) {
