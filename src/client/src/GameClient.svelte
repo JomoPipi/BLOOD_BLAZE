@@ -94,10 +94,10 @@
     .input-container {
         border: 1rem solid rgba(255, 0, 0, 0.226);
         display: flex;
-        justify-content: space-evenly;
+        justify-content: space-between;
         align-items: center;
         margin: 0;
-        padding: 0;
+        padding: 0 2rem;
         background-color: rgb(71, 61, 61);
     }
     .scoreboard {
@@ -105,4 +105,5 @@
         top: 1rem;
         right: 10px;
     }
+
 </style>

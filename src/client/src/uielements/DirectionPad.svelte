@@ -18,7 +18,6 @@
 
         // TODO: move to CSS
         canvas.style.margin = '5px'
-        canvas.style.border = '1px solid #fba'
         canvas.style.backgroundColor = 'transparent'
         
         render()
@@ -41,7 +40,7 @@
 
     function render() {
         ctx.clearRect(0,0,W,H)
-        ctx.strokeStyle = 'red'
+        ctx.strokeStyle = '#fba'
         
         const r = 40
         const [x,y] = [Math.cos(angle) * r + W/2, Math.sin(angle) * r + H/2]
@@ -60,5 +59,6 @@
 <style lang="scss">
     canvas {
         border-radius: 50%;
+        border: 2px solid black;
     }
 </style>

@@ -9,19 +9,19 @@
     let ctx : CanvasRenderingContext2D
     let point : [number, number]
 
-    const size1 = window.innerWidth / 3 | 0
-    const size = size1 / PHI | 0
+    const size2 = window.innerWidth / 2.5 / PHI
+    const size1 = window.innerWidth / 3
+    const size = size2 / PHI
     const radius = 40
     const lineWidth = 8
 
     export let callback : (x : number, y : number) => void = () => 0
 
     onMount(() => {
-        W = canvas.width = H = canvas.height = size1
-        container.style.width = size + 'px'
-        container.style.height = size + 'px'
-        const d = size * (PHI - 1) | 0
-        canvas.style.left = canvas.style.top = (-d/2 | 0) + 'px'
+        W = canvas.width = H = canvas.height = size1 | 0
+        container.style.width = container.style.height = size2 + 'px'
+        const d = size * (PHI - 1)
+        canvas.style.left = canvas.style.top = Math.round(-d/2) + 'px'
         // return;
         ctx = canvas.getContext('2d')!
         point = [W/2, H/2]
@@ -32,16 +32,27 @@
         
         render()
 
+        container.ontouchstart = touchstart
         container.ontouchmove = touchmove
         container.ontouchend =  touchend
         
-        function touchmove(e : TouchEvent) {
+        let startX = 0
+        let startY = 0
 
-            const { left, top } = canvas.getBoundingClientRect()
-            console.log(left, top)
+        function touchstart(e : TouchEvent) {
+            // const { left, top } = canvas.getBoundingClientRect()
+
+            // const x = e.targetTouches[0]!.clientX - left - W/2
+            // const y = e.targetTouches[0]!.clientY - top - H/2
+            startX = e.targetTouches[0]!.clientX
+            startY = e.targetTouches[0]!.clientY
+        }
+
+        function touchmove(e : TouchEvent) {
+            // const { left, top } = canvas.getBoundingClientRect()
             
-            const x = e.targetTouches[0]!.clientX - left - W/2
-            const y = e.targetTouches[0]!.clientY - top - H/2
+            const x = e.targetTouches[0]!.clientX - startX
+            const y = e.targetTouches[0]!.clientY - startY
 
             /*
             -- "restrict" it to a circle of radius W/2:
@@ -96,12 +107,12 @@
         
         const X = x - W/2
         const Y = y - H/2
-        const rot = Math.PI / 16
+        const rot = Math.PI / 4 // 16
         
         canvas.style.transform = `
         perspective(200px) 
-        rotateY(${-rot*X|0}deg)
-        rotateX(${rot*Y|0}deg)`
+        rotateY(${rot*X|0}deg)
+        rotateX(${-rot*Y|0}deg)`
     }
 </script>
 
@@ -111,7 +122,7 @@
 
 <style lang="scss">
     div {
-        border: 2px solid rgb(112, 112, 112);
+        border: 1px solid #fba;
         box-sizing: border-box;
         position: relative;
         border-radius: 50%;
@@ -121,5 +132,7 @@
         display: block;
         position: absolute;
         background: transparent;
+        box-sizing: border-box;
+        border: 1px solid transparent;
     }
 </style>

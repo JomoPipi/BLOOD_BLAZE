@@ -17,10 +17,10 @@ type Bullet = {
     speedY : number
     owner : string
 }
-const BULLET_COOLDOWN = 50 // 200
+const BULLET_COOLDOWN = 80 // 200
 const LAST_SHOT : Record<string, number> = {}
 const SPEED_FACTOR = 0.0006
-const BULLET_SPEED = 0.02
+const BULLET_SPEED = 0.06 // 0.02
 export class Game {
 
     private players : Player[] = []
@@ -151,12 +151,10 @@ export class Game {
     }
     
     shootBullet(p : Player) {
-        // const speed = 0.02
         const speedX = BULLET_SPEED * Math.cos(p.angle)
         const speedY = BULLET_SPEED * Math.sin(p.angle)
         const b = { x : p.x, y: p.y, speedX, speedY, owner: p.name }
         this.bullets.push(b)
-        console.log('nBullets =',this.bullets.length)
     }
 
     private playerExists = (name : string) => this.getPlayerByName[name]
