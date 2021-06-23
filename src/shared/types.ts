@@ -50,6 +50,7 @@ type FrequentPlayerRenderData = {
   isShooting : boolean
   isGettingShot : boolean
   name : string
+  score : number
 }
 type FrequentRenderData = [FrequentPlayerRenderData[], { x : number, y : number }[]]
 

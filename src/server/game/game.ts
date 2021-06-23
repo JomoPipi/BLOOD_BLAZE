@@ -8,6 +8,7 @@ type Player = {
     isShooting : boolean
     name : string
     lastTimeGettingShot : number
+    score : 0
 }
 type Bullet = {
     x : number
@@ -16,7 +17,7 @@ type Bullet = {
     speedY : number
     owner : string
 }
-const BULLET_COOLDOWN = 200
+const BULLET_COOLDOWN = 50 // 200
 const LAST_SHOT : Record<string, number> = {}
 const SPEED_FACTOR = 0.0006
 const BULLET_SPEED = 0.02
@@ -91,9 +92,6 @@ export class Game {
         // let playerIndex = 0
         this.players.sort(({ x }, { x: x2 }) => x - x2)
         this.bullets = this.bullets.sort((a,b) => a.x - b.x).filter(bullet => {
-
-
-
             const newbx = bullet.x + bullet.speedX
             const newby = bullet.y + bullet.speedY
 
@@ -101,6 +99,7 @@ export class Game {
             // that represents the path of the bullet:
             const m = (bullet.y - newby) / (bullet.x - newbx || epsilon)
             const b = bullet.y - m * bullet.x
+
             function collidesWith(p : Player) {
                 // the slope and y-intercept of the line
                 // perpendicular to y = m * x + b,
@@ -123,6 +122,10 @@ export class Game {
                 if (bullet.owner !== player.name && collidesWith(player))
                 {
                     player.lastTimeGettingShot = Date.now()
+                    if (this.getPlayerByName[bullet.owner])
+                    {
+                        this.getPlayerByName[bullet.owner]!.score++
+                    }
                     return false
                 }
             }
@@ -140,7 +143,8 @@ export class Game {
                 , angle: p.angle
                 , name: p.name
                 , isShooting: p.isShooting
-                , isGettingShot: Date.now() - p.lastTimeGettingShot <= 100
+                , isGettingShot: Date.now() - p.lastTimeGettingShot <= 20
+                , score: p.score
                 }))
 
         return [clientPlayerData, this.bullets] 
@@ -163,6 +167,7 @@ export class Game {
             , leftJoypadX: 0
             , leftJoypadY: 0
             , angle: 0
+            , score: 0
             , isShooting: false
             , lastTimeGettingShot: 0
             , name 

@@ -16,6 +16,7 @@
 	}
 </script>
 
+<div id="bloodscreen"></div>
 {#if username.length === 0}
 	<Nomination {proceed} {socket} {blaze}/>
 {:else}
