@@ -6,6 +6,8 @@ type Player = {
     leftJoypadX : number
     leftJoypadY : number
     isShooting : boolean
+    name : string
+    lastTimeGettingShot : number
 }
 type Bullet = {
     x : number
@@ -14,22 +16,30 @@ type Bullet = {
     speedY : number
     owner : string
 }
-// const BULLET_COOLDOWN = 100
-const SPEED_FACTOR = 0.0008
+const BULLET_COOLDOWN = 200
+const LAST_SHOT : Record<string, number> = {}
+const SPEED_FACTOR = 0.0006
+const BULLET_SPEED = 0.02
 export class Game {
 
-    private players : Record<string, Player> = {}
+    private players : Player[] = []
+    private getPlayerByName : Record<string,Player> = {}
     private bullets : Bullet[] = []
 
-    addPlayer = (name : string) => this.playerExists(name)
-        ? false
-        : (this.players[name] = this.createNewPlayer(), true)
+    addPlayer(name : string) {
+        if (this.playerExists(name)) return false
+        const player = this.createNewPlayer(name)
+        this.players.push(player)
+        this.getPlayerByName[name] = player
+        return true
+    }
     removePlayer(name : string) {
         if (!this.playerExists(name)) throw 'it should exist.'
-        delete this.players[name]
+        this.players = this.players.filter(p => p.name !== name)
+        delete this.getPlayerByName[name]
     }
     updatePlayerInputs(username : string, data : ControlsInput) {
-        const p = this.players[username]!
+        const p = this.getPlayerByName[username]!
         if (data.leftJoystick)
         {
             const movementX = data.leftJoystick.x
@@ -64,37 +74,98 @@ export class Game {
             // console.log('pow pow!') //! ///////////////////////////
         }
     }
-    moveObjects(timeDelta : number) {
+    moveObjects(timeDelta : number, now : number) {
         for (const name in this.players)
         {
             const p = this.players[name]!
             p.x = clamp(0, p.x + p.leftJoypadX * timeDelta * SPEED_FACTOR, 1)
             p.y = clamp(0, p.y + p.leftJoypadY * timeDelta * SPEED_FACTOR, 1)
 
-            if (p.isShooting)
+            if (p.isShooting && (!LAST_SHOT[name] || now - LAST_SHOT[name]! > BULLET_COOLDOWN))
             {
-                this.shootBullet(name)
+                this.shootBullet(p)
+                LAST_SHOT[name] = now
             }
         }
-        this.bullets = this.bullets.filter(b => {
-            b.x += b.speedX
-            b.y += b.speedY
-            return 0 <= b.x && b.x <= 1 && 0 <= b.y && b.y <= 1
+        const epsilon = 1e-3
+        // let playerIndex = 0
+        this.players.sort(({ x }, { x: x2 }) => x - x2)
+        this.bullets = this.bullets.sort((a,b) => a.x - b.x).filter(bullet => {
+
+
+
+            const newbx = bullet.x + bullet.speedX
+            const newby = bullet.y + bullet.speedY
+
+            // m and b define the equation of the line y = m * x + b.
+            // that represents the path of the bullet:
+            const m = (bullet.y - newby) / (bullet.x - newbx || epsilon)
+            const b = bullet.y - m * bullet.x
+            function collidesWith(p : Player) {
+                // the slope and y-intercept of the line
+                // perpendicular to y = m * x + b,
+                // passing through the player:
+                const m$ = -1 / (m || epsilon)
+                const b$ = p.y - m$ * p.x
+
+                // The point of intersection:
+                const x = (b$ - b) / (m - m$)
+                const y = m * x + b
+
+                const radius = PLAYER_RADIUS / 500 // approximate width of canvas
+                return distance(p.x, p.y, x, y) <= radius
+                    && distance(bullet.x, bullet.y, x, y) <= BULLET_SPEED
+                    && distance(newbx, newby, x, y) <= BULLET_SPEED
+            }
+
+            for (const player of this.players)
+            {
+                if (bullet.owner !== player.name && collidesWith(player))
+                {
+                    player.lastTimeGettingShot = Date.now()
+                    return false
+                }
+            }
+
+            bullet.x = newbx
+            bullet.y = newby
+            return 0 <= bullet.x && bullet.x <= 1 && 0 <= bullet.y && bullet.y <= 1
         })
     }
-    getRenderData() { return [this.players, this.bullets] }
-    shootBullet(ownerUsername : string) {
-        const p = this.players[ownerUsername]!
-        const speed = 0.02
-        const speedX = speed * Math.cos(p.angle)
-        const speedY = speed * Math.sin(p.angle)
-        const b = { x : p.x, y: p.y, speedX, speedY, owner: ownerUsername }
+    getRenderData() : [FrequentPlayerRenderData[], Bullet[]] { 
+        const clientPlayerData =
+            this.players.map(p => (
+                { x: p.x 
+                , y: p.y
+                , angle: p.angle
+                , name: p.name
+                , isShooting: p.isShooting
+                , isGettingShot: Date.now() - p.lastTimeGettingShot <= 100
+                }))
+
+        return [clientPlayerData, this.bullets] 
+    }
+    
+    shootBullet(p : Player) {
+        // const speed = 0.02
+        const speedX = BULLET_SPEED * Math.cos(p.angle)
+        const speedY = BULLET_SPEED * Math.sin(p.angle)
+        const b = { x : p.x, y: p.y, speedX, speedY, owner: p.name }
         this.bullets.push(b)
         console.log('nBullets =',this.bullets.length)
     }
 
-    private playerExists = (name : string) => name in this.players
-    private createNewPlayer() : Player { 
-        return { x: .5, y: .5, leftJoypadX: 0, leftJoypadY: 0, angle: 0, isShooting: false }
+    private playerExists = (name : string) => this.getPlayerByName[name]
+    private createNewPlayer(name : string) : Player { 
+        return (
+            { x: .5
+            , y: .5
+            , leftJoypadX: 0
+            , leftJoypadY: 0
+            , angle: 0
+            , isShooting: false
+            , lastTimeGettingShot: 0
+            , name 
+            })
     }
 }

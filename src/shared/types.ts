@@ -42,15 +42,16 @@ type ControlsInput = Partial<{
   // isReloading : boolean
 }>
 
-interface FrequentPlayerRenderData {
+type FrequentPlayerRenderData = {
   x : number
   y : number
   angle : number
   // isSpeaking : boolean
   isShooting : boolean
   isGettingShot : boolean
+  name : string
 }
-type FrequentRenderData = [Record<string, FrequentPlayerRenderData>, { x : number, y : number }[]]
+type FrequentRenderData = [FrequentPlayerRenderData[], { x : number, y : number }[]]
 
 // interface ObjectConstructor {
 //   keys<set extends string>(o : { readonly [key in set] : any }) : set[]

@@ -8,6 +8,7 @@
     export let username : string
     let canvas : HTMLCanvasElement
     let ctx : CanvasRenderingContext2D
+    console.log('PLAYER_RADIUS =',PLAYER_RADIUS)
 
     onMount(() => {
         ctx = canvas.getContext('2d')!
@@ -16,20 +17,18 @@
 
         socket.on('renderGameLoop', ([players, bullets]) => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
-            Object.keys(players).forEach(username => {
-                const p = players[username]!
+            players.forEach(p => {
                 const [x, y] = [p.x * canvas.width, p.y * canvas.height]
-                const playerSize = 9
                 const playerGunSize = 2
-                ctx.fillStyle = '#333'
-                circle(x, y, playerSize)
+                ctx.fillStyle = p.isGettingShot ? 'red' : '#333'
+                circle(x, y, PLAYER_RADIUS)
                 const [X, Y] = 
-                    [ x + playerSize * Math.cos(p.angle)
-                    , y + playerSize * Math.sin(p.angle)
+                    [ x + PLAYER_RADIUS * Math.cos(p.angle)
+                    , y + PLAYER_RADIUS * Math.sin(p.angle)
                     ]
                 circle(X, Y, playerGunSize)
                 ctx.fillStyle = '#40f'
-                ctx.fillText(username, x - 17, y - 17)
+                ctx.fillText(p.name, x - 17, y - 17)
             })
             ctx.fillStyle = '#537'
             for (const { x, y } of bullets)

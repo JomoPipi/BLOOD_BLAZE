@@ -18,6 +18,7 @@ const staticPath = path.join(__dirname, '..', '..')
 app.use(express.static(staticPath))
 
 console.log('server poop ===', poop)
+console.log('sever PLAYER_RADIUS =',PLAYER_RADIUS)
 
 const game = new Game()
 
@@ -51,8 +52,8 @@ let lastTime = Date.now()
     const now = Date.now()
     const timeDelta = now - lastTime
     lastTime = now
-    game.moveObjects(timeDelta)
-    ;(io as ServerSocket).emit('renderGameLoop', game.getRenderData() as any)
+    game.moveObjects(timeDelta, now)
+    ;(io as ServerSocket).emit('renderGameLoop', game.getRenderData())
     // setImmediate(gameLoop)
     setTimeout(gameLoop, 40)
 })()

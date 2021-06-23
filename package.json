@@ -7,9 +7,9 @@
     "test": "jest",
     "setup": "npm install && cd src/client && npm install && cd ../..",
     "dev-client": "cd src/client && npx rollup -c -w",
-    "dev-server:run(switch)": "concurrently npm:dev-server:*",
+    "dev-server": "concurrently npm:dev-server:*",
     "dev-server:compile": "tsc -w",
-    "dev-server": "nodemon"
+    "dev-server:run": "nodemon"
   },
   "nodemonConfig": {
     "restartable": "rs",
