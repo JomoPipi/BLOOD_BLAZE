@@ -48,12 +48,13 @@ io.on('connection', (_socket) => {
 });
 
 let lastTime = Date.now()
+let tick = 0
 ;(function gameLoop() {
     const now = Date.now()
     const timeDelta = now - lastTime
     lastTime = now
     game.moveObjects(timeDelta, now)
-    ;(io as ServerSocket).emit('renderGameLoop', game.getRenderData())
+    ;(io as ServerSocket).emit('gameTick', game.getRenderData(tick))
     // setImmediate(gameLoop)
     setTimeout(gameLoop, 40)
 })()

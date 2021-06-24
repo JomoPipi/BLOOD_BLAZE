@@ -19,7 +19,6 @@ type Bullet = {
 }
 const BULLET_COOLDOWN = 80 // 200
 const LAST_SHOT : Record<string, number> = {}
-const SPEED_FACTOR = 0.0006
 const BULLET_SPEED = 0.06 // 0.02
 export class Game {
 
@@ -79,8 +78,8 @@ export class Game {
         for (const name in this.players)
         {
             const p = this.players[name]!
-            p.x = clamp(0, p.x + p.leftJoypadX * timeDelta * SPEED_FACTOR, 1)
-            p.y = clamp(0, p.y + p.leftJoypadY * timeDelta * SPEED_FACTOR, 1)
+            p.x = clamp(0, p.x + p.leftJoypadX * timeDelta * PLAYER_SPEED_FACTOR, 1)
+            p.y = clamp(0, p.y + p.leftJoypadY * timeDelta * PLAYER_SPEED_FACTOR, 1)
 
             if (p.isShooting && (!LAST_SHOT[name] || now - LAST_SHOT[name]! > BULLET_COOLDOWN))
             {
@@ -135,7 +134,7 @@ export class Game {
             return 0 <= bullet.x && bullet.x <= 1 && 0 <= bullet.y && bullet.y <= 1
         })
     }
-    getRenderData() : [FrequentPlayerRenderData[], Bullet[]] { 
+    getRenderData(tick : number) : [FrequentPlayerRenderData[], Bullet[]] { 
         const clientPlayerData =
             this.players.map(p => (
                 { x: p.x 
@@ -145,6 +144,7 @@ export class Game {
                 , isShooting: p.isShooting
                 , isGettingShot: Date.now() - p.lastTimeGettingShot <= 20
                 , score: p.score
+                , tick
                 }))
 
         return [clientPlayerData, this.bullets] 
@@ -168,7 +168,7 @@ export class Game {
             , score: 0
             , isShooting: false
             , lastTimeGettingShot: 0
-            , name 
+            , name
             })
     }
 }

@@ -11,12 +11,14 @@
     let scoreboard : HTMLDivElement
     console.log('PLAYER_RADIUS =',PLAYER_RADIUS)
 
+    const currentJoyStick : { x : number, y : number } = { x : 0, y : 0 }
+
     onMount(() => {
         ctx = canvas.getContext('2d')!
         canvas.height = window.innerWidth
         canvas.width = window.innerWidth
 
-        socket.on('renderGameLoop', ([players, bullets]) => {
+        socket.on('gameTick', ([players, bullets]) => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             scoreboard.innerHTML = ''
             players.sort((p1,p2) => p2.score - p1.score).forEach(p => {
@@ -28,24 +30,23 @@
                     const a = document.body.classList
                     const b = document.getElementById('bloodscreen')!.classList
                     a.toggle('shake', !b.toggle('bleed'))
-                    b.toggle('bleed2', !a.toggle('shake2'));
-                    // b.toggle('bleed', b.toggle('bleed2'))
-                    // console.log(a.contains('shake'), a.contains('shake2'))
-                    // document.body.classList.add('shake')
-                    // document.getElementById('bloodscreen')!.classList.add('bleed')
-                    // setTimeout(() => {
-                    //     document.body.classList.remove('shake')
-                    //     document.getElementById('bloodscreen')!.classList.remove('bleed')
-                    // }, 2000)
+                    b.toggle('bleed2', !a.toggle('shake2'))
                 }
-                circle(x, y, PLAYER_RADIUS)
+                const [x0, y0] = p.name === username
+                    ? 
+                        [ x + currentJoyStick.x * 40 * PLAYER_SPEED_FACTOR * canvas.width
+                        , y + currentJoyStick.y * 40 * PLAYER_SPEED_FACTOR * canvas.height
+                        ]
+                    : [x, y]
+
+                circle(x0, y0, PLAYER_RADIUS)
                 const [X, Y] = 
-                    [ x + PLAYER_RADIUS * Math.cos(p.angle)
-                    , y + PLAYER_RADIUS * Math.sin(p.angle)
+                    [ x0 + PLAYER_RADIUS * Math.cos(p.angle)
+                    , y0 + PLAYER_RADIUS * Math.sin(p.angle)
                     ]
                 circle(X, Y, playerGunSize)
                 ctx.fillStyle = '#40f'
-                ctx.fillText(p.name, x - 17, y - 17)
+                ctx.fillText(p.name, x0 - 17, y0 - 17)
 
                 scoreboard.innerHTML += `<br>
                     <span style="color: orange">${p.name}:</span> ${p.score}`
@@ -66,7 +67,9 @@
     })
 
     function moveLeftJoyPad(x : number, y : number) {
-        socket.emit('controlsInput', { leftJoystick: { x, y }})
+        currentJoyStick.x = x
+        currentJoyStick.y = y
+        socket.emit('controlsInput', { leftJoystick: currentJoyStick })
     }
     function moveRightPad(angle : number, active : boolean) {
         socket.emit('controlsInput', 

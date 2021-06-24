@@ -1069,13 +1069,13 @@ var app = (function () {
     			t4 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-xbrdbo");
-    			add_location(center, file$1, 67, 0, 2649);
+    			add_location(center, file$1, 68, 0, 2554);
     			attr_dev(div0, "class", "scoreboard svelte-xbrdbo");
-    			add_location(div0, file$1, 68, 0, 2678);
+    			add_location(div0, file$1, 69, 0, 2583);
     			attr_dev(canvas_1, "class", "svelte-xbrdbo");
-    			add_location(canvas_1, file$1, 69, 0, 2733);
+    			add_location(canvas_1, file$1, 70, 0, 2638);
     			attr_dev(div1, "class", "input-container svelte-xbrdbo");
-    			add_location(div1, file$1, 70, 0, 2763);
+    			add_location(div1, file$1, 71, 0, 2668);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1145,13 +1145,14 @@ var app = (function () {
     	let ctx;
     	let scoreboard;
     	console.log("PLAYER_RADIUS =", PLAYER_RADIUS);
+    	const currentJoyStick = { x: 0, y: 0 };
 
     	onMount(() => {
     		ctx = canvas.getContext("2d");
     		$$invalidate(1, canvas.height = window.innerWidth, canvas);
     		$$invalidate(1, canvas.width = window.innerWidth, canvas);
 
-    		socket.on("renderGameLoop", ([players, bullets]) => {
+    		socket.on("gameTick", ([players, bullets]) => {
     			ctx.clearRect(0, 0, canvas.width, canvas.height);
     			$$invalidate(2, scoreboard.innerHTML = "", scoreboard);
 
@@ -1165,25 +1166,25 @@ var app = (function () {
     					const b = document.getElementById("bloodscreen").classList;
     					a.toggle("shake", !b.toggle("bleed"));
     					b.toggle("bleed2", !a.toggle("shake2"));
-    				} // b.toggle('bleed', b.toggle('bleed2'))
-    				// console.log(a.contains('shake'), a.contains('shake2'))
+    				}
 
-    				// document.body.classList.add('shake')
-    				// document.getElementById('bloodscreen')!.classList.add('bleed')
-    				// setTimeout(() => {
-    				//     document.body.classList.remove('shake')
-    				//     document.getElementById('bloodscreen')!.classList.remove('bleed')
-    				// }, 2000)
-    				circle(x, y, PLAYER_RADIUS);
+    				const [x0, y0] = p.name === username
+    				? [
+    						x + currentJoyStick.x * 40 * PLAYER_SPEED_FACTOR * canvas.width,
+    						y + currentJoyStick.y * 40 * PLAYER_SPEED_FACTOR * canvas.height
+    					]
+    				: [x, y];
+
+    				circle(x0, y0, PLAYER_RADIUS);
 
     				const [X, Y] = [
-    					x + PLAYER_RADIUS * Math.cos(p.angle),
-    					y + PLAYER_RADIUS * Math.sin(p.angle)
+    					x0 + PLAYER_RADIUS * Math.cos(p.angle),
+    					y0 + PLAYER_RADIUS * Math.sin(p.angle)
     				];
 
     				circle(X, Y, playerGunSize);
     				ctx.fillStyle = "#40f";
-    				ctx.fillText(p.name, x - 17, y - 17);
+    				ctx.fillText(p.name, x0 - 17, y0 - 17);
 
     				$$invalidate(
     					2,
@@ -1209,7 +1210,9 @@ var app = (function () {
     	});
 
     	function moveLeftJoyPad(x, y) {
-    		socket.emit("controlsInput", { leftJoystick: { x, y } });
+    		currentJoyStick.x = x;
+    		currentJoyStick.y = y;
+    		socket.emit("controlsInput", { leftJoystick: currentJoyStick });
     	}
 
     	function moveRightPad(angle, active) {
@@ -1253,6 +1256,7 @@ var app = (function () {
     		canvas,
     		ctx,
     		scoreboard,
+    		currentJoyStick,
     		moveLeftJoyPad,
     		moveRightPad
     	});

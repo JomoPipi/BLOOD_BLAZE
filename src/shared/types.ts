@@ -2,7 +2,7 @@
 type ServerToClientSocketEvents = keyof ServerToClientMessageTypes
 type ServerToClientMessageTypes = {
   nomination : [boolean, string]
-  renderGameLoop : FrequentRenderData
+  gameTick : FrequentRenderData
 }
 
 type ClientToServerSocketEvents = keyof ClientToServerMessageTypes
