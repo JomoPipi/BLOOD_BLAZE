@@ -1039,12 +1039,17 @@ var app = (function () {
     const { console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (81:4) {#if devMode()}
+    // (84:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
     	let div;
     	let button1;
+    	let t3;
+    	let label;
+    	let input;
+    	let t4;
+    	let h4;
     	let mounted;
     	let dispose;
 
@@ -1056,18 +1061,36 @@ var app = (function () {
     			div = element("div");
     			button1 = element("button");
     			button1.textContent = "back";
-    			attr_dev(button0, "class", "settings-button svelte-1wk5vpm");
-    			add_location(button0, file$1, 81, 8, 3006);
-    			add_location(button1, file$1, 85, 12, 3189);
-    			attr_dev(div, "class", "settings-page svelte-1wk5vpm");
+    			t3 = space();
+    			label = element("label");
+    			input = element("input");
+    			t4 = space();
+    			h4 = element("h4");
+    			h4.textContent = "Enable client-side prediction (reduces lag)";
+    			attr_dev(button0, "class", "settings-button svelte-8vxhqd");
+    			add_location(button0, file$1, 84, 8, 3095);
+    			add_location(button1, file$1, 88, 12, 3278);
+    			attr_dev(input, "type", "checkbox");
+    			input.checked = /*SETTINGS*/ ctx[4].clientsidePrediction;
+    			add_location(input, file$1, 93, 16, 3403);
+    			attr_dev(h4, "class", "svelte-8vxhqd");
+    			add_location(h4, file$1, 94, 16, 3482);
+    			attr_dev(label, "class", "svelte-8vxhqd");
+    			add_location(label, file$1, 92, 12, 3378);
+    			attr_dev(div, "class", "settings-page svelte-8vxhqd");
     			toggle_class(div, "show", /*settingsPage*/ ctx[3].isOpen);
-    			add_location(div, file$1, 84, 8, 3115);
+    			add_location(div, file$1, 87, 8, 3204);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
     			insert_dev(target, t1, anchor);
     			insert_dev(target, div, anchor);
     			append_dev(div, button1);
+    			append_dev(div, t3);
+    			append_dev(div, label);
+    			append_dev(label, input);
+    			append_dev(label, t4);
+    			append_dev(label, h4);
 
     			if (!mounted) {
     				dispose = [
@@ -1116,7 +1139,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(81:4) {#if devMode()}",
+    		source: "(84:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1134,20 +1157,20 @@ var app = (function () {
     	let div1;
     	let joystick;
     	let t4;
-    	let show_if = /*devMode*/ ctx[6]();
+    	let show_if = /*devMode*/ ctx[7]();
     	let t5;
     	let directionpad;
     	let current;
 
     	joystick = new Joystick({
-    			props: { callback: /*moveJoystick*/ ctx[4] },
+    			props: { callback: /*moveJoystick*/ ctx[5] },
     			$$inline: true
     		});
 
     	let if_block = show_if && create_if_block$1(ctx);
 
     	directionpad = new DirectionPad({
-    			props: { callback: /*moveRightPad*/ ctx[5] },
+    			props: { callback: /*moveRightPad*/ ctx[6] },
     			$$inline: true
     		});
 
@@ -1166,14 +1189,14 @@ var app = (function () {
     			if (if_block) if_block.c();
     			t5 = space();
     			create_component(directionpad.$$.fragment);
-    			attr_dev(center, "class", "svelte-1wk5vpm");
-    			add_location(center, file$1, 75, 0, 2791);
-    			attr_dev(div0, "class", "scoreboard svelte-1wk5vpm");
-    			add_location(div0, file$1, 76, 0, 2820);
-    			attr_dev(canvas_1, "class", "svelte-1wk5vpm");
-    			add_location(canvas_1, file$1, 77, 0, 2875);
-    			attr_dev(div1, "class", "input-container svelte-1wk5vpm");
-    			add_location(div1, file$1, 78, 0, 2905);
+    			attr_dev(center, "class", "svelte-8vxhqd");
+    			add_location(center, file$1, 78, 0, 2880);
+    			attr_dev(div0, "class", "scoreboard svelte-8vxhqd");
+    			add_location(div0, file$1, 79, 0, 2909);
+    			attr_dev(canvas_1, "class", "svelte-8vxhqd");
+    			add_location(canvas_1, file$1, 80, 0, 2964);
+    			attr_dev(div1, "class", "input-container svelte-8vxhqd");
+    			add_location(div1, file$1, 81, 0, 2994);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1183,10 +1206,10 @@ var app = (function () {
     			append_dev(center, t0);
     			insert_dev(target, t1, anchor);
     			insert_dev(target, div0, anchor);
-    			/*div0_binding*/ ctx[8](div0);
+    			/*div0_binding*/ ctx[9](div0);
     			insert_dev(target, t2, anchor);
     			insert_dev(target, canvas_1, anchor);
-    			/*canvas_1_binding*/ ctx[9](canvas_1);
+    			/*canvas_1_binding*/ ctx[10](canvas_1);
     			insert_dev(target, t3, anchor);
     			insert_dev(target, div1, anchor);
     			mount_component(joystick, div1, null);
@@ -1215,10 +1238,10 @@ var app = (function () {
     			if (detaching) detach_dev(center);
     			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(div0);
-    			/*div0_binding*/ ctx[8](null);
+    			/*div0_binding*/ ctx[9](null);
     			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(canvas_1);
-    			/*canvas_1_binding*/ ctx[9](null);
+    			/*canvas_1_binding*/ ctx[10](null);
     			if (detaching) detach_dev(t3);
     			if (detaching) detach_dev(div1);
     			destroy_component(joystick);
@@ -1247,6 +1270,7 @@ var app = (function () {
     	let ctx;
     	let scoreboard;
     	console.log("PLAYER_RADIUS =", PLAYER_RADIUS);
+    	const SETTINGS = { clientsidePrediction: true };
     	const currentJoystick = { x: 0, y: 0 };
 
     	onMount(() => {
@@ -1275,7 +1299,7 @@ var app = (function () {
     				b.toggle("bleed2", !a.toggle("shake2"));
     			}
 
-    			const [x0, y0] = p.name === username
+    			const [x0, y0] = p.name === username && SETTINGS.clientsidePrediction
     			? [
     					x + currentJoystick.x * GAME_TICK * PLAYER_SPEED_FACTOR * canvas.width,
     					y + currentJoystick.y * GAME_TICK * PLAYER_SPEED_FACTOR * canvas.height
@@ -1359,7 +1383,7 @@ var app = (function () {
     	}
 
     	$$self.$$set = $$props => {
-    		if ("socket" in $$props) $$invalidate(7, socket = $$props.socket);
+    		if ("socket" in $$props) $$invalidate(8, socket = $$props.socket);
     		if ("username" in $$props) $$invalidate(0, username = $$props.username);
     	};
 
@@ -1372,6 +1396,7 @@ var app = (function () {
     		canvas,
     		ctx,
     		scoreboard,
+    		SETTINGS,
     		currentJoystick,
     		lastGameTickMessage,
     		render,
@@ -1383,7 +1408,7 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("socket" in $$props) $$invalidate(7, socket = $$props.socket);
+    		if ("socket" in $$props) $$invalidate(8, socket = $$props.socket);
     		if ("username" in $$props) $$invalidate(0, username = $$props.username);
     		if ("canvas" in $$props) $$invalidate(1, canvas = $$props.canvas);
     		if ("ctx" in $$props) ctx = $$props.ctx;
@@ -1400,6 +1425,7 @@ var app = (function () {
     		canvas,
     		scoreboard,
     		settingsPage,
+    		SETTINGS,
     		moveJoystick,
     		moveRightPad,
     		devMode,
@@ -1412,7 +1438,7 @@ var app = (function () {
     class GameClient extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { socket: 7, username: 0 });
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { socket: 8, username: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -1424,7 +1450,7 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*socket*/ ctx[7] === undefined && !("socket" in props)) {
+    		if (/*socket*/ ctx[8] === undefined && !("socket" in props)) {
     			console_1$1.warn("<GameClient> was created without expected prop 'socket'");
     		}
 

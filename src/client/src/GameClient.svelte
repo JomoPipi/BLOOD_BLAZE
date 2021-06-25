@@ -11,6 +11,10 @@
     let scoreboard : HTMLDivElement
     console.log('PLAYER_RADIUS =',PLAYER_RADIUS)
 
+    const SETTINGS = {
+        clientsidePrediction: true
+    }
+
     const currentJoystick : Point = { x : 0, y : 0 }
 
     onMount(() => {
@@ -38,14 +42,13 @@
                 a.toggle('shake', !b.toggle('bleed'))
                 b.toggle('bleed2', !a.toggle('shake2'))
             }
-            const [x0, y0] = 
-            p.name === username // Client side prediction:
+            const [x0, y0] = p.name === username && SETTINGS.clientsidePrediction // Client side prediction:
                 ? 
                     [ x + currentJoystick.x * GAME_TICK * PLAYER_SPEED_FACTOR * canvas.width
                     , y + currentJoystick.y * GAME_TICK * PLAYER_SPEED_FACTOR * canvas.height
                     ]
                 : 
-                [x, y]
+                    [x, y]
 
             circle(x0, y0, PLAYER_RADIUS)
             const [X, Y] = 
@@ -104,6 +107,11 @@
             <button on:click={settingsPage.toggle}>
                 back
             </button>
+
+            <label>
+                <input type=checkbox checked={SETTINGS.clientsidePrediction}>
+                <h4> Enable client-side prediction (reduces lag) </h4>
+            </label>
         </div>
     {/if}
     <DirectionPad callback={moveRightPad}/>
@@ -132,6 +140,8 @@
     }
     .settings-button {
         background-color: transparent;
+        padding: 0 1rem;
+        text-align: center;
     }
     .settings-page {
         display: none;
@@ -140,11 +150,22 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgb(67, 77, 69);
+        background: rgba(77, 77, 67, 0.75);
+        backdrop-filter: blur(1rem);
+        -webkit-backdrop-filter: blur(1rem);
         color: white;
 
         &.show {
             display: block;
+        }
+
+        label {
+            display: block;
+            margin: 1rem;
+        }
+
+        h4 {
+            display: inline;
         }
     }
 </style>
