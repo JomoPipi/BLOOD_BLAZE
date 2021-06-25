@@ -62,6 +62,9 @@ var app = (function () {
     function children(element) {
         return Array.from(element.childNodes);
     }
+    function toggle_class(element, name, toggle) {
+        element.classList[toggle ? 'add' : 'remove'](name);
+    }
     function custom_event(type, detail) {
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, false, false, detail);
@@ -431,30 +434,30 @@ var app = (function () {
     			t8 = space();
     			bloodblaze = element("bloodblaze");
     			attr_dev(h1, "class", "svelte-1ggq3y7");
-    			add_location(h1, file$4, 30, 2, 726);
+    			add_location(h1, file$4, 34, 2, 858);
     			attr_dev(h2, "class", "svelte-1ggq3y7");
-    			add_location(h2, file$4, 31, 2, 754);
+    			add_location(h2, file$4, 35, 2, 886);
     			attr_dev(div0, "class", "title svelte-1ggq3y7");
-    			add_location(div0, file$4, 29, 1, 703);
+    			add_location(div0, file$4, 33, 1, 835);
     			attr_dev(input, "autocomplete", "off");
     			attr_dev(input, "placeholder", "Enter your name");
     			attr_dev(input, "pattern", "[A-Za-z0-9 _]*");
     			attr_dev(input, "class", "svelte-1ggq3y7");
-    			add_location(input, file$4, 36, 4, 915);
+    			add_location(input, file$4, 40, 4, 1047);
     			attr_dev(button, "class", "svelte-1ggq3y7");
-    			add_location(button, file$4, 40, 4, 1048);
+    			add_location(button, file$4, 44, 4, 1180);
     			attr_dev(form, "type", "text");
     			attr_dev(form, "action", "");
-    			add_location(form, file$4, 35, 3, 857);
-    			add_location(span0, file$4, 42, 2, 1085);
+    			add_location(form, file$4, 39, 3, 989);
+    			add_location(span0, file$4, 46, 2, 1217);
     			attr_dev(span1, "class", "inner svelte-1ggq3y7");
-    			add_location(span1, file$4, 34, 2, 832);
+    			add_location(span1, file$4, 38, 2, 964);
     			attr_dev(div1, "class", "svelte-1ggq3y7");
-    			add_location(div1, file$4, 33, 1, 823);
+    			add_location(div1, file$4, 37, 1, 955);
     			attr_dev(bloodblaze, "class", "svelte-1ggq3y7");
-    			add_location(bloodblaze, file$4, 44, 1, 1104);
+    			add_location(bloodblaze, file$4, 48, 1, 1236);
     			attr_dev(main, "class", "svelte-1ggq3y7");
-    			add_location(main, file$4, 28, 0, 694);
+    			add_location(main, file$4, 32, 0, 826);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -532,6 +535,11 @@ var app = (function () {
     			? `Welcome, ${name}!`
     			: `Sorry, "${name}" is not available.`);
     		});
+
+    		// To speed things up while testing:
+    		if (DEV_MODE) {
+    			socket.emit("nomination", Math.random().toString());
+    		}
     	});
 
     	function tryUsername(e) {
@@ -1031,6 +1039,90 @@ var app = (function () {
     const { console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
+    // (81:4) {#if devMode()}
+    function create_if_block$1(ctx) {
+    	let button0;
+    	let t1;
+    	let div;
+    	let button1;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			button0 = element("button");
+    			button0.textContent = "⚙️";
+    			t1 = space();
+    			div = element("div");
+    			button1 = element("button");
+    			button1.textContent = "back";
+    			attr_dev(button0, "class", "settings-button svelte-1wk5vpm");
+    			add_location(button0, file$1, 81, 8, 3006);
+    			add_location(button1, file$1, 85, 12, 3189);
+    			attr_dev(div, "class", "settings-page svelte-1wk5vpm");
+    			toggle_class(div, "show", /*settingsPage*/ ctx[3].isOpen);
+    			add_location(div, file$1, 84, 8, 3115);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button0, anchor);
+    			insert_dev(target, t1, anchor);
+    			insert_dev(target, div, anchor);
+    			append_dev(div, button1);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(
+    						button0,
+    						"click",
+    						function () {
+    							if (is_function(/*settingsPage*/ ctx[3].toggle)) /*settingsPage*/ ctx[3].toggle.apply(this, arguments);
+    						},
+    						false,
+    						false,
+    						false
+    					),
+    					listen_dev(
+    						button1,
+    						"click",
+    						function () {
+    							if (is_function(/*settingsPage*/ ctx[3].toggle)) /*settingsPage*/ ctx[3].toggle.apply(this, arguments);
+    						},
+    						false,
+    						false,
+    						false
+    					)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+
+    			if (dirty & /*settingsPage*/ 8) {
+    				toggle_class(div, "show", /*settingsPage*/ ctx[3].isOpen);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button0);
+    			if (detaching) detach_dev(t1);
+    			if (detaching) detach_dev(div);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$1.name,
+    		type: "if",
+    		source: "(81:4) {#if devMode()}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
     function create_fragment$1(ctx) {
     	let center;
     	let t0;
@@ -1042,16 +1134,20 @@ var app = (function () {
     	let div1;
     	let joystick;
     	let t4;
+    	let show_if = /*devMode*/ ctx[6]();
+    	let t5;
     	let directionpad;
     	let current;
 
     	joystick = new Joystick({
-    			props: { callback: /*moveLeftJoyPad*/ ctx[3] },
+    			props: { callback: /*moveJoystick*/ ctx[4] },
     			$$inline: true
     		});
 
+    	let if_block = show_if && create_if_block$1(ctx);
+
     	directionpad = new DirectionPad({
-    			props: { callback: /*moveRightPad*/ ctx[4] },
+    			props: { callback: /*moveRightPad*/ ctx[5] },
     			$$inline: true
     		});
 
@@ -1067,15 +1163,17 @@ var app = (function () {
     			div1 = element("div");
     			create_component(joystick.$$.fragment);
     			t4 = space();
+    			if (if_block) if_block.c();
+    			t5 = space();
     			create_component(directionpad.$$.fragment);
-    			attr_dev(center, "class", "svelte-xbrdbo");
-    			add_location(center, file$1, 68, 0, 2554);
-    			attr_dev(div0, "class", "scoreboard svelte-xbrdbo");
-    			add_location(div0, file$1, 69, 0, 2583);
-    			attr_dev(canvas_1, "class", "svelte-xbrdbo");
-    			add_location(canvas_1, file$1, 70, 0, 2638);
-    			attr_dev(div1, "class", "input-container svelte-xbrdbo");
-    			add_location(div1, file$1, 71, 0, 2668);
+    			attr_dev(center, "class", "svelte-1wk5vpm");
+    			add_location(center, file$1, 75, 0, 2791);
+    			attr_dev(div0, "class", "scoreboard svelte-1wk5vpm");
+    			add_location(div0, file$1, 76, 0, 2820);
+    			attr_dev(canvas_1, "class", "svelte-1wk5vpm");
+    			add_location(canvas_1, file$1, 77, 0, 2875);
+    			attr_dev(div1, "class", "input-container svelte-1wk5vpm");
+    			add_location(div1, file$1, 78, 0, 2905);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1085,19 +1183,22 @@ var app = (function () {
     			append_dev(center, t0);
     			insert_dev(target, t1, anchor);
     			insert_dev(target, div0, anchor);
-    			/*div0_binding*/ ctx[6](div0);
+    			/*div0_binding*/ ctx[8](div0);
     			insert_dev(target, t2, anchor);
     			insert_dev(target, canvas_1, anchor);
-    			/*canvas_1_binding*/ ctx[7](canvas_1);
+    			/*canvas_1_binding*/ ctx[9](canvas_1);
     			insert_dev(target, t3, anchor);
     			insert_dev(target, div1, anchor);
     			mount_component(joystick, div1, null);
     			append_dev(div1, t4);
+    			if (if_block) if_block.m(div1, null);
+    			append_dev(div1, t5);
     			mount_component(directionpad, div1, null);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
     			if (!current || dirty & /*username*/ 1) set_data_dev(t0, /*username*/ ctx[0]);
+    			if (show_if) if_block.p(ctx, dirty);
     		},
     		i: function intro(local) {
     			if (current) return;
@@ -1114,13 +1215,14 @@ var app = (function () {
     			if (detaching) detach_dev(center);
     			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(div0);
-    			/*div0_binding*/ ctx[6](null);
+    			/*div0_binding*/ ctx[8](null);
     			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(canvas_1);
-    			/*canvas_1_binding*/ ctx[7](null);
+    			/*canvas_1_binding*/ ctx[9](null);
     			if (detaching) detach_dev(t3);
     			if (detaching) detach_dev(div1);
     			destroy_component(joystick);
+    			if (if_block) if_block.d();
     			destroy_component(directionpad);
     		}
     	};
@@ -1145,74 +1247,72 @@ var app = (function () {
     	let ctx;
     	let scoreboard;
     	console.log("PLAYER_RADIUS =", PLAYER_RADIUS);
-    	const currentJoyStick = { x: 0, y: 0 };
+    	const currentJoystick = { x: 0, y: 0 };
 
     	onMount(() => {
     		ctx = canvas.getContext("2d");
     		$$invalidate(1, canvas.height = window.innerWidth, canvas);
     		$$invalidate(1, canvas.width = window.innerWidth, canvas);
-
-    		socket.on("gameTick", ([players, bullets]) => {
-    			ctx.clearRect(0, 0, canvas.width, canvas.height);
-    			$$invalidate(2, scoreboard.innerHTML = "", scoreboard);
-
-    			players.sort((p1, p2) => p2.score - p1.score).forEach(p => {
-    				const [x, y] = [p.x * canvas.width, p.y * canvas.height];
-    				const playerGunSize = 2;
-    				ctx.fillStyle = p.isGettingShot ? "red" : "#333";
-
-    				if (p.name === username && p.isGettingShot) {
-    					const a = document.body.classList;
-    					const b = document.getElementById("bloodscreen").classList;
-    					a.toggle("shake", !b.toggle("bleed"));
-    					b.toggle("bleed2", !a.toggle("shake2"));
-    				}
-
-    				const [x0, y0] = p.name === username
-    				? [
-    						x + currentJoyStick.x * 40 * PLAYER_SPEED_FACTOR * canvas.width,
-    						y + currentJoyStick.y * 40 * PLAYER_SPEED_FACTOR * canvas.height
-    					]
-    				: [x, y];
-
-    				circle(x0, y0, PLAYER_RADIUS);
-
-    				const [X, Y] = [
-    					x0 + PLAYER_RADIUS * Math.cos(p.angle),
-    					y0 + PLAYER_RADIUS * Math.sin(p.angle)
-    				];
-
-    				circle(X, Y, playerGunSize);
-    				ctx.fillStyle = "#40f";
-    				ctx.fillText(p.name, x0 - 17, y0 - 17);
-
-    				$$invalidate(
-    					2,
-    					scoreboard.innerHTML += `<br>
-                    <span style="color: orange">${p.name}:</span> ${p.score}`,
-    					scoreboard
-    				);
-    			});
-
-    			ctx.fillStyle = "#537";
-
-    			for (const { x, y } of bullets) {
-    				circle(x * canvas.width, y * canvas.height, 2);
-    			}
-    		});
-
-    		function circle(x, y, r) {
-    			ctx.beginPath();
-    			ctx.arc(x, y, r, 0, 7);
-    			ctx.fill();
-    			ctx.closePath();
-    		}
+    		socket.on("gameTick", render);
     	});
 
-    	function moveLeftJoyPad(x, y) {
-    		currentJoyStick.x = x;
-    		currentJoyStick.y = y;
-    		socket.emit("controlsInput", { leftJoystick: currentJoyStick });
+    	let lastGameTickMessage = {};
+
+    	function render({ players, bullets, tick }) {
+    		ctx.clearRect(0, 0, canvas.width, canvas.height);
+    		lastGameTickMessage = { players, bullets, tick };
+    		$$invalidate(2, scoreboard.innerHTML = "", scoreboard);
+
+    		for (const p of players.sort((p1, p2) => p2.score - p1.score)) {
+    			const [x, y] = [p.x * canvas.width, p.y * canvas.height];
+    			const playerGunSize = 2;
+    			ctx.fillStyle = p.isGettingShot ? "red" : "#333";
+
+    			if (p.name === username && p.isGettingShot) {
+    				const a = document.body.classList;
+    				const b = document.getElementById("bloodscreen").classList;
+    				a.toggle("shake", !b.toggle("bleed"));
+    				b.toggle("bleed2", !a.toggle("shake2"));
+    			}
+
+    			const [x0, y0] = p.name === username
+    			? [
+    					x + currentJoystick.x * GAME_TICK * PLAYER_SPEED_FACTOR * canvas.width,
+    					y + currentJoystick.y * GAME_TICK * PLAYER_SPEED_FACTOR * canvas.height
+    				]
+    			: [x, y]; // Client side prediction:
+
+    			circle(x0, y0, PLAYER_RADIUS);
+
+    			const [X, Y] = [
+    				x0 + PLAYER_RADIUS * Math.cos(p.angle),
+    				y0 + PLAYER_RADIUS * Math.sin(p.angle)
+    			];
+
+    			circle(X, Y, playerGunSize);
+    			ctx.fillStyle = "#40f";
+    			ctx.fillText(p.name, x0 - 17, y0 - 17);
+
+    			$$invalidate(
+    				2,
+    				scoreboard.innerHTML += `<br>
+                <span style="color: orange">${p.name}:</span> ${p.score}`,
+    				scoreboard
+    			);
+    		}
+
+    		ctx.fillStyle = "#537";
+
+    		for (const { x, y } of bullets) {
+    			circle(x * canvas.width, y * canvas.height, 2);
+    		}
+    	}
+
+    	function moveJoystick(x, y) {
+    		currentJoystick.x = x;
+    		currentJoystick.y = y;
+    		socket.emit("controlsInput", { leftJoystick: currentJoystick });
+    		lastGameTickMessage.players && render(lastGameTickMessage);
     	}
 
     	function moveRightPad(angle, active) {
@@ -1221,6 +1321,22 @@ var app = (function () {
     			isShooting: active
     		});
     	}
+
+    	function circle(x, y, r) {
+    		ctx.beginPath();
+    		ctx.arc(x, y, r, 0, 7);
+    		ctx.fill();
+    		ctx.closePath();
+    	}
+
+    	const devMode = () => DEV_MODE; // It's not defined outside of script tags 🤷
+
+    	const settingsPage = {
+    		toggle() {
+    			$$invalidate(3, settingsPage.isOpen ^= 1, settingsPage);
+    		},
+    		isOpen: 0
+    	};
 
     	const writable_props = ["socket", "username"];
 
@@ -1243,7 +1359,7 @@ var app = (function () {
     	}
 
     	$$self.$$set = $$props => {
-    		if ("socket" in $$props) $$invalidate(5, socket = $$props.socket);
+    		if ("socket" in $$props) $$invalidate(7, socket = $$props.socket);
     		if ("username" in $$props) $$invalidate(0, username = $$props.username);
     	};
 
@@ -1256,17 +1372,23 @@ var app = (function () {
     		canvas,
     		ctx,
     		scoreboard,
-    		currentJoyStick,
-    		moveLeftJoyPad,
-    		moveRightPad
+    		currentJoystick,
+    		lastGameTickMessage,
+    		render,
+    		moveJoystick,
+    		moveRightPad,
+    		circle,
+    		devMode,
+    		settingsPage
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("socket" in $$props) $$invalidate(5, socket = $$props.socket);
+    		if ("socket" in $$props) $$invalidate(7, socket = $$props.socket);
     		if ("username" in $$props) $$invalidate(0, username = $$props.username);
     		if ("canvas" in $$props) $$invalidate(1, canvas = $$props.canvas);
     		if ("ctx" in $$props) ctx = $$props.ctx;
     		if ("scoreboard" in $$props) $$invalidate(2, scoreboard = $$props.scoreboard);
+    		if ("lastGameTickMessage" in $$props) lastGameTickMessage = $$props.lastGameTickMessage;
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1277,8 +1399,10 @@ var app = (function () {
     		username,
     		canvas,
     		scoreboard,
-    		moveLeftJoyPad,
+    		settingsPage,
+    		moveJoystick,
     		moveRightPad,
+    		devMode,
     		socket,
     		div0_binding,
     		canvas_1_binding
@@ -1288,7 +1412,7 @@ var app = (function () {
     class GameClient extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { socket: 5, username: 0 });
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { socket: 7, username: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -1300,7 +1424,7 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*socket*/ ctx[5] === undefined && !("socket" in props)) {
+    		if (/*socket*/ ctx[7] === undefined && !("socket" in props)) {
     			console_1$1.warn("<GameClient> was created without expected prop 'socket'");
     		}
 

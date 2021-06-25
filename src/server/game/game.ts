@@ -3,8 +3,8 @@ type Player = {
     x : number
     y : number
     angle : number
-    leftJoypadX : number
-    leftJoypadY : number
+    joystickX : number
+    joystickY : number
     isShooting : boolean
     name : string
     lastTimeGettingShot : number
@@ -60,8 +60,8 @@ export class Game {
             const [jx, jy] = a > 1
                 ? [movementX * k, movementY * k]
                 : [movementX, movementY]    
-            p.leftJoypadX = jx
-            p.leftJoypadY = jy
+            p.joystickX = jx
+            p.joystickY = jy
         }
         if (data.rightThumbpad)
         {
@@ -77,10 +77,10 @@ export class Game {
     moveObjects(timeDelta : number, now : number) {
         for (const name in this.players)
         {
-            const p = this.players[name]!
-            p.x = clamp(0, p.x + p.leftJoypadX * timeDelta * PLAYER_SPEED_FACTOR, 1)
-            p.y = clamp(0, p.y + p.leftJoypadY * timeDelta * PLAYER_SPEED_FACTOR, 1)
 
+            const p = this.players[name]!
+            movePlayer({ p, joystickX: p.joystickX, joystickY: p.joystickY, timeDelta })
+            
             if (p.isShooting && (!LAST_SHOT[name] || now - LAST_SHOT[name]! > BULLET_COOLDOWN))
             {
                 this.shootBullet(p)
@@ -134,8 +134,8 @@ export class Game {
             return 0 <= bullet.x && bullet.x <= 1 && 0 <= bullet.y && bullet.y <= 1
         })
     }
-    getRenderData(tick : number) : [FrequentPlayerRenderData[], Bullet[]] { 
-        const clientPlayerData =
+    getRenderData(tick : number) : GameTickMessage { 
+        const players =
             this.players.map(p => (
                 { x: p.x 
                 , y: p.y
@@ -144,10 +144,9 @@ export class Game {
                 , isShooting: p.isShooting
                 , isGettingShot: Date.now() - p.lastTimeGettingShot <= 20
                 , score: p.score
-                , tick
                 }))
 
-        return [clientPlayerData, this.bullets] 
+        return { players, bullets: this.bullets, tick } 
     }
     
     shootBullet(p : Player) {
@@ -162,8 +161,8 @@ export class Game {
         return (
             { x: .5
             , y: .5
-            , leftJoypadX: 0
-            , leftJoypadY: 0
+            , joystickX: 0
+            , joystickY: 0
             , angle: 0
             , score: 0
             , isShooting: false

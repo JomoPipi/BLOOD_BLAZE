@@ -1,8 +1,10 @@
 
+type Point = { x : number, y : number }
+
 type ServerToClientSocketEvents = keyof ServerToClientMessageTypes
 type ServerToClientMessageTypes = {
   nomination : [boolean, string]
-  gameTick : FrequentRenderData
+  gameTick : GameTickMessage
 }
 
 type ClientToServerSocketEvents = keyof ClientToServerMessageTypes
@@ -33,7 +35,7 @@ interface ClientSocket {
     (event : T, data : ClientToServerMessageTypes[T]) : void
 }
 
-type Joystick = { x : number, y : number }//, active : boolean }
+type Joystick = Point
 type ControlsInput = Partial<{
   leftJoystick : Joystick,
   rightThumbpad : { angle : number }
@@ -42,7 +44,7 @@ type ControlsInput = Partial<{
   // isReloading : boolean
 }>
 
-type FrequentPlayerRenderData = {
+type SocketPlayer = {
   x : number
   y : number
   angle : number
@@ -52,7 +54,11 @@ type FrequentPlayerRenderData = {
   name : string
   score : number
 }
-type FrequentRenderData = [FrequentPlayerRenderData[], { x : number, y : number }[]]
+type GameTickMessage = 
+  { players : SocketPlayer[]
+  , bullets : Point[]
+  , tick : number
+  }
 
 // interface ObjectConstructor {
 //   keys<set extends string>(o : { readonly [key in set] : any }) : set[]

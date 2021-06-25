@@ -14,6 +14,12 @@ import { onMount } from "svelte";
 			}
 			alert(success ? `Welcome, ${name}!` : `Sorry, "${name}" is not available.`)
 		})
+
+		// To speed things up while testing:
+		if (DEV_MODE)
+		{
+			socket.emit('nomination', Math.random().toString())
+		}
 	})
 
 
@@ -35,7 +41,6 @@ import { onMount } from "svelte";
 		event.target.value = 
 		event.target.value.replace(/[^A-Za-z0-9 _]/g, '')
 	}
-
 </script>
 
 <main>
