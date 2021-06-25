@@ -7,6 +7,8 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
+import postcss from 'rollup-plugin-postcss'
+import autoprefixer from 'autoprefixer';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -47,6 +49,13 @@ export default {
 				// enable run-time checks when not in production
 				dev: !production
 			}
+		}),
+		postcss({
+			plugins: [
+			  autoprefixer
+			],
+			sourceMap: true,
+			extract: true,
 		}),
 		// we'll extract any component CSS out into
 		// a separate file - better for performance

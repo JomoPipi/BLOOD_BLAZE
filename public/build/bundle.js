@@ -807,9 +807,9 @@ var app = (function () {
     			div = element("div");
     			canvas_1 = element("canvas");
     			attr_dev(canvas_1, "class", "svelte-1a4uxv9");
-    			add_location(canvas_1, file$2, 95, 4, 3044);
+    			add_location(canvas_1, file$2, 89, 4, 2685);
     			attr_dev(div, "class", "svelte-1a4uxv9");
-    			add_location(div, file$2, 94, 0, 3011);
+    			add_location(div, file$2, 88, 0, 2652);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -881,18 +881,12 @@ var app = (function () {
     		let startY = 0;
 
     		function touchstart(e) {
-    			// const { left, top } = canvas.getBoundingClientRect()
-    			// const x = e.targetTouches[0]!.clientX - left - W/2
-    			// const y = e.targetTouches[0]!.clientY - top - H/2
     			startX = e.targetTouches[0].clientX;
-
     			startY = e.targetTouches[0].clientY;
     		}
 
     		function touchmove(e) {
-    			// const { left, top } = canvas.getBoundingClientRect()
     			const x = e.targetTouches[0].clientX - startX;
-
     			const y = e.targetTouches[0].clientY - startY;
 
     			/*
@@ -913,11 +907,7 @@ var app = (function () {
     			const [jx, jy] = a > r2 ? [x * k, y * k] : [x, y];
     			point[0] = jx + W / 2;
     			point[1] = jy + W / 2;
-
-    			// point[0] = clamp(radius, x, W - radius)
-    			// point[1] = clamp(radius, y, H - radius)
     			render();
-
     			callback(2 * (point[0] / W - 0.5), 2 * (point[1] / H - 0.5));
     		}
 
@@ -1039,7 +1029,7 @@ var app = (function () {
     const { console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (84:4) {#if devMode()}
+    // (86:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1067,19 +1057,19 @@ var app = (function () {
     			t4 = space();
     			h4 = element("h4");
     			h4.textContent = "Enable client-side prediction (reduces lag)";
-    			attr_dev(button0, "class", "settings-button svelte-8vxhqd");
-    			add_location(button0, file$1, 84, 8, 3095);
-    			add_location(button1, file$1, 88, 12, 3278);
+    			attr_dev(button0, "class", "settings-button svelte-1ge5rjl");
+    			add_location(button0, file$1, 86, 8, 3163);
+    			add_location(button1, file$1, 90, 12, 3346);
     			attr_dev(input, "type", "checkbox");
     			input.checked = /*SETTINGS*/ ctx[4].clientsidePrediction;
-    			add_location(input, file$1, 93, 16, 3403);
-    			attr_dev(h4, "class", "svelte-8vxhqd");
-    			add_location(h4, file$1, 94, 16, 3482);
-    			attr_dev(label, "class", "svelte-8vxhqd");
-    			add_location(label, file$1, 92, 12, 3378);
-    			attr_dev(div, "class", "settings-page svelte-8vxhqd");
+    			add_location(input, file$1, 95, 16, 3471);
+    			attr_dev(h4, "class", "svelte-1ge5rjl");
+    			add_location(h4, file$1, 96, 16, 3550);
+    			attr_dev(label, "class", "svelte-1ge5rjl");
+    			add_location(label, file$1, 94, 12, 3446);
+    			attr_dev(div, "class", "settings-page svelte-1ge5rjl");
     			toggle_class(div, "show", /*settingsPage*/ ctx[3].isOpen);
-    			add_location(div, file$1, 87, 8, 3204);
+    			add_location(div, file$1, 89, 8, 3272);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1139,7 +1129,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(84:4) {#if devMode()}",
+    		source: "(86:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1189,14 +1179,14 @@ var app = (function () {
     			if (if_block) if_block.c();
     			t5 = space();
     			create_component(directionpad.$$.fragment);
-    			attr_dev(center, "class", "svelte-8vxhqd");
-    			add_location(center, file$1, 78, 0, 2880);
-    			attr_dev(div0, "class", "scoreboard svelte-8vxhqd");
-    			add_location(div0, file$1, 79, 0, 2909);
-    			attr_dev(canvas_1, "class", "svelte-8vxhqd");
-    			add_location(canvas_1, file$1, 80, 0, 2964);
-    			attr_dev(div1, "class", "input-container svelte-8vxhqd");
-    			add_location(div1, file$1, 81, 0, 2994);
+    			attr_dev(center, "class", "svelte-1ge5rjl");
+    			add_location(center, file$1, 80, 0, 2948);
+    			attr_dev(div0, "class", "scoreboard svelte-1ge5rjl");
+    			add_location(div0, file$1, 81, 0, 2977);
+    			attr_dev(canvas_1, "class", "svelte-1ge5rjl");
+    			add_location(canvas_1, file$1, 82, 0, 3032);
+    			attr_dev(div1, "class", "input-container svelte-1ge5rjl");
+    			add_location(div1, file$1, 83, 0, 3062);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1283,6 +1273,7 @@ var app = (function () {
     	let lastGameTickMessage = {};
 
     	function render({ players, bullets, tick }) {
+    		console.log("rendering!!");
     		ctx.clearRect(0, 0, canvas.width, canvas.height);
     		lastGameTickMessage = { players, bullets, tick };
     		$$invalidate(2, scoreboard.innerHTML = "", scoreboard);
@@ -1335,8 +1326,11 @@ var app = (function () {
     	function moveJoystick(x, y) {
     		currentJoystick.x = x;
     		currentJoystick.y = y;
-    		socket.emit("controlsInput", { leftJoystick: currentJoystick });
+
+    		//! TODO: put in a game loop:
     		lastGameTickMessage.players && render(lastGameTickMessage);
+
+    		socket.emit("controlsInput", { leftJoystick: currentJoystick });
     	}
 
     	function moveRightPad(angle, active) {

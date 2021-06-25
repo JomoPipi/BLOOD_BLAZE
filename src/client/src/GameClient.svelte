@@ -26,6 +26,7 @@
     })
     let lastGameTickMessage = {} as GameTickMessage
     function render({ players, bullets, tick } : GameTickMessage) {
+        console.log('rendering!!')
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         lastGameTickMessage = { players, bullets, tick }
         scoreboard.innerHTML = ''
@@ -72,8 +73,9 @@
     function moveJoystick(x : number, y : number) {
         currentJoystick.x = x
         currentJoystick.y = y
-        socket.emit('controlsInput', { leftJoystick: currentJoystick })
+        //! TODO: put in a game loop:
         lastGameTickMessage.players && render(lastGameTickMessage)
+        socket.emit('controlsInput', { leftJoystick: currentJoystick })
     }
     function moveRightPad(angle : number, active : boolean) {
         socket.emit('controlsInput', 
@@ -151,8 +153,8 @@
         width: 100%;
         height: 100%;
         background: rgba(77, 77, 67, 0.75);
-        backdrop-filter: blur(1rem);
-        -webkit-backdrop-filter: blur(1rem);
+        backdrop-filter: blur(.5rem) invert(100%);
+        // -webkit-backdrop-filter: blur(.5rem) invert(1);
         color: white;
 
         &.show {

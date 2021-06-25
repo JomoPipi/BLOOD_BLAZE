@@ -40,17 +40,11 @@
         let startY = 0
 
         function touchstart(e : TouchEvent) {
-            // const { left, top } = canvas.getBoundingClientRect()
-
-            // const x = e.targetTouches[0]!.clientX - left - W/2
-            // const y = e.targetTouches[0]!.clientY - top - H/2
             startX = e.targetTouches[0]!.clientX
             startY = e.targetTouches[0]!.clientY
         }
 
         function touchmove(e : TouchEvent) {
-            // const { left, top } = canvas.getBoundingClientRect()
-            
             const x = e.targetTouches[0]!.clientX - startX
             const y = e.targetTouches[0]!.clientY - startY
 
@@ -75,8 +69,6 @@
 
             point[0] = jx + W/2
             point[1] = jy + W/2
-            // point[0] = clamp(radius, x, W - radius)
-            // point[1] = clamp(radius, y, H - radius)
 
             render()
 
