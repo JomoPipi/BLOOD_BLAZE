@@ -1029,7 +1029,7 @@ var app = (function () {
     const { console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (86:4) {#if devMode()}
+    // (94:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1058,18 +1058,18 @@ var app = (function () {
     			h4 = element("h4");
     			h4.textContent = "Enable client-side prediction (reduces lag)";
     			attr_dev(button0, "class", "settings-button svelte-1ge5rjl");
-    			add_location(button0, file$1, 86, 8, 3163);
-    			add_location(button1, file$1, 90, 12, 3346);
+    			add_location(button0, file$1, 94, 8, 3269);
+    			add_location(button1, file$1, 98, 12, 3452);
     			attr_dev(input, "type", "checkbox");
     			input.checked = /*SETTINGS*/ ctx[4].clientsidePrediction;
-    			add_location(input, file$1, 95, 16, 3471);
+    			add_location(input, file$1, 103, 16, 3577);
     			attr_dev(h4, "class", "svelte-1ge5rjl");
-    			add_location(h4, file$1, 96, 16, 3550);
+    			add_location(h4, file$1, 104, 16, 3656);
     			attr_dev(label, "class", "svelte-1ge5rjl");
-    			add_location(label, file$1, 94, 12, 3446);
+    			add_location(label, file$1, 102, 12, 3552);
     			attr_dev(div, "class", "settings-page svelte-1ge5rjl");
     			toggle_class(div, "show", /*settingsPage*/ ctx[3].isOpen);
-    			add_location(div, file$1, 89, 8, 3272);
+    			add_location(div, file$1, 97, 8, 3378);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1129,7 +1129,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(86:4) {#if devMode()}",
+    		source: "(94:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1180,13 +1180,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-1ge5rjl");
-    			add_location(center, file$1, 80, 0, 2948);
+    			add_location(center, file$1, 88, 0, 3054);
     			attr_dev(div0, "class", "scoreboard svelte-1ge5rjl");
-    			add_location(div0, file$1, 81, 0, 2977);
+    			add_location(div0, file$1, 89, 0, 3083);
     			attr_dev(canvas_1, "class", "svelte-1ge5rjl");
-    			add_location(canvas_1, file$1, 82, 0, 3032);
+    			add_location(canvas_1, file$1, 90, 0, 3138);
     			attr_dev(div1, "class", "input-container svelte-1ge5rjl");
-    			add_location(div1, file$1, 83, 0, 3062);
+    			add_location(div1, file$1, 91, 0, 3168);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1261,21 +1261,30 @@ var app = (function () {
     	let scoreboard;
     	console.log("PLAYER_RADIUS =", PLAYER_RADIUS);
     	const SETTINGS = { clientsidePrediction: true };
-    	const currentJoystick = { x: 0, y: 0 };
+
+    	const playerControls = {
+    		joystick: { x: 0, y: 0 },
+    		shootingAngle: 0,
+    		isShooting: false,
+    		n: 0
+    	};
+
+    	let lastGameTickMessage = {};
 
     	onMount(() => {
     		ctx = canvas.getContext("2d");
     		$$invalidate(1, canvas.height = window.innerWidth, canvas);
     		$$invalidate(1, canvas.width = window.innerWidth, canvas);
-    		socket.on("gameTick", render);
+    		socket.on("gameTick", msg => lastGameTickMessage = msg);
+    		render();
     	});
 
-    	let lastGameTickMessage = {};
-
-    	function render({ players, bullets, tick }) {
-    		console.log("rendering!!");
+    	function render() {
+    		requestAnimationFrame(render);
     		ctx.clearRect(0, 0, canvas.width, canvas.height);
-    		lastGameTickMessage = { players, bullets, tick };
+    		const { players, bullets, tick } = lastGameTickMessage;
+    		if (!players) return;
+    		sendInputsToServer();
     		$$invalidate(2, scoreboard.innerHTML = "", scoreboard);
 
     		for (const p of players.sort((p1, p2) => p2.score - p1.score)) {
@@ -1292,8 +1301,8 @@ var app = (function () {
 
     			const [x0, y0] = p.name === username && SETTINGS.clientsidePrediction
     			? [
-    					x + currentJoystick.x * GAME_TICK * PLAYER_SPEED_FACTOR * canvas.width,
-    					y + currentJoystick.y * GAME_TICK * PLAYER_SPEED_FACTOR * canvas.height
+    					x + playerControls.joystick.x * 250 * PLAYER_SPEED_FACTOR * canvas.width,
+    					y + playerControls.joystick.y * 250 * PLAYER_SPEED_FACTOR * canvas.height
     				]
     			: [x, y]; // Client side prediction:
 
@@ -1323,21 +1332,19 @@ var app = (function () {
     		}
     	}
 
+    	function sendInputsToServer() {
+    		playerControls.n++;
+    		socket.emit("controlsInput", playerControls);
+    	}
+
     	function moveJoystick(x, y) {
-    		currentJoystick.x = x;
-    		currentJoystick.y = y;
-
-    		//! TODO: put in a game loop:
-    		lastGameTickMessage.players && render(lastGameTickMessage);
-
-    		socket.emit("controlsInput", { leftJoystick: currentJoystick });
+    		playerControls.joystick.x = x;
+    		playerControls.joystick.y = y;
     	}
 
     	function moveRightPad(angle, active) {
-    		socket.emit("controlsInput", {
-    			rightThumbpad: { angle },
-    			isShooting: active
-    		});
+    		playerControls.shootingAngle = angle;
+    		playerControls.isShooting = active;
     	}
 
     	function circle(x, y, r) {
@@ -1391,9 +1398,10 @@ var app = (function () {
     		ctx,
     		scoreboard,
     		SETTINGS,
-    		currentJoystick,
+    		playerControls,
     		lastGameTickMessage,
     		render,
+    		sendInputsToServer,
     		moveJoystick,
     		moveRightPad,
     		circle,

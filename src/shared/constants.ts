@@ -24,9 +24,7 @@ const movePlayer = ({ p, joystickX, joystickY, timeDelta } : MovePlayerArgs) => 
 }
 
 {
-    const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
-    const _ = isBrowser ? window : global as any
-    Object.assign(_, 
+    Object.assign(globalThis, 
         { poop
         , PLAYER_RADIUS
         , DEV_MODE

@@ -15,20 +15,31 @@
         clientsidePrediction: true
     }
 
-    const currentJoystick : Point = { x : 0, y : 0 }
+    const playerControls : PlayerControls =
+        { joystick: { x: 0, y: 0 }
+        , shootingAngle: 0
+        , isShooting: false
+        , n: 0
+        }
 
+    let lastGameTickMessage = {} as GameTickMessage
     onMount(() => {
         ctx = canvas.getContext('2d')!
         canvas.height = window.innerWidth
         canvas.width = window.innerWidth
 
-        socket.on('gameTick', render)
+        socket.on('gameTick', msg => lastGameTickMessage = msg)
+        render()
     })
-    let lastGameTickMessage = {} as GameTickMessage
-    function render({ players, bullets, tick } : GameTickMessage) {
-        console.log('rendering!!')
+
+    function render() {
+        requestAnimationFrame(render)
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        lastGameTickMessage = { players, bullets, tick }
+        const { players, bullets, tick } = lastGameTickMessage
+        if (!players) return;
+
+        sendInputsToServer()
+
         scoreboard.innerHTML = ''
 
         for (const p of players.sort((p1,p2) => p2.score - p1.score))
@@ -43,10 +54,11 @@
                 a.toggle('shake', !b.toggle('bleed'))
                 b.toggle('bleed2', !a.toggle('shake2'))
             }
-            const [x0, y0] = p.name === username && SETTINGS.clientsidePrediction // Client side prediction:
+            const [x0, y0] = 
+                p.name === username && SETTINGS.clientsidePrediction // Client side prediction:
                 ? 
-                    [ x + currentJoystick.x * GAME_TICK * PLAYER_SPEED_FACTOR * canvas.width
-                    , y + currentJoystick.y * GAME_TICK * PLAYER_SPEED_FACTOR * canvas.height
+                    [ x + playerControls.joystick.x * 250 * PLAYER_SPEED_FACTOR * canvas.width
+                    , y + playerControls.joystick.y * 250 * PLAYER_SPEED_FACTOR * canvas.height
                     ]
                 : 
                     [x, y]
@@ -70,18 +82,18 @@
         }
     }
 
+    function sendInputsToServer() {
+        playerControls.n++
+        socket.emit('controlsInput', playerControls)
+    }
+
     function moveJoystick(x : number, y : number) {
-        currentJoystick.x = x
-        currentJoystick.y = y
-        //! TODO: put in a game loop:
-        lastGameTickMessage.players && render(lastGameTickMessage)
-        socket.emit('controlsInput', { leftJoystick: currentJoystick })
+        playerControls.joystick.x = x
+        playerControls.joystick.y = y
     }
     function moveRightPad(angle : number, active : boolean) {
-        socket.emit('controlsInput', 
-            { rightThumbpad: { angle }
-            , isShooting: active
-            })
+        playerControls.shootingAngle = angle
+        playerControls.isShooting = active
     }
 
     function circle(x : number, y : number, r : number) {

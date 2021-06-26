@@ -10,7 +10,7 @@ type ServerToClientMessageTypes = {
 type ClientToServerSocketEvents = keyof ClientToServerMessageTypes
 type ClientToServerMessageTypes = {
   nomination : string
-  controlsInput : ControlsInput
+  controlsInput : PlayerControls
 }
 
 interface ServerSocket {
@@ -36,13 +36,18 @@ interface ClientSocket {
 }
 
 type Joystick = Point
-type ControlsInput = Partial<{
-  leftJoystick : Joystick,
-  rightThumbpad : { angle : number }
+type PlayerControls = { 
+  joystick : Point
+  shootingAngle : number
   isShooting : boolean
-  // rightJoyStick : Joystick
-  // isReloading : boolean
-}>
+  n : number
+}
+// type ControlsInput = {
+//   leftJoystick : Joystick,
+//   rightThumbpad : { angle : number }
+//   isShooting : boolean
+//   n : number
+// }
 
 type SocketPlayer = {
   x : number

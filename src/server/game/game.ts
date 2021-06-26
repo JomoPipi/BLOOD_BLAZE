@@ -38,41 +38,34 @@ export class Game {
         this.players = this.players.filter(p => p.name !== name)
         delete this.getPlayerByName[name]
     }
-    updatePlayerInputs(username : string, data : ControlsInput) {
+    updatePlayerInputs(username : string, data : PlayerControls) {
         const p = this.getPlayerByName[username]!
-        if (data.leftJoystick)
-        {
-            const movementX = data.leftJoystick.x
-            const movementY = data.leftJoystick.y
-            /*
-            -- "restrict" it to a circle of radius 1:
-            if sqrt(mx**2 + my**2) > 1 then
-                we need k such that 
-                1 = sqrt((mx*k)**2 + (my*k)**2)
-    
-                1 = (mx*k)**2 + (my*k)**2
-                1 = k**2 * (mx**2 + my**2)
-                1 / (mx**2 + my**2) = k**2
-                k = sqrt(1 / (mx**2 + my**2))
-            */
-            const a = movementX**2 + movementY**2
-            const k = Math.sqrt(1 / a)
-            const [jx, jy] = a > 1
-                ? [movementX * k, movementY * k]
-                : [movementX, movementY]    
-            p.joystickX = jx
-            p.joystickY = jy
-        }
-        if (data.rightThumbpad)
-        {
-            const { angle } = data.rightThumbpad
-            p.angle = angle
-        }
-        if (data.isShooting !== undefined)
-        {
-            p.isShooting = data.isShooting
-            // console.log('pow pow!') //! ///////////////////////////
-        }
+        
+        const movementX = data.joystick.x
+        const movementY = data.joystick.y
+        /*
+        -- "restrict" it to a circle of radius 1:
+        if sqrt(mx**2 + my**2) > 1 then
+            we need k such that 
+            1 = sqrt((mx*k)**2 + (my*k)**2)
+
+            1 = (mx*k)**2 + (my*k)**2
+            1 = k**2 * (mx**2 + my**2)
+            1 / (mx**2 + my**2) = k**2
+            k = sqrt(1 / (mx**2 + my**2))
+        */
+        const a = movementX**2 + movementY**2
+        const k = Math.sqrt(1 / a)
+        const [jx, jy] = a > 1
+            ? [movementX * k, movementY * k]
+            : [movementX, movementY]    
+        p.joystickX = jx
+        p.joystickY = jy
+
+        p.angle = data.shootingAngle
+            
+        p.isShooting = data.isShooting
+        // console.log('pow pow!') //! ///////////////////////////
     }
     moveObjects(timeDelta : number, now : number) {
         for (const name in this.players)
