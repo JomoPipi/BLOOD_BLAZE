@@ -9,6 +9,7 @@ type Player = {
     name : string
     lastTimeGettingShot : number
     score : 0
+    lastMessageNumber : number
 }
 type Bullet = {
     x : number
@@ -38,11 +39,11 @@ export class Game {
         this.players = this.players.filter(p => p.name !== name)
         delete this.getPlayerByName[name]
     }
-    updatePlayerInputs(username : string, data : PlayerControls) {
+    updatePlayerInputs(username : string, data : PlayerControlsMessage) {
         const p = this.getPlayerByName[username]!
         
-        const movementX = data.joystick.x
-        const movementY = data.joystick.y
+        const dx = data.joystick.x
+        const dy = data.joystick.y
         /*
         -- "restrict" it to a circle of radius 1:
         if sqrt(mx**2 + my**2) > 1 then
@@ -54,30 +55,29 @@ export class Game {
             1 / (mx**2 + my**2) = k**2
             k = sqrt(1 / (mx**2 + my**2))
         */
-        const a = movementX**2 + movementY**2
+        const a = dx**2 + dy**2
         const k = Math.sqrt(1 / a)
         const [jx, jy] = a > 1
-            ? [movementX * k, movementY * k]
-            : [movementX, movementY]    
+            ? [dx * k, dy * k]
+            : [dx, dy]    
         p.joystickX = jx
         p.joystickY = jy
 
         p.angle = data.shootingAngle
             
         p.isShooting = data.isShooting
-        // console.log('pow pow!') //! ///////////////////////////
+        
+        p.lastMessageNumber = data.messageNumber
     }
     moveObjects(timeDelta : number, now : number) {
-        for (const name in this.players)
+        for (const p of this.players)
         {
-
-            const p = this.players[name]!
-            movePlayer({ p, joystickX: p.joystickX, joystickY: p.joystickY, timeDelta })
+            movePlayer(p, { x: p.joystickX, y: p.joystickY }, timeDelta)
             
-            if (p.isShooting && (!LAST_SHOT[name] || now - LAST_SHOT[name]! > BULLET_COOLDOWN))
+            if (p.isShooting && (!LAST_SHOT[p.name] || now - LAST_SHOT[p.name]! > BULLET_COOLDOWN))
             {
                 this.shootBullet(p)
-                LAST_SHOT[name] = now
+                LAST_SHOT[p.name] = now
             }
         }
         const epsilon = 1e-3
@@ -127,7 +127,7 @@ export class Game {
             return 0 <= bullet.x && bullet.x <= 1 && 0 <= bullet.y && bullet.y <= 1
         })
     }
-    getRenderData(tick : number) : GameTickMessage { 
+    getRenderData() : GameTickMessage { 
         const players =
             this.players.map(p => (
                 { x: p.x 
@@ -139,7 +139,7 @@ export class Game {
                 , score: p.score
                 }))
 
-        return { players, bullets: this.bullets, tick } 
+        return { players, bullets: this.bullets } 
     }
     
     shootBullet(p : Player) {
@@ -161,6 +161,7 @@ export class Game {
             , isShooting: false
             , lastTimeGettingShot: 0
             , name
+            , lastMessageNumber: -1
             })
     }
 }

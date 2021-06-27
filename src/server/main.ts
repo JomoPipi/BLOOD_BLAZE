@@ -54,9 +54,10 @@ let tick = 0
     const timeDelta = now - lastTime
     lastTime = now
     game.moveObjects(timeDelta, now)
-    ;setTimeout(() => (io as ServerSocket).emit('gameTick', game.getRenderData(tick)), 250)
+    ;setTimeout(() => (io as ServerSocket).emit('gameTick', game.getRenderData()), 250)
     // ;(io as ServerSocket).emit('gameTick', game.getRenderData(tick))
     // setImmediate(gameLoop)
+    tick++
     setTimeout(gameLoop, 250) // GAME_TICK)
 })()
 

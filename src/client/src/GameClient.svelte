@@ -1,89 +1,143 @@
 
 <script lang="ts">
+
     import { onMount } from "svelte";
     import DirectionPad from "./uielements/DirectionPad.svelte";
     import Joystick from "./uielements/Joystick.svelte";
 
     export let socket : ClientSocket
     export let username : string
+
     let canvas : HTMLCanvasElement
     let ctx : CanvasRenderingContext2D
     let scoreboard : HTMLDivElement
-    console.log('PLAYER_RADIUS =',PLAYER_RADIUS)
+
+    const players : Record<string, SocketPlayer> = 
+        { [username]: 
+            { x: 0.5
+            , y: 0.5
+            , angle: 0
+            , isShooting: false
+            , isGettingShot: false
+            , name: username
+            , score: 0
+            }
+        }
+    
+    const pendingInputs : PlayerControlsMessage[] = []
+
+    const playerControls : PlayerControlsMessage =
+        { joystick: { x: 0, y: 0 }
+        , shootingAngle: 0
+        , isShooting: false
+        , messageNumber: 0
+        , deltaTime: 0
+        }
+
+    console.log('PLAYER_RADIUS =', PLAYER_RADIUS)
 
     const SETTINGS = {
         clientsidePrediction: true
     }
 
-    const playerControls : PlayerControls =
-        { joystick: { x: 0, y: 0 }
-        , shootingAngle: 0
-        , isShooting: false
-        , n: 0
-        }
-
-    let lastGameTickMessage = {} as GameTickMessage
+    let lastGameTickMessage = {} as { bullets : Point[] }
     onMount(() => {
         ctx = canvas.getContext('2d')!
         canvas.height = window.innerWidth
         canvas.width = window.innerWidth
+        socket.on('gameTick', msg => {
+            lastGameTickMessage = msg
 
-        socket.on('gameTick', msg => lastGameTickMessage = msg)
-        render()
+            for (const p of msg.players)
+            {
+                if (!players[p.name])
+                {
+                    players[p.name] = p
+                }
+
+                const player = players[p.name]
+
+                if (p.name === username)
+                {
+                    Object.assign(player, p)
+                }
+                else
+                {
+                    Object.assign(player, p)
+                }
+            }
+        })
+
+        ;(function updateRender() {
+
+            processInputs()
+
+            requestAnimationFrame(updateRender)
+            const { bullets } = lastGameTickMessage
+            if (!bullets) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+            scoreboard.innerHTML = Object.values(players)
+                .sort((p1,p2) => p2.score - p1.score)
+                .map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`)
+                .join('<br>')
+
+            for (const name in players)
+            {
+                const p = players[name]!
+                const [x, y] = [p.x * canvas.width, p.y * canvas.height]
+                const playerGunSize = 2
+                ctx.fillStyle = p.isGettingShot ? 'red' : '#333'
+                if (p.name === username && p.isGettingShot)
+                {
+                    const a = document.body.classList
+                    const b = document.getElementById('bloodscreen')!.classList
+                    a.toggle('shake', !b.toggle('bleed'))
+                    b.toggle('bleed2', !a.toggle('shake2'))
+                }
+                const [x0, y0] = 
+                    // p.name === username && SETTINGS.clientsidePrediction // Client side prediction:
+                    // ? 
+                    //     [ x + playerControls.joystick.x * 250 * PLAYER_SPEED_FACTOR * canvas.width
+                    //     , y + playerControls.joystick.y * 250 * PLAYER_SPEED_FACTOR * canvas.height
+                    //     ]
+                    // : 
+                        [x, y]
+
+                circle(x0, y0, PLAYER_RADIUS)
+                const [X, Y] = 
+                    [ x0 + PLAYER_RADIUS * Math.cos(p.angle)
+                    , y0 + PLAYER_RADIUS * Math.sin(p.angle)
+                    ]
+                circle(X, Y, playerGunSize)
+                ctx.fillStyle = '#40f'
+                ctx.fillText(p.name, x0 - 17, y0 - 17)
+            }
+            ctx.fillStyle = '#537'
+            for (const { x, y } of bullets)
+            {
+                circle(x * canvas.width, y * canvas.height, 2)
+            }
+        })()
     })
 
-    function render() {
-        requestAnimationFrame(render)
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        const { players, bullets, tick } = lastGameTickMessage
-        if (!players) return;
+    let lastInputProcess = 0
+    function processInputs() {
+        // Compute delta time since last update.
+        const now = Date.now()
+        const lastTime = lastInputProcess || now
+        const deltaTime = now - lastTime
+        lastInputProcess = now
 
-        sendInputsToServer()
+        playerControls.deltaTime = deltaTime
+        sendInputsToServer(playerControls)
 
-        scoreboard.innerHTML = ''
-
-        for (const p of players.sort((p1,p2) => p2.score - p1.score))
-        {
-            const [x, y] = [p.x * canvas.width, p.y * canvas.height]
-            const playerGunSize = 2
-            ctx.fillStyle = p.isGettingShot ? 'red' : '#333'
-            if (p.name === username && p.isGettingShot)
-            {
-                const a = document.body.classList
-                const b = document.getElementById('bloodscreen')!.classList
-                a.toggle('shake', !b.toggle('bleed'))
-                b.toggle('bleed2', !a.toggle('shake2'))
-            }
-            const [x0, y0] = 
-                p.name === username && SETTINGS.clientsidePrediction // Client side prediction:
-                ? 
-                    [ x + playerControls.joystick.x * 250 * PLAYER_SPEED_FACTOR * canvas.width
-                    , y + playerControls.joystick.y * 250 * PLAYER_SPEED_FACTOR * canvas.height
-                    ]
-                : 
-                    [x, y]
-
-            circle(x0, y0, PLAYER_RADIUS)
-            const [X, Y] = 
-                [ x0 + PLAYER_RADIUS * Math.cos(p.angle)
-                , y0 + PLAYER_RADIUS * Math.sin(p.angle)
-                ]
-            circle(X, Y, playerGunSize)
-            ctx.fillStyle = '#40f'
-            ctx.fillText(p.name, x0 - 17, y0 - 17)
-
-            scoreboard.innerHTML += `<br>
-                <span style="color: orange">${p.name}:</span> ${p.score}`
-        }
-        ctx.fillStyle = '#537'
-        for (const { x, y } of bullets)
-        {
-            circle(x * canvas.width, y * canvas.height, 2)
-        }
+        // Client side prediction:
+        movePlayer(players[username]!, playerControls.joystick, deltaTime)
     }
 
-    function sendInputsToServer() {
-        playerControls.n++
+    function sendInputsToServer(playerControls : PlayerControlsMessage) {
+        playerControls.messageNumber++
         socket.emit('controlsInput', playerControls)
     }
 
