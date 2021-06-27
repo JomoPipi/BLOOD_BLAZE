@@ -21,13 +21,14 @@
             , isGettingShot: false
             , name: username
             , score: 0
+            , lastProcessedInput: -1
             }
         }
     
     const pendingInputs : PlayerControlsMessage[] = []
 
     const playerControls : PlayerControlsMessage =
-        { joystick: { x: 0, y: 0 }
+        { x: 0, y: 0
         , shootingAngle: 0
         , isShooting: false
         , messageNumber: 0
@@ -55,15 +56,40 @@
                     players[p.name] = p
                 }
 
-                const player = players[p.name]
-
+                const player = players[p.name]!
                 if (p.name === username)
                 {
+                    // Assign authoritative state from server:
                     Object.assign(player, p)
+                    let j = 0
+                    while (j < pendingInputs.length)
+                    {
+                        const input = pendingInputs[j]!
+                        
+                        if (input.messageNumber <= p.lastProcessedInput)
+                        {
+                            // Already processed. Its effect is already taken into account into the world update
+                            // we just got, so we can drop it.
+                            pendingInputs.splice(j, 1)
+                        }
+                        else
+                        {
+                            // Not processed by the server yet. Re-apply it.
+                            movePlayer(player, input, input.deltaTime)
+                            j++
+                        }
+                    }
                 }
                 else
                 {
-                    Object.assign(player, p)
+                    if (false)
+                    {
+                        // do interpolation
+                    }
+                    else 
+                    {
+                        Object.assign(player, p)
+                    }
                 }
             }
         })
@@ -80,39 +106,14 @@
             scoreboard.innerHTML = Object.values(players)
                 .sort((p1,p2) => p2.score - p1.score)
                 .map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`)
-                .join('<br>')
+                .join('<br>') 
+                + `<br><br><br> pending requests: ${pendingInputs.length}`
 
             for (const name in players)
             {
-                const p = players[name]!
-                const [x, y] = [p.x * canvas.width, p.y * canvas.height]
-                const playerGunSize = 2
-                ctx.fillStyle = p.isGettingShot ? 'red' : '#333'
-                if (p.name === username && p.isGettingShot)
-                {
-                    const a = document.body.classList
-                    const b = document.getElementById('bloodscreen')!.classList
-                    a.toggle('shake', !b.toggle('bleed'))
-                    b.toggle('bleed2', !a.toggle('shake2'))
-                }
-                const [x0, y0] = 
-                    // p.name === username && SETTINGS.clientsidePrediction // Client side prediction:
-                    // ? 
-                    //     [ x + playerControls.joystick.x * 250 * PLAYER_SPEED_FACTOR * canvas.width
-                    //     , y + playerControls.joystick.y * 250 * PLAYER_SPEED_FACTOR * canvas.height
-                    //     ]
-                    // : 
-                        [x, y]
-
-                circle(x0, y0, PLAYER_RADIUS)
-                const [X, Y] = 
-                    [ x0 + PLAYER_RADIUS * Math.cos(p.angle)
-                    , y0 + PLAYER_RADIUS * Math.sin(p.angle)
-                    ]
-                circle(X, Y, playerGunSize)
-                ctx.fillStyle = '#40f'
-                ctx.fillText(p.name, x0 - 17, y0 - 17)
+                drawPlayer(players[name]!)
             }
+
             ctx.fillStyle = '#537'
             for (const { x, y } of bullets)
             {
@@ -122,6 +123,7 @@
     })
 
     let lastInputProcess = 0
+    
     function processInputs() {
         // Compute delta time since last update.
         const now = Date.now()
@@ -130,24 +132,58 @@
         lastInputProcess = now
 
         playerControls.deltaTime = deltaTime
+        
+        // TODO: avoid sending redundant controls
         sendInputsToServer(playerControls)
-
-        // Client side prediction:
-        movePlayer(players[username]!, playerControls.joystick, deltaTime)
+        
+        // Do client side prediction:
+        movePlayer(players[username]!, playerControls, deltaTime)
     }
 
     function sendInputsToServer(playerControls : PlayerControlsMessage) {
-        playerControls.messageNumber++
+        // Save this input for later reconciliation:
+        pendingInputs.push({ ...playerControls })
+
         socket.emit('controlsInput', playerControls)
+
+        playerControls.messageNumber++
     }
 
     function moveJoystick(x : number, y : number) {
-        playerControls.joystick.x = x
-        playerControls.joystick.y = y
+        playerControls.x = x
+        playerControls.y = y
     }
+
     function moveRightPad(angle : number, active : boolean) {
         playerControls.shootingAngle = angle
         playerControls.isShooting = active
+    }
+
+    function drawPlayer(p : SocketPlayer) {
+        const [x, y] = [p.x * canvas.width, p.y * canvas.height]
+        const playerGunSize = 2
+        ctx.fillStyle = p.isGettingShot ? 'red' : '#333'
+        console.log('isgettingshot = ',p.isGettingShot)
+        if (p.name === username && p.isGettingShot)
+        {
+            const a = document.body.classList
+            const b = document.getElementById('bloodscreen')!.classList
+            a.toggle('shake', !b.toggle('bleed'))
+            b.toggle('bleed2', !a.toggle('shake2'))
+        }
+        
+        circle(x, y, PLAYER_RADIUS)
+        const angle = p.name === username 
+            ? playerControls.shootingAngle
+            : p.angle
+            
+        const [X, Y] = 
+            [ x + PLAYER_RADIUS * Math.cos(angle)
+            , y + PLAYER_RADIUS * Math.sin(angle)
+            ]
+        circle(X, Y, playerGunSize)
+        ctx.fillStyle = '#40f'
+        ctx.fillText(p.name, x - 17, y - 17)
     }
 
     function circle(x : number, y : number, r : number) {

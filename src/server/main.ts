@@ -48,17 +48,19 @@ io.on('connection', (_socket) => {
 });
 
 let lastTime = Date.now()
-let tick = 0
+
+console.log('GAME_TICK =',GAME_TICK)
 ;(function gameLoop() {
     const now = Date.now()
     const timeDelta = now - lastTime
     lastTime = now
+    
     game.moveObjects(timeDelta, now)
-    ;setTimeout(() => (io as ServerSocket).emit('gameTick', game.getRenderData()), 250)
-    // ;(io as ServerSocket).emit('gameTick', game.getRenderData(tick))
+    // ;setTimeout(() => (io as ServerSocket).emit('gameTick', game.getRenderData()), 250)
+    ;(io as ServerSocket).emit('gameTick', game.getRenderData())
     // setImmediate(gameLoop)
-    tick++
-    setTimeout(gameLoop, 250) // GAME_TICK)
+    
+    setTimeout(gameLoop, GAME_TICK)
 })()
 
 server.listen(3000, () => console.log('SERVER IS LISTENING!'))

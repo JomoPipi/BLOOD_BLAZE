@@ -37,7 +37,8 @@ interface ClientSocket {
 
 type Joystick = Point
 type PlayerControlsMessage = { 
-  joystick : Point
+  x : number
+  y : number
   shootingAngle : number
   isShooting : boolean
   messageNumber : number
@@ -59,6 +60,7 @@ type SocketPlayer = {
   isGettingShot : boolean
   name : string
   score : number
+  lastProcessedInput : number
 }
 type GameTickMessage = 
   { players : SocketPlayer[]

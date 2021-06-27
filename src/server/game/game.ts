@@ -3,8 +3,6 @@ type Player = {
     x : number
     y : number
     angle : number
-    joystickX : number
-    joystickY : number
     isShooting : boolean
     name : string
     lastTimeGettingShot : number
@@ -20,7 +18,7 @@ type Bullet = {
 }
 const BULLET_COOLDOWN = 80 // 200
 const LAST_SHOT : Record<string, number> = {}
-const BULLET_SPEED = 0.06 // 0.02
+const BULLET_SPEED = 0.0003
 export class Game {
 
     private players : Player[] = []
@@ -39,11 +37,11 @@ export class Game {
         this.players = this.players.filter(p => p.name !== name)
         delete this.getPlayerByName[name]
     }
-    updatePlayerInputs(username : string, data : PlayerControlsMessage) {
+    updatePlayerInputs(username : string, msg : PlayerControlsMessage) {
         const p = this.getPlayerByName[username]!
         
-        const dx = data.joystick.x
-        const dy = data.joystick.y
+        const dx = msg.x
+        const dy = msg.y
         /*
         -- "restrict" it to a circle of radius 1:
         if sqrt(mx**2 + my**2) > 1 then
@@ -59,20 +57,20 @@ export class Game {
         const k = Math.sqrt(1 / a)
         const [jx, jy] = a > 1
             ? [dx * k, dy * k]
-            : [dx, dy]    
-        p.joystickX = jx
-        p.joystickY = jy
+            : [dx, dy]
 
-        p.angle = data.shootingAngle
+        p.angle = msg.shootingAngle
             
-        p.isShooting = data.isShooting
+        p.isShooting = msg.isShooting
         
-        p.lastMessageNumber = data.messageNumber
+        p.lastMessageNumber = msg.messageNumber
+
+        movePlayer(p, { x: jx, y: jy }, msg.deltaTime)
     }
     moveObjects(timeDelta : number, now : number) {
         for (const p of this.players)
         {
-            movePlayer(p, { x: p.joystickX, y: p.joystickY }, timeDelta)
+            // movePlayer(p, { x: p.joystickX, y: p.joystickY }, timeDelta)
             
             if (p.isShooting && (!LAST_SHOT[p.name] || now - LAST_SHOT[p.name]! > BULLET_COOLDOWN))
             {
@@ -84,8 +82,8 @@ export class Game {
         // let playerIndex = 0
         this.players.sort(({ x }, { x: x2 }) => x - x2)
         this.bullets = this.bullets.sort((a,b) => a.x - b.x).filter(bullet => {
-            const newbx = bullet.x + bullet.speedX
-            const newby = bullet.y + bullet.speedY
+            const newbx = bullet.x + bullet.speedX * timeDelta
+            const newby = bullet.y + bullet.speedY * timeDelta
 
             // m and b define the equation of the line y = m * x + b.
             // that represents the path of the bullet:
@@ -105,14 +103,15 @@ export class Game {
 
                 const radius = PLAYER_RADIUS / 500 // approximate width of canvas
                 return distance(p.x, p.y, x, y) <= radius
-                    && distance(bullet.x, bullet.y, x, y) <= BULLET_SPEED
-                    && distance(newbx, newby, x, y) <= BULLET_SPEED
+                    && distance(bullet.x, bullet.y, x, y) <= BULLET_SPEED * timeDelta
+                    && distance(newbx, newby, x, y) <= BULLET_SPEED * timeDelta
             }
 
             for (const player of this.players)
             {
                 if (bullet.owner !== player.name && collidesWith(player))
                 {
+                    console.log('yoooooo')
                     player.lastTimeGettingShot = Date.now()
                     if (this.getPlayerByName[bullet.owner])
                     {
@@ -137,6 +136,7 @@ export class Game {
                 , isShooting: p.isShooting
                 , isGettingShot: Date.now() - p.lastTimeGettingShot <= 20
                 , score: p.score
+                , lastProcessedInput: p.lastMessageNumber
                 }))
 
         return { players, bullets: this.bullets } 
@@ -154,8 +154,6 @@ export class Game {
         return (
             { x: .5
             , y: .5
-            , joystickX: 0
-            , joystickY: 0
             , angle: 0
             , score: 0
             , isShooting: false

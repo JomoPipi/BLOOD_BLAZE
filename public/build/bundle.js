@@ -1029,7 +1029,7 @@ var app = (function () {
     const { Object: Object_1, console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (133:4) {#if devMode()}
+    // (156:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1058,18 +1058,18 @@ var app = (function () {
     			h4 = element("h4");
     			h4.textContent = "Enable client-side prediction (reduces lag)";
     			attr_dev(button0, "class", "settings-button svelte-1ge5rjl");
-    			add_location(button0, file$1, 133, 8, 4568);
-    			add_location(button1, file$1, 137, 12, 4751);
+    			add_location(button0, file$1, 156, 8, 5331);
+    			add_location(button1, file$1, 160, 12, 5514);
     			attr_dev(input, "type", "checkbox");
     			input.checked = /*SETTINGS*/ ctx[4].clientsidePrediction;
-    			add_location(input, file$1, 142, 16, 4876);
+    			add_location(input, file$1, 165, 16, 5639);
     			attr_dev(h4, "class", "svelte-1ge5rjl");
-    			add_location(h4, file$1, 143, 16, 4955);
+    			add_location(h4, file$1, 166, 16, 5718);
     			attr_dev(label, "class", "svelte-1ge5rjl");
-    			add_location(label, file$1, 141, 12, 4851);
+    			add_location(label, file$1, 164, 12, 5614);
     			attr_dev(div, "class", "settings-page svelte-1ge5rjl");
     			toggle_class(div, "show", /*settingsPage*/ ctx[3].isOpen);
-    			add_location(div, file$1, 136, 8, 4677);
+    			add_location(div, file$1, 159, 8, 5440);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1129,7 +1129,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(133:4) {#if devMode()}",
+    		source: "(156:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1180,13 +1180,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-1ge5rjl");
-    			add_location(center, file$1, 127, 0, 4353);
+    			add_location(center, file$1, 150, 0, 5116);
     			attr_dev(div0, "class", "scoreboard svelte-1ge5rjl");
-    			add_location(div0, file$1, 128, 0, 4382);
+    			add_location(div0, file$1, 151, 0, 5145);
     			attr_dev(canvas_1, "class", "svelte-1ge5rjl");
-    			add_location(canvas_1, file$1, 129, 0, 4437);
+    			add_location(canvas_1, file$1, 152, 0, 5200);
     			attr_dev(div1, "class", "input-container svelte-1ge5rjl");
-    			add_location(div1, file$1, 130, 0, 4467);
+    			add_location(div1, file$1, 153, 0, 5230);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1268,14 +1268,16 @@ var app = (function () {
     			isShooting: false,
     			isGettingShot: false,
     			name: username,
-    			score: 0
+    			score: 0,
+    			lastProcessedInput: -1
     		}
     	};
 
     	const pendingInputs = [];
 
     	const playerControls = {
-    		joystick: { x: 0, y: 0 },
+    		x: 0,
+    		y: 0,
     		shootingAngle: 0,
     		isShooting: false,
     		messageNumber: 0,
@@ -1302,9 +1304,29 @@ var app = (function () {
     				const player = players[p.name];
 
     				if (p.name === username) {
+    					// Assign authoritative state from server:
     					Object.assign(player, p);
+
+    					let j = 0;
+
+    					while (j < pendingInputs.length) {
+    						const input = pendingInputs[j];
+
+    						if (input.messageNumber <= p.lastProcessedInput) {
+    							// Already processed. Its effect is already taken into account into the world update
+    							// we just got, so we can drop it.
+    							pendingInputs.splice(j, 1);
+    						} else {
+    							// Not processed by the server yet. Re-apply it.
+    							movePlayer(player, input, input.deltaTime);
+
+    							j++;
+    						}
+    					}
     				} else {
-    					Object.assign(player, p);
+    					{
+    						Object.assign(player, p); // do interpolation
+    					}
     				}
     			}
     		});
@@ -1315,39 +1337,10 @@ var app = (function () {
     			const { bullets } = lastGameTickMessage;
     			if (!bullets) return;
     			ctx.clearRect(0, 0, canvas.width, canvas.height);
-    			$$invalidate(2, scoreboard.innerHTML = Object.values(players).sort((p1, p2) => p2.score - p1.score).map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`).join("<br>"), scoreboard);
+    			$$invalidate(2, scoreboard.innerHTML = Object.values(players).sort((p1, p2) => p2.score - p1.score).map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`).join("<br>") + `<br><br><br> pending requests: ${pendingInputs.length}`, scoreboard);
 
     			for (const name in players) {
-    				const p = players[name];
-    				const [x, y] = [p.x * canvas.width, p.y * canvas.height];
-    				const playerGunSize = 2;
-    				ctx.fillStyle = p.isGettingShot ? "red" : "#333";
-
-    				if (p.name === username && p.isGettingShot) {
-    					const a = document.body.classList;
-    					const b = document.getElementById("bloodscreen").classList;
-    					a.toggle("shake", !b.toggle("bleed"));
-    					b.toggle("bleed2", !a.toggle("shake2"));
-    				}
-
-    				const [x0, y0] = // p.name === username && SETTINGS.clientsidePrediction // Client side prediction:
-    				// ? 
-    				//     [ x + playerControls.joystick.x * 250 * PLAYER_SPEED_FACTOR * canvas.width
-    				//     , y + playerControls.joystick.y * 250 * PLAYER_SPEED_FACTOR * canvas.height
-    				//     ]
-    				// : 
-    				[x, y];
-
-    				circle(x0, y0, PLAYER_RADIUS);
-
-    				const [X, Y] = [
-    					x0 + PLAYER_RADIUS * Math.cos(p.angle),
-    					y0 + PLAYER_RADIUS * Math.sin(p.angle)
-    				];
-
-    				circle(X, Y, playerGunSize);
-    				ctx.fillStyle = "#40f";
-    				ctx.fillText(p.name, x0 - 17, y0 - 17);
+    				drawPlayer(players[name]);
     			}
 
     			ctx.fillStyle = "#537";
@@ -1368,25 +1361,55 @@ var app = (function () {
     		const deltaTime = now - lastTime;
     		lastInputProcess = now;
     		playerControls.deltaTime = deltaTime;
+
+    		// TODO: avoid sending redundant controls
     		sendInputsToServer(playerControls);
 
-    		// Client side prediction:
-    		movePlayer(players[username], playerControls.joystick, deltaTime);
+    		// Do client side prediction:
+    		movePlayer(players[username], playerControls, deltaTime);
     	}
 
     	function sendInputsToServer(playerControls) {
-    		playerControls.messageNumber++;
+    		// Save this input for later reconciliation:
+    		pendingInputs.push(Object.assign({}, playerControls));
+
     		socket.emit("controlsInput", playerControls);
+    		playerControls.messageNumber++;
     	}
 
     	function moveJoystick(x, y) {
-    		playerControls.joystick.x = x;
-    		playerControls.joystick.y = y;
+    		playerControls.x = x;
+    		playerControls.y = y;
     	}
 
     	function moveRightPad(angle, active) {
     		playerControls.shootingAngle = angle;
     		playerControls.isShooting = active;
+    	}
+
+    	function drawPlayer(p) {
+    		const [x, y] = [p.x * canvas.width, p.y * canvas.height];
+    		const playerGunSize = 2;
+    		ctx.fillStyle = p.isGettingShot ? "red" : "#333";
+    		console.log("isgettingshot = ", p.isGettingShot);
+
+    		if (p.name === username && p.isGettingShot) {
+    			const a = document.body.classList;
+    			const b = document.getElementById("bloodscreen").classList;
+    			a.toggle("shake", !b.toggle("bleed"));
+    			b.toggle("bleed2", !a.toggle("shake2"));
+    		}
+
+    		circle(x, y, PLAYER_RADIUS);
+
+    		const angle = p.name === username
+    		? playerControls.shootingAngle
+    		: p.angle;
+
+    		const [X, Y] = [x + PLAYER_RADIUS * Math.cos(angle), y + PLAYER_RADIUS * Math.sin(angle)];
+    		circle(X, Y, playerGunSize);
+    		ctx.fillStyle = "#40f";
+    		ctx.fillText(p.name, x - 17, y - 17);
     	}
 
     	function circle(x, y, r) {
@@ -1449,6 +1472,7 @@ var app = (function () {
     		sendInputsToServer,
     		moveJoystick,
     		moveRightPad,
+    		drawPlayer,
     		circle,
     		devMode,
     		settingsPage

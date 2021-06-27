@@ -8,7 +8,7 @@ const DEV_MODE = true
 
 const PLAYER_SPEED_FACTOR = 0.0006
 
-const FPS = 60
+const FPS = 4 // 60
 const GAME_TICK = 1000 / FPS
 
 const movePlayer = (p : Point, joystick : Point, timeDelta : number) => {
