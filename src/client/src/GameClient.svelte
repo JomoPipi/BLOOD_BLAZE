@@ -33,7 +33,7 @@
         , isShooting: false
         , messageNumber: 0
         , deltaTime: 0
-        , toggleShootingTimestamp: 0
+        , toggleShootingTimestamp: Date.now()
         }
 
     console.log('PLAYER_RADIUS =', PLAYER_RADIUS)
@@ -136,8 +136,9 @@
         lastInputProcess = now
 
         playerControls.deltaTime = deltaTime
+        playerControls.toggleShootingTimestamp = now
         
-        // TODO: avoid sending redundant controls
+        // TODO: avoid sending controls when idle?
         sendInputsToServer(playerControls)
         
         if (SETTINGS.enableClientSidePrediction)

@@ -1029,7 +1029,7 @@ var app = (function () {
     const { Object: Object_1, console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (158:4) {#if devMode()}
+    // (159:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1058,17 +1058,17 @@ var app = (function () {
     			h4 = element("h4");
     			h4.textContent = "Enable client-side prediction (reduces lag)";
     			attr_dev(button0, "class", "settings-button svelte-1ge5rjl");
-    			add_location(button0, file$1, 158, 8, 5410);
-    			add_location(button1, file$1, 162, 12, 5593);
+    			add_location(button0, file$1, 159, 8, 5471);
+    			add_location(button1, file$1, 163, 12, 5654);
     			attr_dev(input, "type", "checkbox");
-    			add_location(input, file$1, 167, 16, 5718);
+    			add_location(input, file$1, 168, 16, 5779);
     			attr_dev(h4, "class", "svelte-1ge5rjl");
-    			add_location(h4, file$1, 168, 16, 5808);
+    			add_location(h4, file$1, 169, 16, 5869);
     			attr_dev(label, "class", "svelte-1ge5rjl");
-    			add_location(label, file$1, 166, 12, 5693);
+    			add_location(label, file$1, 167, 12, 5754);
     			attr_dev(div, "class", "settings-page svelte-1ge5rjl");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 161, 8, 5519);
+    			add_location(div, file$1, 162, 8, 5580);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1134,7 +1134,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(158:4) {#if devMode()}",
+    		source: "(159:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1185,13 +1185,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-1ge5rjl");
-    			add_location(center, file$1, 152, 0, 5195);
+    			add_location(center, file$1, 153, 0, 5256);
     			attr_dev(div0, "class", "scoreboard svelte-1ge5rjl");
-    			add_location(div0, file$1, 153, 0, 5224);
+    			add_location(div0, file$1, 154, 0, 5285);
     			attr_dev(canvas_1, "class", "svelte-1ge5rjl");
-    			add_location(canvas_1, file$1, 154, 0, 5279);
+    			add_location(canvas_1, file$1, 155, 0, 5340);
     			attr_dev(div1, "class", "input-container svelte-1ge5rjl");
-    			add_location(div1, file$1, 155, 0, 5309);
+    			add_location(div1, file$1, 156, 0, 5370);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1287,7 +1287,7 @@ var app = (function () {
     		isShooting: false,
     		messageNumber: 0,
     		deltaTime: 0,
-    		toggleShootingTimestamp: 0
+    		toggleShootingTimestamp: Date.now()
     	};
 
     	console.log("PLAYER_RADIUS =", PLAYER_RADIUS);
@@ -1369,8 +1369,9 @@ var app = (function () {
     		const deltaTime = now - lastTime;
     		lastInputProcess = now;
     		playerControls.deltaTime = deltaTime;
+    		playerControls.toggleShootingTimestamp = now;
 
-    		// TODO: avoid sending redundant controls
+    		// TODO: avoid sending controls when idle?
     		sendInputsToServer(playerControls);
 
     		if (SETTINGS.enableClientSidePrediction) {

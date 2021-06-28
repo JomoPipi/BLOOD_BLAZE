@@ -54,7 +54,7 @@ console.log('GAME_TICK =',GAME_TICK)
     const timeDelta = now - lastTime
     lastTime = now
     
-    game.moveObjects(timeDelta, now)
+    game.moveObjects(timeDelta)
     io.emit('gameTick', game.getRenderData())
 
     // setImmediate(gameLoop)

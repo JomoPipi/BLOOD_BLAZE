@@ -6,6 +6,7 @@ type Player = {
     isShooting : boolean
     name : string
     lastTimeGettingShot : number
+    toggleShootingTimestamp : number
     score : 0
     lastMessageNumber : number
 }
@@ -62,18 +63,18 @@ export class Game {
         p.angle = msg.shootingAngle
         p.isShooting = msg.isShooting
         p.lastMessageNumber = msg.messageNumber
+        p.toggleShootingTimestamp = msg.toggleShootingTimestamp
+
+        if (p.isShooting && (!LAST_SHOT[p.name] || p.toggleShootingTimestamp - LAST_SHOT[p.name]! > BULLET_COOLDOWN))
+        {
+            this.shootBullet(p)
+            LAST_SHOT[p.name] = p.toggleShootingTimestamp
+        }
 
         movePlayer(p, { x, y }, msg.deltaTime)
     }
-    moveObjects(timeDelta : number, now : number) {
-        for (const p of this.players)
-        {   
-            if (p.isShooting && (!LAST_SHOT[p.name] || now - LAST_SHOT[p.name]! > BULLET_COOLDOWN))
-            {
-                this.shootBullet(p)
-                LAST_SHOT[p.name] = now
-            }
-        }
+    moveObjects(timeDelta : number) {
+        
         const epsilon = 1e-3
         this.players.sort(({ x }, { x: x2 }) => x - x2)
         this.bullets = this.bullets.sort((a,b) => a.x - b.x).filter(bullet => {
@@ -155,6 +156,7 @@ export class Game {
             , lastTimeGettingShot: 0
             , name
             , lastMessageNumber: -1
+            , toggleShootingTimestamp: -1
             })
     }
 }
