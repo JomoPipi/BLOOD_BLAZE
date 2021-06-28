@@ -5,12 +5,16 @@ type ServerToClientSocketEvents = keyof ServerToClientMessageTypes
 type ServerToClientMessageTypes = {
   nomination : [boolean, string]
   gameTick : GameTickMessage
+  removedPlayer : string
 }
 
 type ClientToServerSocketEvents = keyof ClientToServerMessageTypes
 type ClientToServerMessageTypes = {
   nomination : string
   controlsInput : PlayerControlsMessage
+  
+  connection : ServerSocket
+  disconnect : never
 }
 
 interface ServerSocket {
@@ -41,6 +45,7 @@ type PlayerControlsMessage = {
   y : number
   shootingAngle : number
   isShooting : boolean
+  toggleShootingTimestamp : number
   messageNumber : number
   deltaTime : number
 }
@@ -64,7 +69,7 @@ type SocketPlayer = {
 }
 type GameTickMessage = 
   { players : SocketPlayer[]
-  , bullets : Point[]
+  , bullets : Point[] // (Point & { speedX : number, speedY : number, timeFired : number })[]
   }
 
 // interface ObjectConstructor {

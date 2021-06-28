@@ -33,12 +33,13 @@
         , isShooting: false
         , messageNumber: 0
         , deltaTime: 0
+        , toggleShootingTimestamp: 0
         }
 
     console.log('PLAYER_RADIUS =', PLAYER_RADIUS)
 
     const SETTINGS = {
-        clientsidePrediction: true
+        enableClientSidePrediction: true
     }
 
     let lastGameTickMessage = {} as { bullets : Point[] }
@@ -46,6 +47,9 @@
         ctx = canvas.getContext('2d')!
         canvas.height = window.innerWidth
         canvas.width = window.innerWidth
+
+        socket.on('removedPlayer', name => delete players[name])
+
         socket.on('gameTick', msg => {
             lastGameTickMessage = msg
 
@@ -103,11 +107,11 @@
             if (!bullets) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-            scoreboard.innerHTML = Object.values(players)
-                .sort((p1,p2) => p2.score - p1.score)
+            scoreboard.innerHTML = '<br>' + Object.values(players)
+                .sort((p1, p2) => p2.score - p1.score)
                 .map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`)
                 .join('<br>') 
-                + `<br><br><br> pending requests: ${pendingInputs.length}`
+                // + `<br><br><br> pending requests: ${pendingInputs.length}`
 
             for (const name in players)
             {
@@ -136,8 +140,10 @@
         // TODO: avoid sending redundant controls
         sendInputsToServer(playerControls)
         
-        // Do client side prediction:
-        movePlayer(players[username]!, playerControls, deltaTime)
+        if (SETTINGS.enableClientSidePrediction)
+        {
+            movePlayer(players[username]!, playerControls, deltaTime)
+        }
     }
 
     function sendInputsToServer(playerControls : PlayerControlsMessage) {
@@ -163,7 +169,7 @@
         const [x, y] = [p.x * canvas.width, p.y * canvas.height]
         const playerGunSize = 2
         ctx.fillStyle = p.isGettingShot ? 'red' : '#333'
-        console.log('isgettingshot = ',p.isGettingShot)
+        
         if (p.name === username && p.isGettingShot)
         {
             const a = document.body.classList
@@ -213,7 +219,7 @@
             </button>
 
             <label>
-                <input type=checkbox checked={SETTINGS.clientsidePrediction}>
+                <input type=checkbox bind:checked={SETTINGS.enableClientSidePrediction}>
                 <h4> Enable client-side prediction (reduces lag) </h4>
             </label>
         </div>

@@ -10,7 +10,7 @@ import { Game } from './game/game.js'
 
 const app = express()
 const server = http.createServer(app)
-const io = new Server(server)
+const io = new Server(server) as unknown as ServerSocket
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const staticPath = path.join(__dirname, '..', '..')
@@ -22,16 +22,15 @@ console.log('sever PLAYER_RADIUS =',PLAYER_RADIUS)
 
 const game = new Game()
 
-io.on('connection', (_socket) => {
+io.on('connection', socket => {
 
     let username = ''
 
-    _socket.on('disconnect', () => {
+    socket.on('disconnect', () => {
         console.log('a user disconnected');
-        if (username) game.removePlayer(username)
+        if (username) game.removePlayer(username, io)
     });
 
-    const socket = _socket as ServerSocket
     console.log('a user connected');
 
     socket.on('nomination', name => {
@@ -56,10 +55,9 @@ console.log('GAME_TICK =',GAME_TICK)
     lastTime = now
     
     game.moveObjects(timeDelta, now)
-    // ;setTimeout(() => (io as ServerSocket).emit('gameTick', game.getRenderData()), 250)
-    ;(io as ServerSocket).emit('gameTick', game.getRenderData())
+    io.emit('gameTick', game.getRenderData())
+
     // setImmediate(gameLoop)
-    
     setTimeout(gameLoop, GAME_TICK)
 })()
 

@@ -32,10 +32,11 @@ export class Game {
         this.getPlayerByName[name] = player
         return true
     }
-    removePlayer(name : string) {
+    removePlayer(name : string, io : ServerSocket) {
         if (!this.playerExists(name)) throw 'it should exist.'
         this.players = this.players.filter(p => p.name !== name)
         delete this.getPlayerByName[name]
+        io.emit('removedPlayer', name)
     }
     updatePlayerInputs(username : string, msg : PlayerControlsMessage) {
         const p = this.getPlayerByName[username]!
@@ -47,7 +48,6 @@ export class Game {
         if sqrt(mx**2 + my**2) > 1 then
             we need k such that 
             1 = sqrt((mx*k)**2 + (my*k)**2)
-
             1 = (mx*k)**2 + (my*k)**2
             1 = k**2 * (mx**2 + my**2)
             1 / (mx**2 + my**2) = k**2
@@ -55,23 +55,19 @@ export class Game {
         */
         const a = dx**2 + dy**2
         const k = Math.sqrt(1 / a)
-        const [jx, jy] = a > 1
+        const [x, y] = a > 1
             ? [dx * k, dy * k]
             : [dx, dy]
 
         p.angle = msg.shootingAngle
-            
         p.isShooting = msg.isShooting
-        
         p.lastMessageNumber = msg.messageNumber
 
-        movePlayer(p, { x: jx, y: jy }, msg.deltaTime)
+        movePlayer(p, { x, y }, msg.deltaTime)
     }
     moveObjects(timeDelta : number, now : number) {
         for (const p of this.players)
-        {
-            // movePlayer(p, { x: p.joystickX, y: p.joystickY }, timeDelta)
-            
+        {   
             if (p.isShooting && (!LAST_SHOT[p.name] || now - LAST_SHOT[p.name]! > BULLET_COOLDOWN))
             {
                 this.shootBullet(p)
@@ -79,7 +75,6 @@ export class Game {
             }
         }
         const epsilon = 1e-3
-        // let playerIndex = 0
         this.players.sort(({ x }, { x: x2 }) => x - x2)
         this.bullets = this.bullets.sort((a,b) => a.x - b.x).filter(bullet => {
             const newbx = bullet.x + bullet.speedX * timeDelta
@@ -111,7 +106,6 @@ export class Game {
             {
                 if (bullet.owner !== player.name && collidesWith(player))
                 {
-                    console.log('yoooooo')
                     player.lastTimeGettingShot = Date.now()
                     if (this.getPlayerByName[bullet.owner])
                     {
@@ -126,7 +120,8 @@ export class Game {
             return 0 <= bullet.x && bullet.x <= 1 && 0 <= bullet.y && bullet.y <= 1
         })
     }
-    getRenderData() : GameTickMessage { 
+    getRenderData() : GameTickMessage {
+        const now = Date.now()
         const players =
             this.players.map(p => (
                 { x: p.x 
@@ -134,7 +129,7 @@ export class Game {
                 , angle: p.angle
                 , name: p.name
                 , isShooting: p.isShooting
-                , isGettingShot: Date.now() - p.lastTimeGettingShot <= 20
+                , isGettingShot: now - p.lastTimeGettingShot <= GAME_TICK
                 , score: p.score
                 , lastProcessedInput: p.lastMessageNumber
                 }))

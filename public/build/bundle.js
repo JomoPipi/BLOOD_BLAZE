@@ -1029,7 +1029,7 @@ var app = (function () {
     const { Object: Object_1, console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (156:4) {#if devMode()}
+    // (158:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1058,18 +1058,17 @@ var app = (function () {
     			h4 = element("h4");
     			h4.textContent = "Enable client-side prediction (reduces lag)";
     			attr_dev(button0, "class", "settings-button svelte-1ge5rjl");
-    			add_location(button0, file$1, 156, 8, 5331);
-    			add_location(button1, file$1, 160, 12, 5514);
+    			add_location(button0, file$1, 158, 8, 5410);
+    			add_location(button1, file$1, 162, 12, 5593);
     			attr_dev(input, "type", "checkbox");
-    			input.checked = /*SETTINGS*/ ctx[4].clientsidePrediction;
-    			add_location(input, file$1, 165, 16, 5639);
+    			add_location(input, file$1, 167, 16, 5718);
     			attr_dev(h4, "class", "svelte-1ge5rjl");
-    			add_location(h4, file$1, 166, 16, 5718);
+    			add_location(h4, file$1, 168, 16, 5808);
     			attr_dev(label, "class", "svelte-1ge5rjl");
-    			add_location(label, file$1, 164, 12, 5614);
+    			add_location(label, file$1, 166, 12, 5693);
     			attr_dev(div, "class", "settings-page svelte-1ge5rjl");
-    			toggle_class(div, "show", /*settingsPage*/ ctx[3].isOpen);
-    			add_location(div, file$1, 159, 8, 5440);
+    			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
+    			add_location(div, file$1, 161, 8, 5519);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1079,6 +1078,7 @@ var app = (function () {
     			append_dev(div, t3);
     			append_dev(div, label);
     			append_dev(label, input);
+    			input.checked = /*SETTINGS*/ ctx[3].enableClientSidePrediction;
     			append_dev(label, t4);
     			append_dev(label, h4);
 
@@ -1088,7 +1088,7 @@ var app = (function () {
     						button0,
     						"click",
     						function () {
-    							if (is_function(/*settingsPage*/ ctx[3].toggle)) /*settingsPage*/ ctx[3].toggle.apply(this, arguments);
+    							if (is_function(/*settingsPage*/ ctx[4].toggle)) /*settingsPage*/ ctx[4].toggle.apply(this, arguments);
     						},
     						false,
     						false,
@@ -1098,12 +1098,13 @@ var app = (function () {
     						button1,
     						"click",
     						function () {
-    							if (is_function(/*settingsPage*/ ctx[3].toggle)) /*settingsPage*/ ctx[3].toggle.apply(this, arguments);
+    							if (is_function(/*settingsPage*/ ctx[4].toggle)) /*settingsPage*/ ctx[4].toggle.apply(this, arguments);
     						},
     						false,
     						false,
     						false
-    					)
+    					),
+    					listen_dev(input, "change", /*input_change_handler*/ ctx[11])
     				];
 
     				mounted = true;
@@ -1112,8 +1113,12 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (dirty & /*settingsPage*/ 8) {
-    				toggle_class(div, "show", /*settingsPage*/ ctx[3].isOpen);
+    			if (dirty & /*SETTINGS*/ 8) {
+    				input.checked = /*SETTINGS*/ ctx[3].enableClientSidePrediction;
+    			}
+
+    			if (dirty & /*settingsPage*/ 16) {
+    				toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
     			}
     		},
     		d: function destroy(detaching) {
@@ -1129,7 +1134,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(156:4) {#if devMode()}",
+    		source: "(158:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1180,13 +1185,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-1ge5rjl");
-    			add_location(center, file$1, 150, 0, 5116);
+    			add_location(center, file$1, 152, 0, 5195);
     			attr_dev(div0, "class", "scoreboard svelte-1ge5rjl");
-    			add_location(div0, file$1, 151, 0, 5145);
+    			add_location(div0, file$1, 153, 0, 5224);
     			attr_dev(canvas_1, "class", "svelte-1ge5rjl");
-    			add_location(canvas_1, file$1, 152, 0, 5200);
+    			add_location(canvas_1, file$1, 154, 0, 5279);
     			attr_dev(div1, "class", "input-container svelte-1ge5rjl");
-    			add_location(div1, file$1, 153, 0, 5230);
+    			add_location(div1, file$1, 155, 0, 5309);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1281,17 +1286,19 @@ var app = (function () {
     		shootingAngle: 0,
     		isShooting: false,
     		messageNumber: 0,
-    		deltaTime: 0
+    		deltaTime: 0,
+    		toggleShootingTimestamp: 0
     	};
 
     	console.log("PLAYER_RADIUS =", PLAYER_RADIUS);
-    	const SETTINGS = { clientsidePrediction: true };
+    	const SETTINGS = { enableClientSidePrediction: true };
     	let lastGameTickMessage = {};
 
     	onMount(() => {
     		ctx = canvas.getContext("2d");
     		$$invalidate(1, canvas.height = window.innerWidth, canvas);
     		$$invalidate(1, canvas.width = window.innerWidth, canvas);
+    		socket.on("removedPlayer", name => delete players[name]);
 
     		socket.on("gameTick", msg => {
     			lastGameTickMessage = msg;
@@ -1337,8 +1344,9 @@ var app = (function () {
     			const { bullets } = lastGameTickMessage;
     			if (!bullets) return;
     			ctx.clearRect(0, 0, canvas.width, canvas.height);
-    			$$invalidate(2, scoreboard.innerHTML = Object.values(players).sort((p1, p2) => p2.score - p1.score).map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`).join("<br>") + `<br><br><br> pending requests: ${pendingInputs.length}`, scoreboard);
+    			$$invalidate(2, scoreboard.innerHTML = "<br>" + Object.values(players).sort((p1, p2) => p2.score - p1.score).map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`).join("<br>"), scoreboard);
 
+    			// + `<br><br><br> pending requests: ${pendingInputs.length}`
     			for (const name in players) {
     				drawPlayer(players[name]);
     			}
@@ -1365,8 +1373,9 @@ var app = (function () {
     		// TODO: avoid sending redundant controls
     		sendInputsToServer(playerControls);
 
-    		// Do client side prediction:
-    		movePlayer(players[username], playerControls, deltaTime);
+    		if (SETTINGS.enableClientSidePrediction) {
+    			movePlayer(players[username], playerControls, deltaTime);
+    		}
     	}
 
     	function sendInputsToServer(playerControls) {
@@ -1391,7 +1400,6 @@ var app = (function () {
     		const [x, y] = [p.x * canvas.width, p.y * canvas.height];
     		const playerGunSize = 2;
     		ctx.fillStyle = p.isGettingShot ? "red" : "#333";
-    		console.log("isgettingshot = ", p.isGettingShot);
 
     		if (p.name === username && p.isGettingShot) {
     			const a = document.body.classList;
@@ -1423,7 +1431,7 @@ var app = (function () {
 
     	const settingsPage = {
     		toggle() {
-    			$$invalidate(3, settingsPage.isOpen ^= 1, settingsPage);
+    			$$invalidate(4, settingsPage.isOpen ^= 1, settingsPage);
     		},
     		isOpen: 0
     	};
@@ -1446,6 +1454,11 @@ var app = (function () {
     			canvas = $$value;
     			$$invalidate(1, canvas);
     		});
+    	}
+
+    	function input_change_handler() {
+    		SETTINGS.enableClientSidePrediction = this.checked;
+    		$$invalidate(3, SETTINGS);
     	}
 
     	$$self.$$set = $$props => {
@@ -1496,14 +1509,15 @@ var app = (function () {
     		username,
     		canvas,
     		scoreboard,
-    		settingsPage,
     		SETTINGS,
+    		settingsPage,
     		moveJoystick,
     		moveRightPad,
     		devMode,
     		socket,
     		div0_binding,
-    		canvas_1_binding
+    		canvas_1_binding,
+    		input_change_handler
     	];
     }
 
