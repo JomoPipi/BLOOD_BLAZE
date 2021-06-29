@@ -806,10 +806,10 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			canvas_1 = element("canvas");
-    			attr_dev(canvas_1, "class", "svelte-1a4uxv9");
-    			add_location(canvas_1, file$2, 89, 4, 2685);
-    			attr_dev(div, "class", "svelte-1a4uxv9");
-    			add_location(div, file$2, 88, 0, 2652);
+    			attr_dev(canvas_1, "class", "svelte-1tbg9p3");
+    			add_location(canvas_1, file$2, 84, 4, 2542);
+    			attr_dev(div, "class", "svelte-1tbg9p3");
+    			add_location(div, file$2, 83, 0, 2509);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -855,25 +855,16 @@ var app = (function () {
     	let point;
     	const size2 = window.innerWidth / 2.5 / PHI;
     	const size1 = window.innerWidth / 3;
-    	const size = size2 / PHI;
     	let { callback = () => 0 } = $$props;
 
     	onMount(() => {
     		W = $$invalidate(1, canvas.width = H = $$invalidate(1, canvas.height = size1 | 0, canvas), canvas);
     		$$invalidate(0, container.style.width = $$invalidate(0, container.style.height = size2 + "px", container), container);
-    		const d = size * (PHI - 1);
+    		const d = size2 - size2 / PHI;
     		$$invalidate(1, canvas.style.left = $$invalidate(1, canvas.style.top = Math.round(-d / 2) + "px", canvas), canvas);
-
-    		// return;
     		ctx = canvas.getContext("2d");
-
     		point = [W / 2, H / 2];
-
-    		// TODO: move to CSS
-    		// canvas.style.margin = '5px'
-    		// canvas.style.border = '1px solid #fba'
     		render();
-
     		$$invalidate(0, container.ontouchstart = touchstart, container);
     		$$invalidate(0, container.ontouchmove = touchmove, container);
     		$$invalidate(0, container.ontouchend = touchend, container);
@@ -932,7 +923,7 @@ var app = (function () {
     		ctx.fill();
     		const X = x - W / 2;
     		const Y = y - H / 2;
-    		const rot = Math.PI / 4; // 16
+    		const rot = 1.5 * Math.PI / 4; // 16
 
     		$$invalidate(
     			1,
@@ -978,7 +969,6 @@ var app = (function () {
     		point,
     		size2,
     		size1,
-    		size,
     		radius,
     		lineWidth,
     		callback,
@@ -1029,7 +1019,7 @@ var app = (function () {
     const { Object: Object_1, console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (159:4) {#if devMode()}
+    // (160:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1057,18 +1047,18 @@ var app = (function () {
     			t4 = space();
     			h4 = element("h4");
     			h4.textContent = "Enable client-side prediction (reduces lag)";
-    			attr_dev(button0, "class", "settings-button svelte-1ge5rjl");
-    			add_location(button0, file$1, 159, 8, 5471);
-    			add_location(button1, file$1, 163, 12, 5654);
+    			attr_dev(button0, "class", "settings-button svelte-1048hx4");
+    			add_location(button0, file$1, 160, 8, 5560);
+    			add_location(button1, file$1, 164, 12, 5743);
     			attr_dev(input, "type", "checkbox");
-    			add_location(input, file$1, 168, 16, 5779);
-    			attr_dev(h4, "class", "svelte-1ge5rjl");
-    			add_location(h4, file$1, 169, 16, 5869);
-    			attr_dev(label, "class", "svelte-1ge5rjl");
-    			add_location(label, file$1, 167, 12, 5754);
-    			attr_dev(div, "class", "settings-page svelte-1ge5rjl");
+    			add_location(input, file$1, 169, 16, 5868);
+    			attr_dev(h4, "class", "svelte-1048hx4");
+    			add_location(h4, file$1, 170, 16, 5958);
+    			attr_dev(label, "class", "svelte-1048hx4");
+    			add_location(label, file$1, 168, 12, 5843);
+    			attr_dev(div, "class", "settings-page svelte-1048hx4");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 162, 8, 5580);
+    			add_location(div, file$1, 163, 8, 5669);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1134,7 +1124,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(159:4) {#if devMode()}",
+    		source: "(160:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1184,14 +1174,14 @@ var app = (function () {
     			if (if_block) if_block.c();
     			t5 = space();
     			create_component(directionpad.$$.fragment);
-    			attr_dev(center, "class", "svelte-1ge5rjl");
-    			add_location(center, file$1, 153, 0, 5256);
-    			attr_dev(div0, "class", "scoreboard svelte-1ge5rjl");
-    			add_location(div0, file$1, 154, 0, 5285);
-    			attr_dev(canvas_1, "class", "svelte-1ge5rjl");
-    			add_location(canvas_1, file$1, 155, 0, 5340);
-    			attr_dev(div1, "class", "input-container svelte-1ge5rjl");
-    			add_location(div1, file$1, 156, 0, 5370);
+    			attr_dev(center, "class", "svelte-1048hx4");
+    			add_location(center, file$1, 154, 0, 5345);
+    			attr_dev(div0, "class", "scoreboard svelte-1048hx4");
+    			add_location(div0, file$1, 155, 0, 5374);
+    			attr_dev(canvas_1, "class", "svelte-1048hx4");
+    			add_location(canvas_1, file$1, 156, 0, 5429);
+    			attr_dev(div1, "class", "input-container svelte-1048hx4");
+    			add_location(div1, file$1, 157, 0, 5459);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1374,7 +1364,8 @@ var app = (function () {
     		// TODO: avoid sending controls when idle?
     		sendInputsToServer(playerControls);
 
-    		if (SETTINGS.enableClientSidePrediction) {
+    		// TODO: make babel plugin to remove if conditions for production mode
+    		if (!DEV_MODE || SETTINGS.enableClientSidePrediction) {
     			movePlayer(players[username], playerControls, deltaTime);
     		}
     	}
@@ -1568,7 +1559,7 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file = "src\\App.svelte";
 
-    // (18:0) {:else}
+    // (17:0) {:else}
     function create_else_block(ctx) {
     	let gameclient;
     	let current;
@@ -1612,14 +1603,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(18:0) {:else}",
+    		source: "(17:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (16:0) {#if username.length === 0}
+    // (15:0) {#if username.length === 0}
     function create_if_block(ctx) {
     	let nomination;
     	let current;
@@ -1664,7 +1655,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(16:0) {#if username.length === 0}",
+    		source: "(15:0) {#if username.length === 0}",
     		ctx
     	});
 
@@ -1697,7 +1688,7 @@ var app = (function () {
     			if_block_anchor = empty();
     			attr_dev(div, "id", "bloodscreen");
     			attr_dev(div, "class", "svelte-146r0rr");
-    			add_location(div, file, 14, 0, 387);
+    			add_location(div, file, 13, 0, 348);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1769,7 +1760,6 @@ var app = (function () {
     	validate_slots("App", slots, []);
     	let { blaze } = $$props;
     	const socket = io();
-    	console.log("client poop ===", poop);
     	console.log("client PLAYER_RADIUS =", PLAYER_RADIUS);
     	let username = "";
 

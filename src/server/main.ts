@@ -7,6 +7,7 @@ import '../shared/constants.js'
 import '../shared/helpers.js'
 import { Game } from './game/game.js'
 
+// Understanding just 1% of something brings you closer to understanding 100% of it
 
 const app = express()
 const server = http.createServer(app)
@@ -17,8 +18,7 @@ const staticPath = path.join(__dirname, '..', '..')
 
 app.use(express.static(staticPath))
 
-console.log('server poop ===', poop)
-console.log('sever PLAYER_RADIUS =',PLAYER_RADIUS)
+console.log('FPS =', FPS)
 
 const game = new Game()
 

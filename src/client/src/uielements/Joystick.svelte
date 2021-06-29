@@ -11,7 +11,6 @@
 
     const size2 = window.innerWidth / 2.5 / PHI
     const size1 = window.innerWidth / 3
-    const size = size2 / PHI
     const radius = 40
     const lineWidth = 8
 
@@ -20,15 +19,10 @@
     onMount(() => {
         W = canvas.width = H = canvas.height = size1 | 0
         container.style.width = container.style.height = size2 + 'px'
-        const d = size * (PHI - 1)
+        const d = size2 - size2 / PHI
         canvas.style.left = canvas.style.top = Math.round(-d/2) + 'px'
-        // return;
         ctx = canvas.getContext('2d')!
         point = [W/2, H/2]
-
-        // TODO: move to CSS
-        // canvas.style.margin = '5px'
-        // canvas.style.border = '1px solid #fba'
         
         render()
 
@@ -99,7 +93,7 @@
         
         const X = x - W/2
         const Y = y - H/2
-        const rot = Math.PI / 4 // 16
+        const rot = 1.5 * Math.PI / 4 // 16
         
         canvas.style.transform = `
         perspective(200px) 
@@ -118,6 +112,7 @@
         box-sizing: border-box;
         position: relative;
         border-radius: 50%;
+        flex-shrink: 0;
     }
     canvas {
         border-radius: 10px;

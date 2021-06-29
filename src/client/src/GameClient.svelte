@@ -141,7 +141,8 @@
         // TODO: avoid sending controls when idle?
         sendInputsToServer(playerControls)
         
-        if (SETTINGS.enableClientSidePrediction)
+        // TODO: make babel plugin to remove if conditions for production mode
+        if (!DEV_MODE || SETTINGS.enableClientSidePrediction)
         {
             movePlayer(players[username]!, playerControls, deltaTime)
         }
@@ -251,7 +252,7 @@
     }
     .settings-button {
         background-color: transparent;
-        padding: 0 1rem;
+        padding: 0 0.75rem;
         text-align: center;
     }
     .settings-page {

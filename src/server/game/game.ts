@@ -8,7 +8,7 @@ type Player = {
     lastTimeGettingShot : number
     toggleShootingTimestamp : number
     score : 0
-    lastMessageNumber : number
+    lastProcessedInput : number
 }
 type Bullet = {
     x : number
@@ -17,9 +17,8 @@ type Bullet = {
     speedY : number
     owner : string
 }
-const BULLET_COOLDOWN = 80 // 200
 const LAST_SHOT : Record<string, number> = {}
-const BULLET_SPEED = 0.0003
+
 export class Game {
 
     private players : Player[] = []
@@ -62,12 +61,12 @@ export class Game {
 
         p.angle = msg.shootingAngle
         p.isShooting = msg.isShooting
-        p.lastMessageNumber = msg.messageNumber
+        p.lastProcessedInput = msg.messageNumber
         p.toggleShootingTimestamp = msg.toggleShootingTimestamp
 
         if (p.isShooting && (!LAST_SHOT[p.name] || p.toggleShootingTimestamp - LAST_SHOT[p.name]! > BULLET_COOLDOWN))
         {
-            this.shootBullet(p)
+            this.bullets.push(shootBullet(p))
             LAST_SHOT[p.name] = p.toggleShootingTimestamp
         }
 
@@ -78,13 +77,16 @@ export class Game {
         const epsilon = 1e-3
         this.players.sort(({ x }, { x: x2 }) => x - x2)
         this.bullets = this.bullets.sort((a,b) => a.x - b.x).filter(bullet => {
-            const newbx = bullet.x + bullet.speedX * timeDelta
-            const newby = bullet.y + bullet.speedY * timeDelta
+            const bx = bullet.x
+            const by = bullet.y
+            moveBullet(bullet, timeDelta)
+            const newbx = bullet.x
+            const newby = bullet.x
 
             // m and b define the equation of the line y = m * x + b.
             // that represents the path of the bullet:
-            const m = (bullet.y - newby) / (bullet.x - newbx || epsilon)
-            const b = bullet.y - m * bullet.x
+            const m = (by - newby) / (bx - newbx || epsilon)
+            const b = by - m * bx
 
             function collidesWith(p : Player) {
                 // the slope and y-intercept of the line
@@ -99,7 +101,7 @@ export class Game {
 
                 const radius = PLAYER_RADIUS / 500 // approximate width of canvas
                 return distance(p.x, p.y, x, y) <= radius
-                    && distance(bullet.x, bullet.y, x, y) <= BULLET_SPEED * timeDelta
+                    && distance(bx, by, x, y) <= BULLET_SPEED * timeDelta
                     && distance(newbx, newby, x, y) <= BULLET_SPEED * timeDelta
             }
 
@@ -116,9 +118,7 @@ export class Game {
                 }
             }
 
-            bullet.x = newbx
-            bullet.y = newby
-            return 0 <= bullet.x && bullet.x <= 1 && 0 <= bullet.y && bullet.y <= 1
+            return 0 <= newbx && newbx <= 1 && 0 <= newby && newby <= 1
         })
     }
     getRenderData() : GameTickMessage {
@@ -132,17 +132,10 @@ export class Game {
                 , isShooting: p.isShooting
                 , isGettingShot: now - p.lastTimeGettingShot <= GAME_TICK
                 , score: p.score
-                , lastProcessedInput: p.lastMessageNumber
+                , lastProcessedInput: p.lastProcessedInput
                 }))
 
         return { players, bullets: this.bullets } 
-    }
-    
-    shootBullet(p : Player) {
-        const speedX = BULLET_SPEED * Math.cos(p.angle)
-        const speedY = BULLET_SPEED * Math.sin(p.angle)
-        const b = { x : p.x, y: p.y, speedX, speedY, owner: p.name }
-        this.bullets.push(b)
     }
 
     private playerExists = (name : string) => this.getPlayerByName[name]
@@ -153,9 +146,9 @@ export class Game {
             , angle: 0
             , score: 0
             , isShooting: false
-            , lastTimeGettingShot: 0
             , name
-            , lastMessageNumber: -1
+            , lastTimeGettingShot: -1
+            , lastProcessedInput: -1
             , toggleShootingTimestamp: -1
             })
     }

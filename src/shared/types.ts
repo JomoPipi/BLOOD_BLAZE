@@ -6,12 +6,14 @@ type ServerToClientMessageTypes = {
   nomination : [boolean, string]
   gameTick : GameTickMessage
   removedPlayer : string
+  newBullets : NewBulletsForClientsMessage
 }
 
 type ClientToServerSocketEvents = keyof ClientToServerMessageTypes
 type ClientToServerMessageTypes = {
   nomination : string
   controlsInput : PlayerControlsMessage
+  newBullets : NewBulletForServerMessage
   
   connection : ServerSocket
   disconnect : never
@@ -67,10 +69,30 @@ type SocketPlayer = {
   score : number
   lastProcessedInput : number
 }
-type GameTickMessage = 
-  { players : SocketPlayer[]
-  , bullets : Point[] // (Point & { speedX : number, speedY : number, timeFired : number })[]
-  }
+type GameTickMessage = {
+  players : SocketPlayer[]
+  bullets : Point[] // (Point & { speedX : number, speedY : number, timeFired : number })[]
+}
+
+type NewBulletForServerMessage = {
+  x : number
+  y : number
+  speedX : number
+  speedY : number
+  timeFired : number
+  owner : string
+  id : number
+}
+
+type NewBulletsForClientsMessage = {
+  x : number
+  y : number
+  speedX : number
+  speedY : number
+  timeFired : number
+  id : number
+}[]
+
 
 // interface ObjectConstructor {
 //   keys<set extends string>(o : { readonly [key in set] : any }) : set[]

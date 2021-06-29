@@ -5,8 +5,7 @@
 	import GameClient from './GameClient.svelte'
 
 	const socket = io()
-
-	console.log('client poop ===',poop)
+	
 	console.log('client PLAYER_RADIUS =',PLAYER_RADIUS)
 
 	let username = ''
