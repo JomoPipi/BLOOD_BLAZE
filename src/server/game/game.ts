@@ -44,7 +44,7 @@ export class Game {
         const dx = msg.x
         const dy = msg.y
         /*
-        -- "restrict" it to a circle of radius 1:
+        -- restrict movement to a circle of radius 1:
         if sqrt(mx**2 + my**2) > 1 then
             we need k such that 
             1 = sqrt((mx*k)**2 + (my*k)**2)
