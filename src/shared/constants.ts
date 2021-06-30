@@ -32,7 +32,7 @@ function movePlayer(p : Point, joystick : Point, timeDelta : number) {
 function moveBullet(p : { x : number, y : number, speedX : number, speedY : number }, timeDelta : number) {
     p.x = p.x + p.speedX * timeDelta
     p.y = p.y + p.speedY * timeDelta
-} 
+}
 
 function canShoot(player : PlayerControlsMessage, now : number, lastTimeShot : number) {
     return player.isPressingTrigger && now - lastTimeShot > BULLET_COOLDOWN

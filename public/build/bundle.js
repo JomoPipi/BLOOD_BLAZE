@@ -1019,17 +1019,22 @@ var app = (function () {
     const { Object: Object_1, console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (164:4) {#if devMode()}
+    // (165:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
     	let div;
     	let button1;
     	let t3;
-    	let label;
-    	let input;
+    	let label0;
+    	let input0;
     	let t4;
-    	let h4;
+    	let h40;
+    	let t6;
+    	let label1;
+    	let input1;
+    	let t7;
+    	let h41;
     	let mounted;
     	let dispose;
 
@@ -1042,23 +1047,35 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "back";
     			t3 = space();
-    			label = element("label");
-    			input = element("input");
+    			label0 = element("label");
+    			input0 = element("input");
     			t4 = space();
-    			h4 = element("h4");
-    			h4.textContent = "Enable client-side prediction (reduces lag)";
+    			h40 = element("h4");
+    			h40.textContent = "Enable client-side prediction (reduces lag)";
+    			t6 = space();
+    			label1 = element("label");
+    			input1 = element("input");
+    			t7 = space();
+    			h41 = element("h4");
+    			h41.textContent = "Show server's player position";
     			attr_dev(button0, "class", "settings-button svelte-1048hx4");
-    			add_location(button0, file$1, 164, 8, 5803);
-    			add_location(button1, file$1, 168, 12, 5986);
-    			attr_dev(input, "type", "checkbox");
-    			add_location(input, file$1, 173, 16, 6111);
-    			attr_dev(h4, "class", "svelte-1048hx4");
-    			add_location(h4, file$1, 174, 16, 6201);
-    			attr_dev(label, "class", "svelte-1048hx4");
-    			add_location(label, file$1, 172, 12, 6086);
+    			add_location(button0, file$1, 165, 8, 5870);
+    			add_location(button1, file$1, 169, 12, 6053);
+    			attr_dev(input0, "type", "checkbox");
+    			add_location(input0, file$1, 174, 16, 6178);
+    			attr_dev(h40, "class", "svelte-1048hx4");
+    			add_location(h40, file$1, 175, 16, 6268);
+    			attr_dev(label0, "class", "svelte-1048hx4");
+    			add_location(label0, file$1, 173, 12, 6153);
+    			attr_dev(input1, "type", "checkbox");
+    			add_location(input1, file$1, 179, 16, 6385);
+    			attr_dev(h41, "class", "svelte-1048hx4");
+    			add_location(h41, file$1, 180, 16, 6465);
+    			attr_dev(label1, "class", "svelte-1048hx4");
+    			add_location(label1, file$1, 178, 12, 6360);
     			attr_dev(div, "class", "settings-page svelte-1048hx4");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 167, 8, 5912);
+    			add_location(div, file$1, 168, 8, 5979);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1066,11 +1083,17 @@ var app = (function () {
     			insert_dev(target, div, anchor);
     			append_dev(div, button1);
     			append_dev(div, t3);
-    			append_dev(div, label);
-    			append_dev(label, input);
-    			input.checked = /*SETTINGS*/ ctx[3].enableClientSidePrediction;
-    			append_dev(label, t4);
-    			append_dev(label, h4);
+    			append_dev(div, label0);
+    			append_dev(label0, input0);
+    			input0.checked = /*SETTINGS*/ ctx[3].enableClientSidePrediction;
+    			append_dev(label0, t4);
+    			append_dev(label0, h40);
+    			append_dev(div, t6);
+    			append_dev(div, label1);
+    			append_dev(label1, input1);
+    			input1.checked = /*SETTINGS*/ ctx[3].showServerPlayer;
+    			append_dev(label1, t7);
+    			append_dev(label1, h41);
 
     			if (!mounted) {
     				dispose = [
@@ -1094,7 +1117,8 @@ var app = (function () {
     						false,
     						false
     					),
-    					listen_dev(input, "change", /*input_change_handler*/ ctx[11])
+    					listen_dev(input0, "change", /*input0_change_handler*/ ctx[11]),
+    					listen_dev(input1, "change", /*input1_change_handler*/ ctx[12])
     				];
 
     				mounted = true;
@@ -1104,7 +1128,11 @@ var app = (function () {
     			ctx = new_ctx;
 
     			if (dirty & /*SETTINGS*/ 8) {
-    				input.checked = /*SETTINGS*/ ctx[3].enableClientSidePrediction;
+    				input0.checked = /*SETTINGS*/ ctx[3].enableClientSidePrediction;
+    			}
+
+    			if (dirty & /*SETTINGS*/ 8) {
+    				input1.checked = /*SETTINGS*/ ctx[3].showServerPlayer;
     			}
 
     			if (dirty & /*settingsPage*/ 16) {
@@ -1124,7 +1152,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(164:4) {#if devMode()}",
+    		source: "(165:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1175,13 +1203,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-1048hx4");
-    			add_location(center, file$1, 158, 0, 5588);
+    			add_location(center, file$1, 159, 0, 5655);
     			attr_dev(div0, "class", "scoreboard svelte-1048hx4");
-    			add_location(div0, file$1, 159, 0, 5617);
+    			add_location(div0, file$1, 160, 0, 5684);
     			attr_dev(canvas_1, "class", "svelte-1048hx4");
-    			add_location(canvas_1, file$1, 160, 0, 5672);
+    			add_location(canvas_1, file$1, 161, 0, 5739);
     			attr_dev(div1, "class", "input-container svelte-1048hx4");
-    			add_location(div1, file$1, 161, 0, 5702);
+    			add_location(div1, file$1, 162, 0, 5769);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1281,7 +1309,12 @@ var app = (function () {
     	};
 
     	console.log("PLAYER_RADIUS =", PLAYER_RADIUS);
-    	const SETTINGS = { enableClientSidePrediction: true };
+
+    	const SETTINGS = {
+    		enableClientSidePrediction: true,
+    		showServerPlayer: false
+    	};
+
     	let lastGameTickMessage = {};
 
     	onMount(() => {
@@ -1347,7 +1380,10 @@ var app = (function () {
     				drawPlayer(players[name], now);
     			}
 
-    			if (serverplayer.name) drawPlayer(serverplayer, now, "purple");
+    			if (SETTINGS.showServerPlayer && serverplayer.name) {
+    				drawPlayer(serverplayer, now, "purple");
+    			}
+
     			ctx.fillStyle = "#537";
 
     			for (const { x, y } of bullets) {
@@ -1451,8 +1487,13 @@ var app = (function () {
     		});
     	}
 
-    	function input_change_handler() {
+    	function input0_change_handler() {
     		SETTINGS.enableClientSidePrediction = this.checked;
+    		$$invalidate(3, SETTINGS);
+    	}
+
+    	function input1_change_handler() {
+    		SETTINGS.showServerPlayer = this.checked;
     		$$invalidate(3, SETTINGS);
     	}
 
@@ -1512,7 +1553,8 @@ var app = (function () {
     		socket,
     		div0_binding,
     		canvas_1_binding,
-    		input_change_handler
+    		input0_change_handler,
+    		input1_change_handler
     	];
     }
 

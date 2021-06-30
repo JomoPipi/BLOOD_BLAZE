@@ -1,10 +1,10 @@
 
 type Point = { x : number, y : number }
-type BasePlayer = {
-  x : number
-  y : number
-  lastTimeShooting : number
-}
+// type BasePlayer = {
+//   x : number
+//   y : number
+//   lastTimeShooting : number
+// }
 
 type ServerToClientSocketEvents = keyof ServerToClientMessageTypes
 type ServerToClientMessageTypes = {

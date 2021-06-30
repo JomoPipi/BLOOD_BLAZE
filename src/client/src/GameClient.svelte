@@ -39,9 +39,10 @@
 
     console.log('PLAYER_RADIUS =', PLAYER_RADIUS)
 
-    const SETTINGS = {
-        enableClientSidePrediction: true
-    }
+    const SETTINGS =
+        { enableClientSidePrediction: true
+        , showServerPlayer: false
+        }
 
     let lastGameTickMessage = {} as { bullets : Point[] }
     onMount(() => {
@@ -125,8 +126,10 @@
             {
                 drawPlayer(players[name]!, now)
             }
-            if (serverplayer.name)
+            if (SETTINGS.showServerPlayer && serverplayer.name)
+            {
                 drawPlayer(serverplayer, now, 'purple')
+            }
 
             ctx.fillStyle = '#537'
             for (const { x, y } of bullets)
@@ -228,6 +231,11 @@
             <label>
                 <input type=checkbox bind:checked={SETTINGS.enableClientSidePrediction}>
                 <h4> Enable client-side prediction (reduces lag) </h4>
+            </label>
+
+            <label>
+                <input type=checkbox bind:checked={SETTINGS.showServerPlayer}>
+                <h4> Show server's player position </h4>
             </label>
         </div>
     {/if}
