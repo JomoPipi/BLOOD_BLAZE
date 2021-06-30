@@ -1019,7 +1019,7 @@ var app = (function () {
     const { Object: Object_1, console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (160:4) {#if devMode()}
+    // (164:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1048,17 +1048,17 @@ var app = (function () {
     			h4 = element("h4");
     			h4.textContent = "Enable client-side prediction (reduces lag)";
     			attr_dev(button0, "class", "settings-button svelte-1048hx4");
-    			add_location(button0, file$1, 160, 8, 5560);
-    			add_location(button1, file$1, 164, 12, 5743);
+    			add_location(button0, file$1, 164, 8, 5803);
+    			add_location(button1, file$1, 168, 12, 5986);
     			attr_dev(input, "type", "checkbox");
-    			add_location(input, file$1, 169, 16, 5868);
+    			add_location(input, file$1, 173, 16, 6111);
     			attr_dev(h4, "class", "svelte-1048hx4");
-    			add_location(h4, file$1, 170, 16, 5958);
+    			add_location(h4, file$1, 174, 16, 6201);
     			attr_dev(label, "class", "svelte-1048hx4");
-    			add_location(label, file$1, 168, 12, 5843);
+    			add_location(label, file$1, 172, 12, 6086);
     			attr_dev(div, "class", "settings-page svelte-1048hx4");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 163, 8, 5669);
+    			add_location(div, file$1, 167, 8, 5912);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1124,7 +1124,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(160:4) {#if devMode()}",
+    		source: "(164:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1175,13 +1175,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-1048hx4");
-    			add_location(center, file$1, 154, 0, 5345);
+    			add_location(center, file$1, 158, 0, 5588);
     			attr_dev(div0, "class", "scoreboard svelte-1048hx4");
-    			add_location(div0, file$1, 155, 0, 5374);
+    			add_location(div0, file$1, 159, 0, 5617);
     			attr_dev(canvas_1, "class", "svelte-1048hx4");
-    			add_location(canvas_1, file$1, 156, 0, 5429);
+    			add_location(canvas_1, file$1, 160, 0, 5672);
     			attr_dev(div1, "class", "input-container svelte-1048hx4");
-    			add_location(div1, file$1, 157, 0, 5459);
+    			add_location(div1, file$1, 161, 0, 5702);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1254,14 +1254,14 @@ var app = (function () {
     	let canvas;
     	let ctx;
     	let scoreboard;
+    	let serverplayer = {};
 
     	const players = {
     		[username]: {
     			x: 0.5,
     			y: 0.5,
     			angle: 0,
-    			isShooting: false,
-    			isGettingShot: false,
+    			lastTimeGettingShot: 0,
     			name: username,
     			score: 0,
     			lastProcessedInput: -1
@@ -1274,10 +1274,10 @@ var app = (function () {
     		x: 0,
     		y: 0,
     		shootingAngle: 0,
-    		isShooting: false,
+    		isPressingTrigger: false,
     		messageNumber: 0,
     		deltaTime: 0,
-    		toggleShootingTimestamp: Date.now()
+    		timeSent: Date.now()
     	};
 
     	console.log("PLAYER_RADIUS =", PLAYER_RADIUS);
@@ -1304,6 +1304,7 @@ var app = (function () {
     					// Assign authoritative state from server:
     					Object.assign(player, p);
 
+    					Object.assign(serverplayer, p);
     					let j = 0;
 
     					while (j < pendingInputs.length) {
@@ -1328,19 +1329,25 @@ var app = (function () {
     			}
     		});
 
+    		let lastRender = -1;
+
     		(function updateRender() {
-    			processInputs();
+    			const now = Date.now();
+    			const lastTime = lastRender || now;
+    			const deltaTime = now - lastTime;
+    			lastRender = now;
+    			processInputs(deltaTime, now);
     			requestAnimationFrame(updateRender);
     			const { bullets } = lastGameTickMessage;
     			if (!bullets) return;
     			ctx.clearRect(0, 0, canvas.width, canvas.height);
-    			$$invalidate(2, scoreboard.innerHTML = "<br>" + Object.values(players).sort((p1, p2) => p2.score - p1.score).map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`).join("<br>"), scoreboard);
+    			$$invalidate(2, scoreboard.innerHTML = "<br>" + Object.values(players).sort((p1, p2) => p2.score - p1.score).map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`).join("<br>") + `<br><br><br> pending requests: ${pendingInputs.length}`, scoreboard);
 
-    			// + `<br><br><br> pending requests: ${pendingInputs.length}`
     			for (const name in players) {
-    				drawPlayer(players[name]);
+    				drawPlayer(players[name], now);
     			}
 
+    			if (serverplayer.name) drawPlayer(serverplayer, now, "purple");
     			ctx.fillStyle = "#537";
 
     			for (const { x, y } of bullets) {
@@ -1349,19 +1356,11 @@ var app = (function () {
     		})();
     	});
 
-    	let lastInputProcess = 0;
-
-    	function processInputs() {
-    		// Compute delta time since last update.
-    		const now = Date.now();
-
-    		const lastTime = lastInputProcess || now;
-    		const deltaTime = now - lastTime;
-    		lastInputProcess = now;
+    	function processInputs(deltaTime, now) {
     		playerControls.deltaTime = deltaTime;
-    		playerControls.toggleShootingTimestamp = now;
+    		playerControls.timeSent = now;
 
-    		// TODO: avoid sending controls when idle?
+    		// TODO: avoid sending controls while idling?
     		sendInputsToServer(playerControls);
 
     		// TODO: make babel plugin to remove if conditions for production mode
@@ -1385,15 +1384,19 @@ var app = (function () {
 
     	function moveRightPad(angle, active) {
     		playerControls.shootingAngle = angle;
-    		playerControls.isShooting = active;
+    		playerControls.isPressingTrigger = active;
     	}
 
-    	function drawPlayer(p) {
+    	function drawPlayer(p, now, color = "#333") {
     		const [x, y] = [p.x * canvas.width, p.y * canvas.height];
     		const playerGunSize = 2;
-    		ctx.fillStyle = p.isGettingShot ? "red" : "#333";
 
-    		if (p.name === username && p.isGettingShot) {
+    		// const bloodCooldown = 100 // GAME_TICK
+    		const isGettingShot = now - p.lastTimeGettingShot <= GAME_TICK;
+
+    		ctx.fillStyle = isGettingShot ? "red" : color;
+
+    		if (p.name === username && isGettingShot) {
     			const a = document.body.classList;
     			const b = document.getElementById("bloodscreen").classList;
     			a.toggle("shake", !b.toggle("bleed"));
@@ -1467,12 +1470,12 @@ var app = (function () {
     		canvas,
     		ctx,
     		scoreboard,
+    		serverplayer,
     		players,
     		pendingInputs,
     		playerControls,
     		SETTINGS,
     		lastGameTickMessage,
-    		lastInputProcess,
     		processInputs,
     		sendInputsToServer,
     		moveJoystick,
@@ -1489,8 +1492,8 @@ var app = (function () {
     		if ("canvas" in $$props) $$invalidate(1, canvas = $$props.canvas);
     		if ("ctx" in $$props) ctx = $$props.ctx;
     		if ("scoreboard" in $$props) $$invalidate(2, scoreboard = $$props.scoreboard);
+    		if ("serverplayer" in $$props) serverplayer = $$props.serverplayer;
     		if ("lastGameTickMessage" in $$props) lastGameTickMessage = $$props.lastGameTickMessage;
-    		if ("lastInputProcess" in $$props) lastInputProcess = $$props.lastInputProcess;
     	};
 
     	if ($$props && "$$inject" in $$props) {

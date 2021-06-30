@@ -12,13 +12,14 @@
     let ctx : CanvasRenderingContext2D
     let scoreboard : HTMLDivElement
 
+    let serverplayer = {} as SocketPlayer
+
     const players : Record<string, SocketPlayer> = 
         { [username]: 
             { x: 0.5
             , y: 0.5
             , angle: 0
-            , isShooting: false
-            , isGettingShot: false
+            , lastTimeGettingShot: 0
             , name: username
             , score: 0
             , lastProcessedInput: -1
@@ -30,10 +31,10 @@
     const playerControls : PlayerControlsMessage =
         { x: 0, y: 0
         , shootingAngle: 0
-        , isShooting: false
+        , isPressingTrigger: false
         , messageNumber: 0
         , deltaTime: 0
-        , toggleShootingTimestamp: Date.now()
+        , timeSent: Date.now()
         }
 
     console.log('PLAYER_RADIUS =', PLAYER_RADIUS)
@@ -65,6 +66,7 @@
                 {
                     // Assign authoritative state from server:
                     Object.assign(player, p)
+                    Object.assign(serverplayer, p)
                     let j = 0
                     while (j < pendingInputs.length)
                     {
@@ -98,9 +100,15 @@
             }
         })
 
+        let lastRender = -1
         ;(function updateRender() {
 
-            processInputs()
+            const now = Date.now() 
+            const lastTime = lastRender || now
+            const deltaTime = now - lastTime
+            lastRender = now
+
+            processInputs(deltaTime, now)
 
             requestAnimationFrame(updateRender)
             const { bullets } = lastGameTickMessage
@@ -111,12 +119,14 @@
                 .sort((p1, p2) => p2.score - p1.score)
                 .map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`)
                 .join('<br>') 
-                // + `<br><br><br> pending requests: ${pendingInputs.length}`
+                + `<br><br><br> pending requests: ${pendingInputs.length}`
 
             for (const name in players)
             {
-                drawPlayer(players[name]!)
+                drawPlayer(players[name]!, now)
             }
+            if (serverplayer.name)
+                drawPlayer(serverplayer, now, 'purple')
 
             ctx.fillStyle = '#537'
             for (const { x, y } of bullets)
@@ -125,20 +135,13 @@
             }
         })()
     })
-
-    let lastInputProcess = 0
     
-    function processInputs() {
-        // Compute delta time since last update.
-        const now = Date.now()
-        const lastTime = lastInputProcess || now
-        const deltaTime = now - lastTime
-        lastInputProcess = now
+    function processInputs(deltaTime : number, now : number) {
 
         playerControls.deltaTime = deltaTime
-        playerControls.toggleShootingTimestamp = now
+        playerControls.timeSent = now
         
-        // TODO: avoid sending controls when idle?
+        // TODO: avoid sending controls while idling?
         sendInputsToServer(playerControls)
         
         // TODO: make babel plugin to remove if conditions for production mode
@@ -164,15 +167,17 @@
 
     function moveRightPad(angle : number, active : boolean) {
         playerControls.shootingAngle = angle
-        playerControls.isShooting = active
+        playerControls.isPressingTrigger = active
     }
 
-    function drawPlayer(p : SocketPlayer) {
+    function drawPlayer(p : SocketPlayer, now : number, color = '#333') {
         const [x, y] = [p.x * canvas.width, p.y * canvas.height]
         const playerGunSize = 2
-        ctx.fillStyle = p.isGettingShot ? 'red' : '#333'
+        // const bloodCooldown = 100 // GAME_TICK
+        const isGettingShot = now - p.lastTimeGettingShot <= GAME_TICK
+        ctx.fillStyle = isGettingShot ? 'red' : color
         
-        if (p.name === username && p.isGettingShot)
+        if (p.name === username && isGettingShot)
         {
             const a = document.body.classList
             const b = document.getElementById('bloodscreen')!.classList

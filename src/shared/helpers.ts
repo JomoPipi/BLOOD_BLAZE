@@ -13,6 +13,4 @@ const wrap = (min : number, value : number, max : number) =>
         ? value - max
         : value
 
-{
-    Object.assign(globalThis, { distance, clamp, wrap, PHI })
-}
+Object.assign(globalThis, { distance, clamp, wrap, PHI })

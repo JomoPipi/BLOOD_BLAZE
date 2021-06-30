@@ -1,15 +1,4 @@
 
-type Player = {
-    x : number
-    y : number
-    angle : number
-    isShooting : boolean
-    name : string
-    lastTimeGettingShot : number
-    toggleShootingTimestamp : number
-    score : 0
-    lastProcessedInput : number
-}
 type Bullet = {
     x : number
     y : number
@@ -21,8 +10,8 @@ const LAST_SHOT : Record<string, number> = {}
 
 export class Game {
 
-    private players : Player[] = []
-    private getPlayerByName : Record<string,Player> = {}
+    private players : SocketPlayer[] = []
+    private getPlayerByName : Record<string, SocketPlayer> = {}
     private bullets : Bullet[] = []
 
     addPlayer(name : string) {
@@ -38,11 +27,11 @@ export class Game {
         delete this.getPlayerByName[name]
         io.emit('removedPlayer', name)
     }
-    updatePlayerInputs(username : string, msg : PlayerControlsMessage) {
+    updatePlayerInputs(username : string, client : PlayerControlsMessage) {
         const p = this.getPlayerByName[username]!
         
-        const dx = msg.x
-        const dy = msg.y
+        const dx = client.x
+        const dy = client.y
         /*
         -- restrict movement to a circle of radius 1:
         if sqrt(mx**2 + my**2) > 1 then
@@ -59,20 +48,19 @@ export class Game {
             ? [dx * k, dy * k]
             : [dx, dy]
 
-        p.angle = msg.shootingAngle
-        p.isShooting = msg.isShooting
-        p.lastProcessedInput = msg.messageNumber
-        p.toggleShootingTimestamp = msg.toggleShootingTimestamp
+        p.angle = client.shootingAngle
+        p.lastProcessedInput = client.messageNumber
 
-        if (p.isShooting && (!LAST_SHOT[p.name] || p.toggleShootingTimestamp - LAST_SHOT[p.name]! > BULLET_COOLDOWN))
+        if (canShoot(client, client.timeSent, LAST_SHOT[p.name] || 0))
         {
+            console.log('NEW BULLET!!!!!')
             this.bullets.push(shootBullet(p))
-            LAST_SHOT[p.name] = p.toggleShootingTimestamp
+            LAST_SHOT[p.name] = client.timeSent
         }
 
-        movePlayer(p, { x, y }, msg.deltaTime)
+        movePlayer(p, { x, y }, client.deltaTime)
     }
-    moveObjects(timeDelta : number) {
+    moveObjects(timeDelta : number, now : number) {
         
         const epsilon = 1e-3
         this.players.sort(({ x }, { x: x2 }) => x - x2)
@@ -81,14 +69,16 @@ export class Game {
             const by = bullet.y
             moveBullet(bullet, timeDelta)
             const newbx = bullet.x
-            const newby = bullet.x
+            const newby = bullet.y
 
+            console.log('bullet =',bx,by,newbx,newby)
             // m and b define the equation of the line y = m * x + b.
             // that represents the path of the bullet:
             const m = (by - newby) / (bx - newbx || epsilon)
             const b = by - m * bx
+            console.log('m =',m)
 
-            function collidesWith(p : Player) {
+            function collidesWith(p : SocketPlayer) {
                 // the slope and y-intercept of the line
                 // perpendicular to y = m * x + b,
                 // passing through the player:
@@ -99,17 +89,31 @@ export class Game {
                 const x = (b$ - b) / (m - m$)
                 const y = m * x + b
 
-                const radius = PLAYER_RADIUS / 500 // approximate width of canvas
-                return distance(p.x, p.y, x, y) <= radius
-                    && distance(bx, by, x, y) <= BULLET_SPEED * timeDelta
+                const radius = PLAYER_RADIUS / 415 // 415 =  approximate width of canvas
+
+                /* The bullet hits the player if:
+                1. The player is in the line of fire.
+                2. The bullet is within a frame of the closest point from the player to the line of fire.
+                */
+                const c1 = distance(p.x, p.y, x, y) <= radius
+                const c2 = distance(bx, by, x, y) <= BULLET_SPEED * timeDelta
+                const c3 = distance(newbx, newby, x, y) <= BULLET_SPEED * timeDelta
+                const collides = distance(p.x, p.y, x, y) <= radius                       
+                    && distance(bx, by, x, y) <= BULLET_SPEED * timeDelta       
                     && distance(newbx, newby, x, y) <= BULLET_SPEED * timeDelta
+                if (c1 || c2 || c3)
+                {
+                console.log('newb=',newbx,newby,', p=',p.y,p.y)
+                console.log('x y c1 c2 c3', x, y, c1, c2, c3)
+                }
+                return collides
             }
 
             for (const player of this.players)
             {
                 if (bullet.owner !== player.name && collidesWith(player))
                 {
-                    player.lastTimeGettingShot = Date.now()
+                    player.lastTimeGettingShot = now
                     if (this.getPlayerByName[bullet.owner])
                     {
                         this.getPlayerByName[bullet.owner]!.score++
@@ -122,34 +126,20 @@ export class Game {
         })
     }
     getRenderData() : GameTickMessage {
-        const now = Date.now()
-        const players =
-            this.players.map(p => (
-                { x: p.x 
-                , y: p.y
-                , angle: p.angle
-                , name: p.name
-                , isShooting: p.isShooting
-                , isGettingShot: now - p.lastTimeGettingShot <= GAME_TICK
-                , score: p.score
-                , lastProcessedInput: p.lastProcessedInput
-                }))
 
-        return { players, bullets: this.bullets } 
+        return { players: this.players, bullets: this.bullets } 
     }
 
     private playerExists = (name : string) => this.getPlayerByName[name]
-    private createNewPlayer(name : string) : Player { 
+    private createNewPlayer(name : string) : SocketPlayer { 
         return (
             { x: .5
             , y: .5
             , angle: 0
             , score: 0
-            , isShooting: false
             , name
             , lastTimeGettingShot: -1
             , lastProcessedInput: -1
-            , toggleShootingTimestamp: -1
             })
     }
 }

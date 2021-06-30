@@ -1,5 +1,10 @@
 
 type Point = { x : number, y : number }
+type BasePlayer = {
+  x : number
+  y : number
+  lastTimeShooting : number
+}
 
 type ServerToClientSocketEvents = keyof ServerToClientMessageTypes
 type ServerToClientMessageTypes = {
@@ -46,8 +51,8 @@ type PlayerControlsMessage = {
   x : number
   y : number
   shootingAngle : number
-  isShooting : boolean
-  toggleShootingTimestamp : number
+  isPressingTrigger : boolean
+  timeSent : number
   messageNumber : number
   deltaTime : number
 }
@@ -63,12 +68,12 @@ type SocketPlayer = {
   y : number
   angle : number
   // isSpeaking : boolean
-  isShooting : boolean
-  isGettingShot : boolean
+  lastTimeGettingShot : number
   name : string
   score : number
   lastProcessedInput : number
 }
+
 type GameTickMessage = {
   players : SocketPlayer[]
   bullets : Point[] // (Point & { speedX : number, speedY : number, timeFired : number })[]
