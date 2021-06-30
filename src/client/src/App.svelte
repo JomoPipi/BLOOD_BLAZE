@@ -6,7 +6,7 @@
 
 	const socket = io()
 	
-	console.log('client PLAYER_RADIUS =',PLAYER_RADIUS)
+	console.log('client PLAYER_RADIUS =', PLAYER_RADIUS)
 
 	let username = ''
 	function proceed(name : string) {

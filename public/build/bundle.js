@@ -1019,7 +1019,7 @@ var app = (function () {
     const { Object: Object_1, console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (172:4) {#if devMode()}
+    // (178:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1059,23 +1059,23 @@ var app = (function () {
     			h41 = element("h4");
     			h41.textContent = "Show server's player position";
     			attr_dev(button0, "class", "settings-button svelte-1048hx4");
-    			add_location(button0, file$1, 172, 8, 6133);
-    			add_location(button1, file$1, 176, 12, 6316);
+    			add_location(button0, file$1, 178, 8, 6272);
+    			add_location(button1, file$1, 182, 12, 6455);
     			attr_dev(input0, "type", "checkbox");
-    			add_location(input0, file$1, 181, 16, 6441);
+    			add_location(input0, file$1, 187, 16, 6580);
     			attr_dev(h40, "class", "svelte-1048hx4");
-    			add_location(h40, file$1, 182, 16, 6535);
+    			add_location(h40, file$1, 188, 16, 6674);
     			attr_dev(label0, "class", "svelte-1048hx4");
-    			add_location(label0, file$1, 180, 12, 6416);
+    			add_location(label0, file$1, 186, 12, 6555);
     			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$1, 186, 16, 6652);
+    			add_location(input1, file$1, 192, 16, 6791);
     			attr_dev(h41, "class", "svelte-1048hx4");
-    			add_location(h41, file$1, 187, 16, 6736);
+    			add_location(h41, file$1, 193, 16, 6875);
     			attr_dev(label1, "class", "svelte-1048hx4");
-    			add_location(label1, file$1, 185, 12, 6627);
+    			add_location(label1, file$1, 191, 12, 6766);
     			attr_dev(div, "class", "settings-page svelte-1048hx4");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 175, 8, 6242);
+    			add_location(div, file$1, 181, 8, 6381);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1152,7 +1152,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(172:4) {#if devMode()}",
+    		source: "(178:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1203,13 +1203,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-1048hx4");
-    			add_location(center, file$1, 166, 0, 5918);
+    			add_location(center, file$1, 172, 0, 6057);
     			attr_dev(div0, "class", "scoreboard svelte-1048hx4");
-    			add_location(div0, file$1, 167, 0, 5947);
+    			add_location(div0, file$1, 173, 0, 6086);
     			attr_dev(canvas_1, "class", "svelte-1048hx4");
-    			add_location(canvas_1, file$1, 168, 0, 6002);
+    			add_location(canvas_1, file$1, 174, 0, 6141);
     			attr_dev(div1, "class", "input-container svelte-1048hx4");
-    			add_location(div1, file$1, 169, 0, 6032);
+    			add_location(div1, file$1, 175, 0, 6171);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1310,11 +1310,13 @@ var app = (function () {
     		y: 0,
     		shootingAngle: 0,
     		isPressingTrigger: false,
+    		// , nowShooting : false
     		messageNumber: 0,
     		deltaTime: 0,
     		timeSent: Date.now()
     	};
 
+    	const PlayerProperties = { LAST_SHOT: -1 };
     	console.log("PLAYER_RADIUS =", PLAYER_RADIUS);
 
     	const DEV_SETTINGS = {
@@ -1404,6 +1406,10 @@ var app = (function () {
     		playerControls.deltaTime = deltaTime;
     		playerControls.timeSent = now;
 
+    		if (canShoot(playerControls, now, PlayerProperties.LAST_SHOT)) {
+    			PlayerProperties.LAST_SHOT = now;
+    		}
+
     		// TODO: avoid sending controls while idling?
     		sendInputsToServer(playerControls);
 
@@ -1434,11 +1440,9 @@ var app = (function () {
     	function drawPlayer(p, now, color = "#333") {
     		const [x, y] = [p.x * canvas.width, p.y * canvas.height];
     		const playerGunSize = 2;
-    		const bloodCooldown = 256; // GAME_TICK
+    		const bloodCooldown = 256;
     		const R = now - p.lastTimeGettingShot | 0;
     		const isGettingShot = R <= bloodCooldown;
-
-    		// How much more optimal is it to use 'red'?
     		ctx.fillStyle = isGettingShot ? `rgb(${bloodCooldown - R},0,0)` : color;
 
     		if (p.name === username && isGettingShot) {
@@ -1522,6 +1526,7 @@ var app = (function () {
     		players,
     		pendingInputs,
     		playerControls,
+    		PlayerProperties,
     		DEV_SETTINGS,
     		lastGameTickMessage,
     		processInputs,

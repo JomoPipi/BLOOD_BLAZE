@@ -41,18 +41,19 @@ io.on('connection', socket => {
         console.log('accepted new user,',name)
         username = name
         socket.on('controlsInput', data => {
-            game.updatePlayerInputs(username, data)
+            const now = Date.now()
+            game.updatePlayerInputs(username, data, now)
         })
     })
 });
 
-let lastTime = Date.now()
+let lastGameLoop = Date.now()
 
 console.log('GAME_TICK =',GAME_TICK)
 ;(function gameLoop() {
     const now = Date.now()
-    const timeDelta = now - lastTime
-    lastTime = now
+    const timeDelta = now - lastGameLoop
+    lastGameLoop = now
     
     game.moveObjects(timeDelta, now)
     io.emit('gameTick', game.getRenderData())

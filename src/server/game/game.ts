@@ -27,7 +27,7 @@ export class Game {
         delete this.getPlayerByName[name]
         io.emit('removedPlayer', name)
     }
-    updatePlayerInputs(username : string, client : PlayerControlsMessage) {
+    updatePlayerInputs(username : string, client : PlayerControlsMessage, now : number) {
         const p = this.getPlayerByName[username]!
         
         const dx = client.x
@@ -53,7 +53,10 @@ export class Game {
 
         if (canShoot(client, client.timeSent, LAST_SHOT[p.name] || 0))
         {
-            this.bullets.push(shootBullet(p))
+            console.log('delta =',now - client.timeSent)
+            const b = shootBullet(p)
+            // moveBullet(b, now - client.timeSent)
+            this.bullets.push(b)
             LAST_SHOT[p.name] = client.timeSent
         }
 

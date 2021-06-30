@@ -32,9 +32,14 @@
         { x: 0, y: 0
         , shootingAngle: 0
         , isPressingTrigger: false
+        // , nowShooting : false
         , messageNumber: 0
         , deltaTime: 0
         , timeSent: Date.now()
+        }
+
+    const PlayerProperties =
+        { LAST_SHOT: -1
         }
 
     console.log('PLAYER_RADIUS =', PLAYER_RADIUS)
@@ -144,6 +149,11 @@
 
         playerControls.deltaTime = deltaTime
         playerControls.timeSent = now
+
+        if (canShoot(playerControls, now, PlayerProperties.LAST_SHOT))
+        {
+            PlayerProperties.LAST_SHOT = now
+        }
         
         // TODO: avoid sending controls while idling?
         sendInputsToServer(playerControls)
@@ -177,10 +187,9 @@
     function drawPlayer(p : SocketPlayer, now : number, color = '#333') {
         const [x, y] = [p.x * canvas.width, p.y * canvas.height]
         const playerGunSize = 2
-        const bloodCooldown = 256 // GAME_TICK
+        const bloodCooldown = 256
         const R = now - p.lastTimeGettingShot | 0
         const isGettingShot = R <= bloodCooldown
-        // How much more optimal is it to use 'red'?
         ctx.fillStyle = isGettingShot ? `rgb(${bloodCooldown - R},0,0)` : color
         
         if (p.name === username && isGettingShot)

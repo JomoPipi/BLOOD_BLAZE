@@ -52,6 +52,7 @@ type PlayerControlsMessage = {
   y : number
   shootingAngle : number
   isPressingTrigger : boolean
+  // nowShooting : boolean
   timeSent : number
   messageNumber : number
   deltaTime : number
