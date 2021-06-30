@@ -39,7 +39,7 @@
 
     console.log('PLAYER_RADIUS =', PLAYER_RADIUS)
 
-    const SETTINGS =
+    const DEV_SETTINGS =
         { enableClientSidePrediction: true
         , showServerPlayer: false
         }
@@ -57,6 +57,7 @@
 
             for (const p of msg.players)
             {
+                // TODO: 'addPlayer' socket event?
                 if (!players[p.name])
                 {
                     players[p.name] = p
@@ -126,7 +127,7 @@
             {
                 drawPlayer(players[name]!, now)
             }
-            if (SETTINGS.showServerPlayer && serverplayer.name)
+            if (DEV_SETTINGS.showServerPlayer && serverplayer.name)
             {
                 drawPlayer(serverplayer, now, 'purple')
             }
@@ -148,7 +149,7 @@
         sendInputsToServer(playerControls)
         
         // TODO: make babel plugin to remove if conditions for production mode
-        if (!DEV_MODE || SETTINGS.enableClientSidePrediction)
+        if (!DEV_MODE || DEV_SETTINGS.enableClientSidePrediction)
         {
             movePlayer(players[username]!, playerControls, deltaTime)
         }
@@ -176,16 +177,16 @@
     function drawPlayer(p : SocketPlayer, now : number, color = '#333') {
         const [x, y] = [p.x * canvas.width, p.y * canvas.height]
         const playerGunSize = 2
-        // const bloodCooldown = 100 // GAME_TICK
-        const isGettingShot = now - p.lastTimeGettingShot <= GAME_TICK
-        ctx.fillStyle = isGettingShot ? 'red' : color
+        const bloodCooldown = 256 // GAME_TICK
+        const R = now - p.lastTimeGettingShot | 0
+        const isGettingShot = R <= bloodCooldown
+        // How much more optimal is it to use 'red'?
+        ctx.fillStyle = isGettingShot ? `rgb(${bloodCooldown - R},0,0)` : color
         
         if (p.name === username && isGettingShot)
         {
-            const a = document.body.classList
-            const b = document.getElementById('bloodscreen')!.classList
-            a.toggle('shake', !b.toggle('bleed'))
-            b.toggle('bleed2', !a.toggle('shake2'))
+            const wait = 50 + Math.random() * 200
+            throttled(traumatize, wait, now)
         }
         
         circle(x, y, PLAYER_RADIUS)
@@ -209,6 +210,13 @@
         ctx.closePath()
     }
 
+    function traumatize() {
+        const a = document.body.classList
+        const b = document.getElementById('bloodscreen')!.classList
+        a.toggle('shake', !b.toggle('bleed'))
+        b.toggle('bleed2', !a.toggle('shake2'))
+    }
+
     const devMode = () => DEV_MODE // It's not defined outside of script tags 🤷
 
     const settingsPage = { toggle() { settingsPage.isOpen ^= 1 }, isOpen: 0 }
@@ -229,12 +237,12 @@
             </button>
 
             <label>
-                <input type=checkbox bind:checked={SETTINGS.enableClientSidePrediction}>
+                <input type=checkbox bind:checked={DEV_SETTINGS.enableClientSidePrediction}>
                 <h4> Enable client-side prediction (reduces lag) </h4>
             </label>
 
             <label>
-                <input type=checkbox bind:checked={SETTINGS.showServerPlayer}>
+                <input type=checkbox bind:checked={DEV_SETTINGS.showServerPlayer}>
                 <h4> Show server's player position </h4>
             </label>
         </div>

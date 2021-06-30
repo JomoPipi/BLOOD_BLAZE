@@ -1019,7 +1019,7 @@ var app = (function () {
     const { Object: Object_1, console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (165:4) {#if devMode()}
+    // (172:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1059,23 +1059,23 @@ var app = (function () {
     			h41 = element("h4");
     			h41.textContent = "Show server's player position";
     			attr_dev(button0, "class", "settings-button svelte-1048hx4");
-    			add_location(button0, file$1, 165, 8, 5870);
-    			add_location(button1, file$1, 169, 12, 6053);
+    			add_location(button0, file$1, 172, 8, 6133);
+    			add_location(button1, file$1, 176, 12, 6316);
     			attr_dev(input0, "type", "checkbox");
-    			add_location(input0, file$1, 174, 16, 6178);
+    			add_location(input0, file$1, 181, 16, 6441);
     			attr_dev(h40, "class", "svelte-1048hx4");
-    			add_location(h40, file$1, 175, 16, 6268);
+    			add_location(h40, file$1, 182, 16, 6535);
     			attr_dev(label0, "class", "svelte-1048hx4");
-    			add_location(label0, file$1, 173, 12, 6153);
+    			add_location(label0, file$1, 180, 12, 6416);
     			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$1, 179, 16, 6385);
+    			add_location(input1, file$1, 186, 16, 6652);
     			attr_dev(h41, "class", "svelte-1048hx4");
-    			add_location(h41, file$1, 180, 16, 6465);
+    			add_location(h41, file$1, 187, 16, 6736);
     			attr_dev(label1, "class", "svelte-1048hx4");
-    			add_location(label1, file$1, 178, 12, 6360);
+    			add_location(label1, file$1, 185, 12, 6627);
     			attr_dev(div, "class", "settings-page svelte-1048hx4");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 168, 8, 5979);
+    			add_location(div, file$1, 175, 8, 6242);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1085,13 +1085,13 @@ var app = (function () {
     			append_dev(div, t3);
     			append_dev(div, label0);
     			append_dev(label0, input0);
-    			input0.checked = /*SETTINGS*/ ctx[3].enableClientSidePrediction;
+    			input0.checked = /*DEV_SETTINGS*/ ctx[3].enableClientSidePrediction;
     			append_dev(label0, t4);
     			append_dev(label0, h40);
     			append_dev(div, t6);
     			append_dev(div, label1);
     			append_dev(label1, input1);
-    			input1.checked = /*SETTINGS*/ ctx[3].showServerPlayer;
+    			input1.checked = /*DEV_SETTINGS*/ ctx[3].showServerPlayer;
     			append_dev(label1, t7);
     			append_dev(label1, h41);
 
@@ -1127,12 +1127,12 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (dirty & /*SETTINGS*/ 8) {
-    				input0.checked = /*SETTINGS*/ ctx[3].enableClientSidePrediction;
+    			if (dirty & /*DEV_SETTINGS*/ 8) {
+    				input0.checked = /*DEV_SETTINGS*/ ctx[3].enableClientSidePrediction;
     			}
 
-    			if (dirty & /*SETTINGS*/ 8) {
-    				input1.checked = /*SETTINGS*/ ctx[3].showServerPlayer;
+    			if (dirty & /*DEV_SETTINGS*/ 8) {
+    				input1.checked = /*DEV_SETTINGS*/ ctx[3].showServerPlayer;
     			}
 
     			if (dirty & /*settingsPage*/ 16) {
@@ -1152,7 +1152,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(165:4) {#if devMode()}",
+    		source: "(172:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1203,13 +1203,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-1048hx4");
-    			add_location(center, file$1, 159, 0, 5655);
+    			add_location(center, file$1, 166, 0, 5918);
     			attr_dev(div0, "class", "scoreboard svelte-1048hx4");
-    			add_location(div0, file$1, 160, 0, 5684);
+    			add_location(div0, file$1, 167, 0, 5947);
     			attr_dev(canvas_1, "class", "svelte-1048hx4");
-    			add_location(canvas_1, file$1, 161, 0, 5739);
+    			add_location(canvas_1, file$1, 168, 0, 6002);
     			attr_dev(div1, "class", "input-container svelte-1048hx4");
-    			add_location(div1, file$1, 162, 0, 5769);
+    			add_location(div1, file$1, 169, 0, 6032);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1274,6 +1274,13 @@ var app = (function () {
     	return block;
     }
 
+    function traumatize() {
+    	const a = document.body.classList;
+    	const b = document.getElementById("bloodscreen").classList;
+    	a.toggle("shake", !b.toggle("bleed"));
+    	b.toggle("bleed2", !a.toggle("shake2"));
+    }
+
     function instance$1($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("GameClient", slots, []);
@@ -1310,7 +1317,7 @@ var app = (function () {
 
     	console.log("PLAYER_RADIUS =", PLAYER_RADIUS);
 
-    	const SETTINGS = {
+    	const DEV_SETTINGS = {
     		enableClientSidePrediction: true,
     		showServerPlayer: false
     	};
@@ -1327,6 +1334,7 @@ var app = (function () {
     			lastGameTickMessage = msg;
 
     			for (const p of msg.players) {
+    				// TODO: 'addPlayer' socket event?
     				if (!players[p.name]) {
     					players[p.name] = p;
     				}
@@ -1380,7 +1388,7 @@ var app = (function () {
     				drawPlayer(players[name], now);
     			}
 
-    			if (SETTINGS.showServerPlayer && serverplayer.name) {
+    			if (DEV_SETTINGS.showServerPlayer && serverplayer.name) {
     				drawPlayer(serverplayer, now, "purple");
     			}
 
@@ -1400,7 +1408,7 @@ var app = (function () {
     		sendInputsToServer(playerControls);
 
     		// TODO: make babel plugin to remove if conditions for production mode
-    		if (!DEV_MODE || SETTINGS.enableClientSidePrediction) {
+    		if (!DEV_MODE || DEV_SETTINGS.enableClientSidePrediction) {
     			movePlayer(players[username], playerControls, deltaTime);
     		}
     	}
@@ -1426,17 +1434,16 @@ var app = (function () {
     	function drawPlayer(p, now, color = "#333") {
     		const [x, y] = [p.x * canvas.width, p.y * canvas.height];
     		const playerGunSize = 2;
+    		const bloodCooldown = 256; // GAME_TICK
+    		const R = now - p.lastTimeGettingShot | 0;
+    		const isGettingShot = R <= bloodCooldown;
 
-    		// const bloodCooldown = 100 // GAME_TICK
-    		const isGettingShot = now - p.lastTimeGettingShot <= GAME_TICK;
-
-    		ctx.fillStyle = isGettingShot ? "red" : color;
+    		// How much more optimal is it to use 'red'?
+    		ctx.fillStyle = isGettingShot ? `rgb(${bloodCooldown - R},0,0)` : color;
 
     		if (p.name === username && isGettingShot) {
-    			const a = document.body.classList;
-    			const b = document.getElementById("bloodscreen").classList;
-    			a.toggle("shake", !b.toggle("bleed"));
-    			b.toggle("bleed2", !a.toggle("shake2"));
+    			const wait = 50 + Math.random() * 200;
+    			throttled(traumatize, wait, now);
     		}
 
     		circle(x, y, PLAYER_RADIUS);
@@ -1488,13 +1495,13 @@ var app = (function () {
     	}
 
     	function input0_change_handler() {
-    		SETTINGS.enableClientSidePrediction = this.checked;
-    		$$invalidate(3, SETTINGS);
+    		DEV_SETTINGS.enableClientSidePrediction = this.checked;
+    		$$invalidate(3, DEV_SETTINGS);
     	}
 
     	function input1_change_handler() {
-    		SETTINGS.showServerPlayer = this.checked;
-    		$$invalidate(3, SETTINGS);
+    		DEV_SETTINGS.showServerPlayer = this.checked;
+    		$$invalidate(3, DEV_SETTINGS);
     	}
 
     	$$self.$$set = $$props => {
@@ -1515,7 +1522,7 @@ var app = (function () {
     		players,
     		pendingInputs,
     		playerControls,
-    		SETTINGS,
+    		DEV_SETTINGS,
     		lastGameTickMessage,
     		processInputs,
     		sendInputsToServer,
@@ -1523,6 +1530,7 @@ var app = (function () {
     		moveRightPad,
     		drawPlayer,
     		circle,
+    		traumatize,
     		devMode,
     		settingsPage
     	});
@@ -1545,7 +1553,7 @@ var app = (function () {
     		username,
     		canvas,
     		scoreboard,
-    		SETTINGS,
+    		DEV_SETTINGS,
     		settingsPage,
     		moveJoystick,
     		moveRightPad,

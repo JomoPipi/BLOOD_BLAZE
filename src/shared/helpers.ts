@@ -1,5 +1,6 @@
 
 const PHI = 1.61803398875
+
 const distance = (x : number, y : number, x2 : number, y2 : number) => 
     ((x-x2)**2 + (y-y2)**2)**0.5
 
@@ -13,4 +14,20 @@ const wrap = (min : number, value : number, max : number) =>
         ? value - max
         : value
 
-Object.assign(globalThis, { distance, clamp, wrap, PHI })
+const LAST_CALLED = Symbol()
+const throttled = (func : Function, wait : number, now = Date.now()) => {
+    const f = func as Function & { [key in typeof LAST_CALLED] : number }
+    if (now - (f[LAST_CALLED] || 0) > wait)
+    {
+        f()
+        f[LAST_CALLED] = now
+    }
+}
+
+Object.assign(globalThis, 
+    { PHI
+    , distance
+    , clamp
+    , wrap
+    , throttled 
+    })
