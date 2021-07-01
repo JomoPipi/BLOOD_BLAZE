@@ -11,14 +11,14 @@ type ServerToClientMessageTypes = {
   nomination : [boolean, string]
   gameTick : GameTickMessage
   removedPlayer : string
-  newBullets : NewBulletsForClientsMessage
+  // newBullets : NewBulletsForClientsMessage
 }
 
 type ClientToServerSocketEvents = keyof ClientToServerMessageTypes
 type ClientToServerMessageTypes = {
   nomination : string
   controlsInput : PlayerControlsMessage
-  newBullets : NewBulletForServerMessage
+  // newBullets : NewBulletForServerMessage
   
   connection : ServerSocket
   disconnect : never
@@ -52,52 +52,53 @@ type PlayerControlsMessage = {
   y : number
   shootingAngle : number
   isPressingTrigger : boolean
-  // nowShooting : boolean
-  timeSent : number
   messageNumber : number
   deltaTime : number
 }
-// type ControlsInput = {
-//   leftJoystick : Joystick,
-//   rightThumbpad : { angle : number }
-//   isShooting : boolean
-//   n : number
-// }
 
 type SocketPlayer = {
   x : number
   y : number
   angle : number
-  // isSpeaking : boolean
-  lastTimeGettingShot : number
-  name : string
   score : number
+  name : string
+  lastTimeGettingShot : number
   lastProcessedInput : number
+  // isSpeaking : boolean
+}
+
+type SocketBullet = {
+  x : number
+  y : number
+  speedX : number
+  speedY : number
+  timeFired : number
 }
 
 type GameTickMessage = {
   players : SocketPlayer[]
-  bullets : Point[] // (Point & { speedX : number, speedY : number, timeFired : number })[]
+  bullets : SocketBullet[]
+  newBullets : SocketBullet[]
 }
 
-type NewBulletForServerMessage = {
-  x : number
-  y : number
-  speedX : number
-  speedY : number
-  timeFired : number
-  owner : string
-  id : number
-}
+// type NewBulletForServerMessage = {
+//   x : number
+//   y : number
+//   speedX : number
+//   speedY : number
+//   timeFired : number
+//   owner : string
+//   id : number
+// }
 
-type NewBulletsForClientsMessage = {
-  x : number
-  y : number
-  speedX : number
-  speedY : number
-  timeFired : number
-  id : number
-}[]
+// type NewBulletsForClientsMessage = {
+//   x : number
+//   y : number
+//   speedX : number
+//   speedY : number
+//   timeFired : number
+//   id : number
+// }[]
 
 
 // interface ObjectConstructor {

@@ -1,22 +1,13 @@
 
-type Bullet = {
-    x : number
-    y : number
-    speedX : number
-    speedY : number
-    owner : string
-}
-const LAST_SHOT : Record<string, number> = {}
-
 export class Game {
 
     private players : SocketPlayer[] = []
     private getPlayerByName : Record<string, SocketPlayer> = {}
-    private bullets : Bullet[] = []
+    private bullets : SocketBullet[] = []
 
     addPlayer(name : string) {
         if (this.playerExists(name)) return false
-        const player = this.createNewPlayer(name)
+        const player = createPlayer(name)
         this.players.push(player)
         this.getPlayerByName[name] = player
         return true
@@ -27,6 +18,8 @@ export class Game {
         delete this.getPlayerByName[name]
         io.emit('removedPlayer', name)
     }
+    private readonly LAST_SHOT = new WeakMap<SocketPlayer, number>()
+    private newBullets : SocketBullet[] = []
     updatePlayerInputs(username : string, client : PlayerControlsMessage, now : number) {
         const p = this.getPlayerByName[username]!
         
@@ -51,17 +44,19 @@ export class Game {
         p.angle = client.shootingAngle
         p.lastProcessedInput = client.messageNumber
 
-        if (canShoot(client, client.timeSent, LAST_SHOT[p.name] || 0))
+        if (canShoot(client, now, this.LAST_SHOT.get(p) || 0))
         {
-            console.log('delta =',now - client.timeSent)
-            const b = shootBullet(p)
-            // moveBullet(b, now - client.timeSent)
-            this.bullets.push(b)
-            LAST_SHOT[p.name] = client.timeSent
+            const bullet = shootBullet(p, now)
+            this.BULLET_OWNER.set(bullet, p.name)
+            this.bullets.push(bullet)
+            this.newBullets.push(bullet)
+            this.LAST_SHOT.set(p, now)
         }
 
         movePlayer(p, { x, y }, client.deltaTime)
     }
+    private readonly BULLET_HAS_MOVED = new WeakSet<SocketBullet>()
+    private readonly BULLET_OWNER = new WeakMap<SocketBullet, string>()
     moveObjects(timeDelta : number, now : number) {
         
         const epsilon = 1e-3
@@ -69,7 +64,15 @@ export class Game {
         this.bullets = this.bullets.sort((a,b) => a.x - b.x).filter(bullet => {
             const bx = bullet.x
             const by = bullet.y
-            moveBullet(bullet, timeDelta)
+            if (!this.BULLET_HAS_MOVED.has(bullet))
+            {
+                moveBullet(bullet, now - bullet.timeFired)
+                this.BULLET_HAS_MOVED.add(bullet)
+            }
+            else
+            {
+                moveBullet(bullet, timeDelta)
+            }
             const newbx = bullet.x
             const newby = bullet.y
 
@@ -102,14 +105,15 @@ export class Game {
                 return collides
             }
 
+            const bulletOwner = this.BULLET_OWNER.get(bullet)!
             for (const player of this.players)
             {
-                if (bullet.owner !== player.name && collidesWith(player))
+                if (bulletOwner !== player.name && collidesWith(player))
                 {
                     player.lastTimeGettingShot = now
-                    if (this.getPlayerByName[bullet.owner])
+                    if (this.getPlayerByName[bulletOwner])
                     {
-                        this.getPlayerByName[bullet.owner]!.score++
+                        this.getPlayerByName[bulletOwner]!.score++
                     }
                     return false
                 }
@@ -119,20 +123,14 @@ export class Game {
         })
     }
     getRenderData() : GameTickMessage {
-
-        return { players: this.players, bullets: this.bullets } 
+        const message =
+            { players: this.players
+            , bullets: this.bullets
+            , newBullets: this.newBullets
+            }
+        this.newBullets = []
+        return message
     }
 
     private playerExists = (name : string) => this.getPlayerByName[name]
-    private createNewPlayer(name : string) : SocketPlayer { 
-        return (
-            { x: .5
-            , y: .5
-            , angle: 0
-            , score: 0
-            , name
-            , lastTimeGettingShot: -1
-            , lastProcessedInput: -1
-            })
-    }
 }

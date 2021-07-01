@@ -1,6 +1,5 @@
 
 <script lang="ts">
-
     import { onMount } from "svelte";
     import DirectionPad from "./uielements/DirectionPad.svelte";
     import Joystick from "./uielements/Joystick.svelte";
@@ -12,34 +11,34 @@
     let ctx : CanvasRenderingContext2D
     let scoreboard : HTMLDivElement
 
-    let serverplayer = {} as SocketPlayer
-
-    const players : Record<string, SocketPlayer> = 
-        { [username]: 
-            { x: 0.5
-            , y: 0.5
-            , angle: 0
-            , lastTimeGettingShot: 0
-            , name: username
-            , score: 0
-            , lastProcessedInput: -1
+    type ClientState = {
+        pendingInputs : PlayerControlsMessage[]
+        playerControls : PlayerControlsMessage
+        playerProperties : { LAST_SHOT : number }
+        players : Record<string, SocketPlayer>
+        bullets : SocketBullet[]
+    }
+    
+    const state : ClientState =
+        { pendingInputs: []
+        , playerControls:
+            { x: 0, y: 0
+            , shootingAngle: 0
+            , isPressingTrigger: false
+            , messageNumber: 0
+            , deltaTime: 0
             }
+        , playerProperties:
+            { LAST_SHOT: -1
+            }
+        , players: { [username]: createPlayer(username) }
+        , bullets: []
         }
     
-    const pendingInputs : PlayerControlsMessage[] = []
-
-    const playerControls : PlayerControlsMessage =
-        { x: 0, y: 0
-        , shootingAngle: 0
-        , isPressingTrigger: false
-        // , nowShooting : false
-        , messageNumber: 0
-        , deltaTime: 0
-        , timeSent: Date.now()
-        }
-
-    const PlayerProperties =
-        { LAST_SHOT: -1
+    let lastGameTickMessage : GameTickMessage =
+        { players: []
+        , bullets: []
+        , newBullets: []
         }
 
     console.log('PLAYER_RADIUS =', PLAYER_RADIUS)
@@ -47,43 +46,45 @@
     const DEV_SETTINGS =
         { enableClientSidePrediction: true
         , showServerPlayer: false
+        , serverplayer: {} as SocketPlayer
         }
 
-    let lastGameTickMessage = {} as { bullets : Point[] }
     onMount(() => {
         ctx = canvas.getContext('2d')!
         canvas.height = window.innerWidth
         canvas.width = window.innerWidth
 
-        socket.on('removedPlayer', name => delete players[name])
+        socket.on('removedPlayer', name => delete state.players[name])
 
         socket.on('gameTick', msg => {
             lastGameTickMessage = msg
 
+            state.bullets.push(...msg.newBullets)
+
             for (const p of msg.players)
             {
                 // TODO: 'addPlayer' socket event?
-                if (!players[p.name])
+                if (!state.players[p.name])
                 {
-                    players[p.name] = p
+                    state.players[p.name] = p
                 }
 
-                const player = players[p.name]!
+                const player = state.players[p.name]!
                 if (p.name === username)
                 {
                     // Assign authoritative state from server:
                     Object.assign(player, p)
-                    Object.assign(serverplayer, p)
+                    Object.assign(DEV_SETTINGS.serverplayer, p)
                     let j = 0
-                    while (j < pendingInputs.length)
+                    while (j < state.pendingInputs.length)
                     {
-                        const input = pendingInputs[j]!
+                        const input = state.pendingInputs[j]!
                         
                         if (input.messageNumber <= p.lastProcessedInput)
                         {
                             // Already processed. Its effect is already taken into account into the world update
                             // we just got, so we can drop it.
-                            pendingInputs.splice(j, 1)
+                            state.pendingInputs.splice(j, 1)
                         }
                         else
                         {
@@ -118,56 +119,65 @@
             processInputs(deltaTime, now)
 
             requestAnimationFrame(updateRender)
-            const { bullets } = lastGameTickMessage
-            if (!bullets) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-            scoreboard.innerHTML = '<br>' + Object.values(players)
+            scoreboard.innerHTML = '<br>' + Object.values(state.players)
                 .sort((p1, p2) => p2.score - p1.score)
                 .map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`)
                 .join('<br>') 
-                + `<br><br><br> pending requests: ${pendingInputs.length}`
+                + `<br><br><br> pending requests: ${state.pendingInputs.length}`
 
-            for (const name in players)
+            for (const name in state.players)
             {
-                drawPlayer(players[name]!, now)
+                drawPlayer(state.players[name]!, now)
             }
-            if (DEV_SETTINGS.showServerPlayer && serverplayer.name)
+            if (DEV_SETTINGS.showServerPlayer && DEV_SETTINGS.serverplayer.name)
             {
-                drawPlayer(serverplayer, now, 'purple')
+                drawPlayer(DEV_SETTINGS.serverplayer, now, 'purple')
             }
 
             ctx.fillStyle = '#537'
+            const { bullets } = lastGameTickMessage
             for (const { x, y } of bullets)
             {
                 circle(x * canvas.width, y * canvas.height, 2)
             }
+
+            ctx.fillStyle = '#090'
+            state.bullets = state.bullets.filter(b => {
+                const age = now - b.timeFired
+                const bx = b.x + b.speedX * age
+                const by = b.y + b.speedY * age
+                const x = bx * canvas.width
+                const y = by * canvas.height
+                circle(x, y, 2)
+                return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
+            })
         })()
     })
     
     function processInputs(deltaTime : number, now : number) {
 
-        playerControls.deltaTime = deltaTime
-        playerControls.timeSent = now
+        state.playerControls.deltaTime = deltaTime
 
-        if (canShoot(playerControls, now, PlayerProperties.LAST_SHOT))
+        if (canShoot(state.playerControls, now, state.playerProperties.LAST_SHOT))
         {
-            PlayerProperties.LAST_SHOT = now
+            state.playerProperties.LAST_SHOT = now
         }
         
         // TODO: avoid sending controls while idling?
-        sendInputsToServer(playerControls)
+        sendInputsToServer(state.playerControls)
         
         // TODO: make babel plugin to remove if conditions for production mode
         if (!DEV_MODE || DEV_SETTINGS.enableClientSidePrediction)
         {
-            movePlayer(players[username]!, playerControls, deltaTime)
+            movePlayer(state.players[username]!, state.playerControls, deltaTime)
         }
     }
 
     function sendInputsToServer(playerControls : PlayerControlsMessage) {
         // Save this input for later reconciliation:
-        pendingInputs.push({ ...playerControls })
+        state.pendingInputs.push({ ...playerControls })
 
         socket.emit('controlsInput', playerControls)
 
@@ -175,13 +185,13 @@
     }
 
     function moveJoystick(x : number, y : number) {
-        playerControls.x = x
-        playerControls.y = y
+        state.playerControls.x = x
+        state.playerControls.y = y
     }
 
     function moveRightPad(angle : number, active : boolean) {
-        playerControls.shootingAngle = angle
-        playerControls.isPressingTrigger = active
+        state.playerControls.shootingAngle = angle
+        state.playerControls.isPressingTrigger = active
     }
 
     function drawPlayer(p : SocketPlayer, now : number, color = '#333') {
@@ -200,7 +210,7 @@
         
         circle(x, y, PLAYER_RADIUS)
         const angle = p.name === username 
-            ? playerControls.shootingAngle
+            ? state.playerControls.shootingAngle
             : p.angle
             
         const [X, Y] = 
