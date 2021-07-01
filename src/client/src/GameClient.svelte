@@ -6,11 +6,23 @@
 
     export let socket : ClientSocket
     export let username : string
+	
+    let NETWORK_LATENCY = -1
+
+	setInterval(() => {
+		const start = Date.now();
+
+		// volatile, so the packet will be discarded if the socket is not connected
+		;(socket as any).volatile.emit("ping", () => {
+			NETWORK_LATENCY = Date.now() - start
+            console.log('lag = ', NETWORK_LATENCY)
+		})
+	}, 5000);
 
     let canvas : HTMLCanvasElement
     let ctx : CanvasRenderingContext2D
     let scoreboard : HTMLDivElement
-
+    
     type ClientState = {
         pendingInputs : PlayerControlsMessage[]
         playerControls : PlayerControlsMessage
@@ -41,12 +53,12 @@
         , newBullets: []
         }
 
-    console.log('PLAYER_RADIUS =', PLAYER_RADIUS)
-
     const DEV_SETTINGS =
         { enableClientSidePrediction: true
         , showServerPlayer: false
         , serverplayer: {} as SocketPlayer
+        , showServerbullet: false
+        , showClientbullet: true
         }
 
     onMount(() => {
@@ -126,6 +138,7 @@
                 .map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`)
                 .join('<br>') 
                 + `<br><br><br> pending requests: ${state.pendingInputs.length}`
+                + `<br> network latency: ${NETWORK_LATENCY}`
 
             for (const name in state.players)
             {
@@ -138,21 +151,31 @@
 
             ctx.fillStyle = '#537'
             const { bullets } = lastGameTickMessage
-            for (const { x, y } of bullets)
+            if (DEV_SETTINGS.showServerbullet)
             {
-                circle(x * canvas.width, y * canvas.height, 2)
+                for (const { x, y } of bullets)
+                {
+                    circle(x * canvas.width, y * canvas.height, 2)
+                }
             }
 
-            ctx.fillStyle = '#090'
-            state.bullets = state.bullets.filter(b => {
-                const age = now - b.timeFired
-                const bx = b.x + b.speedX * age
-                const by = b.y + b.speedY * age
-                const x = bx * canvas.width
-                const y = by * canvas.height
-                circle(x, y, 2)
-                return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
-            })
+            if (DEV_SETTINGS.showClientbullet)
+            {
+                ctx.fillStyle = '#090'
+                state.bullets = state.bullets.filter(b => {
+                    const age = now - b.timeFired + 3 * NETWORK_LATENCY
+                    if (age < 0)
+                    {
+                        scoreboard.innerHTML = 'age = ' + age
+                    }
+                    const bx = b.x + b.speedX * age
+                    const by = b.y + b.speedY * age
+                    const x = bx * canvas.width
+                    const y = by * canvas.height
+                    circle(x, y, 2)
+                    return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
+                })
+            }
         })()
     })
     
@@ -262,7 +285,17 @@
 
             <label>
                 <input type=checkbox bind:checked={DEV_SETTINGS.showServerPlayer}>
-                <h4> Show server's player position </h4>
+                <h4> Show server player position </h4>
+            </label>
+
+            <label>
+                <input type=checkbox bind:checked={DEV_SETTINGS.showServerbullet}>
+                <h4> Show server bullet positions </h4>
+            </label>
+
+            <label>
+                <input type=checkbox bind:checked={DEV_SETTINGS.showClientbullet}>
+                <h4> Show client bullet positions </h4>
             </label>
         </div>
     {/if}

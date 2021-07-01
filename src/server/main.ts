@@ -23,6 +23,10 @@ console.log('FPS =', FPS)
 const game = new Game()
 
 io.on('connection', socket => {
+    ;(socket as any).on("ping", (cb : any) => {
+        // if (typeof cb === "function")
+        cb()
+    })
 
     let username = ''
 

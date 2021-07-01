@@ -1019,7 +1019,7 @@ var app = (function () {
     const { Object: Object_1, console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (180:4) {#if devMode()}
+    // (198:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1035,6 +1035,16 @@ var app = (function () {
     	let input1;
     	let t7;
     	let h41;
+    	let t9;
+    	let label2;
+    	let input2;
+    	let t10;
+    	let h42;
+    	let t12;
+    	let label3;
+    	let input3;
+    	let t13;
+    	let h43;
     	let mounted;
     	let dispose;
 
@@ -1057,25 +1067,49 @@ var app = (function () {
     			input1 = element("input");
     			t7 = space();
     			h41 = element("h4");
-    			h41.textContent = "Show server's player position";
+    			h41.textContent = "Show server player position";
+    			t9 = space();
+    			label2 = element("label");
+    			input2 = element("input");
+    			t10 = space();
+    			h42 = element("h4");
+    			h42.textContent = "Show server bullet positions";
+    			t12 = space();
+    			label3 = element("label");
+    			input3 = element("input");
+    			t13 = space();
+    			h43 = element("h4");
+    			h43.textContent = "Show client bullet positions";
     			attr_dev(button0, "class", "settings-button svelte-1048hx4");
-    			add_location(button0, file$1, 180, 8, 6729);
-    			add_location(button1, file$1, 184, 12, 6912);
+    			add_location(button0, file$1, 198, 8, 7421);
+    			add_location(button1, file$1, 202, 12, 7604);
     			attr_dev(input0, "type", "checkbox");
-    			add_location(input0, file$1, 189, 16, 7037);
+    			add_location(input0, file$1, 207, 16, 7729);
     			attr_dev(h40, "class", "svelte-1048hx4");
-    			add_location(h40, file$1, 190, 16, 7131);
+    			add_location(h40, file$1, 208, 16, 7823);
     			attr_dev(label0, "class", "svelte-1048hx4");
-    			add_location(label0, file$1, 188, 12, 7012);
+    			add_location(label0, file$1, 206, 12, 7704);
     			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$1, 194, 16, 7248);
+    			add_location(input1, file$1, 212, 16, 7940);
     			attr_dev(h41, "class", "svelte-1048hx4");
-    			add_location(h41, file$1, 195, 16, 7332);
+    			add_location(h41, file$1, 213, 16, 8024);
     			attr_dev(label1, "class", "svelte-1048hx4");
-    			add_location(label1, file$1, 193, 12, 7223);
+    			add_location(label1, file$1, 211, 12, 7915);
+    			attr_dev(input2, "type", "checkbox");
+    			add_location(input2, file$1, 217, 16, 8125);
+    			attr_dev(h42, "class", "svelte-1048hx4");
+    			add_location(h42, file$1, 218, 16, 8209);
+    			attr_dev(label2, "class", "svelte-1048hx4");
+    			add_location(label2, file$1, 216, 12, 8100);
+    			attr_dev(input3, "type", "checkbox");
+    			add_location(input3, file$1, 222, 16, 8311);
+    			attr_dev(h43, "class", "svelte-1048hx4");
+    			add_location(h43, file$1, 223, 16, 8395);
+    			attr_dev(label3, "class", "svelte-1048hx4");
+    			add_location(label3, file$1, 221, 12, 8286);
     			attr_dev(div, "class", "settings-page svelte-1048hx4");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 183, 8, 6838);
+    			add_location(div, file$1, 201, 8, 7530);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1094,6 +1128,18 @@ var app = (function () {
     			input1.checked = /*DEV_SETTINGS*/ ctx[3].showServerPlayer;
     			append_dev(label1, t7);
     			append_dev(label1, h41);
+    			append_dev(div, t9);
+    			append_dev(div, label2);
+    			append_dev(label2, input2);
+    			input2.checked = /*DEV_SETTINGS*/ ctx[3].showServerbullet;
+    			append_dev(label2, t10);
+    			append_dev(label2, h42);
+    			append_dev(div, t12);
+    			append_dev(div, label3);
+    			append_dev(label3, input3);
+    			input3.checked = /*DEV_SETTINGS*/ ctx[3].showClientbullet;
+    			append_dev(label3, t13);
+    			append_dev(label3, h43);
 
     			if (!mounted) {
     				dispose = [
@@ -1118,7 +1164,9 @@ var app = (function () {
     						false
     					),
     					listen_dev(input0, "change", /*input0_change_handler*/ ctx[11]),
-    					listen_dev(input1, "change", /*input1_change_handler*/ ctx[12])
+    					listen_dev(input1, "change", /*input1_change_handler*/ ctx[12]),
+    					listen_dev(input2, "change", /*input2_change_handler*/ ctx[13]),
+    					listen_dev(input3, "change", /*input3_change_handler*/ ctx[14])
     				];
 
     				mounted = true;
@@ -1133,6 +1181,14 @@ var app = (function () {
 
     			if (dirty & /*DEV_SETTINGS*/ 8) {
     				input1.checked = /*DEV_SETTINGS*/ ctx[3].showServerPlayer;
+    			}
+
+    			if (dirty & /*DEV_SETTINGS*/ 8) {
+    				input2.checked = /*DEV_SETTINGS*/ ctx[3].showServerbullet;
+    			}
+
+    			if (dirty & /*DEV_SETTINGS*/ 8) {
+    				input3.checked = /*DEV_SETTINGS*/ ctx[3].showClientbullet;
     			}
 
     			if (dirty & /*settingsPage*/ 16) {
@@ -1152,7 +1208,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(180:4) {#if devMode()}",
+    		source: "(198:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1203,13 +1259,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-1048hx4");
-    			add_location(center, file$1, 174, 0, 6514);
+    			add_location(center, file$1, 192, 0, 7206);
     			attr_dev(div0, "class", "scoreboard svelte-1048hx4");
-    			add_location(div0, file$1, 175, 0, 6543);
+    			add_location(div0, file$1, 193, 0, 7235);
     			attr_dev(canvas_1, "class", "svelte-1048hx4");
-    			add_location(canvas_1, file$1, 176, 0, 6598);
+    			add_location(canvas_1, file$1, 194, 0, 7290);
     			attr_dev(div1, "class", "input-container svelte-1048hx4");
-    			add_location(div1, file$1, 177, 0, 6628);
+    			add_location(div1, file$1, 195, 0, 7320);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1286,6 +1342,23 @@ var app = (function () {
     	validate_slots("GameClient", slots, []);
     	let { socket } = $$props;
     	let { username } = $$props;
+    	let NETWORK_LATENCY = -1;
+
+    	setInterval(
+    		() => {
+    			const start = Date.now();
+
+    			// volatile, so the packet will be discarded if the socket is not connected
+    			
+
+    			socket.volatile.emit("ping", () => {
+    				NETWORK_LATENCY = Date.now() - start;
+    				console.log("lag = ", NETWORK_LATENCY);
+    			});
+    		},
+    		5000
+    	);
+
     	let canvas;
     	let ctx;
     	let scoreboard;
@@ -1306,12 +1379,13 @@ var app = (function () {
     	};
 
     	let lastGameTickMessage = { players: [], bullets: [], newBullets: [] };
-    	console.log("PLAYER_RADIUS =", PLAYER_RADIUS);
 
     	const DEV_SETTINGS = {
     		enableClientSidePrediction: true,
     		showServerPlayer: false,
-    		serverplayer: {}
+    		serverplayer: {},
+    		showServerbullet: false,
+    		showClientbullet: true
     	};
 
     	onMount(() => {
@@ -1371,7 +1445,7 @@ var app = (function () {
     			processInputs(deltaTime, now);
     			requestAnimationFrame(updateRender);
     			ctx.clearRect(0, 0, canvas.width, canvas.height);
-    			$$invalidate(2, scoreboard.innerHTML = "<br>" + Object.values(state.players).sort((p1, p2) => p2.score - p1.score).map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`).join("<br>") + `<br><br><br> pending requests: ${state.pendingInputs.length}`, scoreboard);
+    			$$invalidate(2, scoreboard.innerHTML = "<br>" + Object.values(state.players).sort((p1, p2) => p2.score - p1.score).map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`).join("<br>") + `<br><br><br> pending requests: ${state.pendingInputs.length}` + `<br> network latency: ${NETWORK_LATENCY}`, scoreboard);
 
     			for (const name in state.players) {
     				drawPlayer(state.players[name], now);
@@ -1384,21 +1458,30 @@ var app = (function () {
     			ctx.fillStyle = "#537";
     			const { bullets } = lastGameTickMessage;
 
-    			for (const { x, y } of bullets) {
-    				circle(x * canvas.width, y * canvas.height, 2);
+    			if (DEV_SETTINGS.showServerbullet) {
+    				for (const { x, y } of bullets) {
+    					circle(x * canvas.width, y * canvas.height, 2);
+    				}
     			}
 
-    			ctx.fillStyle = "#090";
+    			if (DEV_SETTINGS.showClientbullet) {
+    				ctx.fillStyle = "#090";
 
-    			state.bullets = state.bullets.filter(b => {
-    				const age = now - b.timeFired;
-    				const bx = b.x + b.speedX * age;
-    				const by = b.y + b.speedY * age;
-    				const x = bx * canvas.width;
-    				const y = by * canvas.height;
-    				circle(x, y, 2);
-    				return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
-    			});
+    				state.bullets = state.bullets.filter(b => {
+    					const age = now - b.timeFired + 3 * NETWORK_LATENCY;
+
+    					if (age < 0) {
+    						$$invalidate(2, scoreboard.innerHTML = "age = " + age, scoreboard);
+    					}
+
+    					const bx = b.x + b.speedX * age;
+    					const by = b.y + b.speedY * age;
+    					const x = bx * canvas.width;
+    					const y = by * canvas.height;
+    					circle(x, y, 2);
+    					return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
+    				});
+    			}
     		})();
     	});
 
@@ -1507,6 +1590,16 @@ var app = (function () {
     		$$invalidate(3, DEV_SETTINGS);
     	}
 
+    	function input2_change_handler() {
+    		DEV_SETTINGS.showServerbullet = this.checked;
+    		$$invalidate(3, DEV_SETTINGS);
+    	}
+
+    	function input3_change_handler() {
+    		DEV_SETTINGS.showClientbullet = this.checked;
+    		$$invalidate(3, DEV_SETTINGS);
+    	}
+
     	$$self.$$set = $$props => {
     		if ("socket" in $$props) $$invalidate(8, socket = $$props.socket);
     		if ("username" in $$props) $$invalidate(0, username = $$props.username);
@@ -1518,6 +1611,7 @@ var app = (function () {
     		Joystick,
     		socket,
     		username,
+    		NETWORK_LATENCY,
     		canvas,
     		ctx,
     		scoreboard,
@@ -1538,6 +1632,7 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ("socket" in $$props) $$invalidate(8, socket = $$props.socket);
     		if ("username" in $$props) $$invalidate(0, username = $$props.username);
+    		if ("NETWORK_LATENCY" in $$props) NETWORK_LATENCY = $$props.NETWORK_LATENCY;
     		if ("canvas" in $$props) $$invalidate(1, canvas = $$props.canvas);
     		if ("ctx" in $$props) ctx = $$props.ctx;
     		if ("scoreboard" in $$props) $$invalidate(2, scoreboard = $$props.scoreboard);
@@ -1561,7 +1656,9 @@ var app = (function () {
     		div0_binding,
     		canvas_1_binding,
     		input0_change_handler,
-    		input1_change_handler
+    		input1_change_handler,
+    		input2_change_handler,
+    		input3_change_handler
     	];
     }
 

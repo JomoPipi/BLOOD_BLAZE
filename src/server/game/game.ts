@@ -47,9 +47,9 @@ export class Game {
         if (canShoot(client, now, this.LAST_SHOT.get(p) || 0))
         {
             const bullet = shootBullet(p, now)
-            this.BULLET_OWNER.set(bullet, p.name)
             this.bullets.push(bullet)
             this.newBullets.push(bullet)
+            this.BULLET_OWNER.set(bullet, p.name)
             this.LAST_SHOT.set(p, now)
         }
 
