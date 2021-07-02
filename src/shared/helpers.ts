@@ -29,5 +29,23 @@ Object.assign(globalThis,
     , distance
     , clamp
     , wrap
-    , throttled 
+    , throttled
     })
+
+
+const debug = {
+    log(...stuff : any) {
+        document.getElementById('debug-window')!
+            .innerHTML = stuff.join('<br/>')
+    }, 
+    appendLog(...stuff : any) {
+        document.getElementById('debug-window')!
+            .innerHTML += stuff.join('<br/>')
+    }
+}
+
+const isBrowser = typeof globalThis.document?.getElementById === 'function'
+if (isBrowser)
+{
+    Object.assign(globalThis, { debug })
+}

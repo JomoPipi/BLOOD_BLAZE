@@ -45,8 +45,7 @@ io.on('connection', socket => {
         console.log('accepted new user,',name)
         username = name
         socket.on('controlsInput', data => {
-            const now = Date.now()
-            game.updatePlayerInputs(username, data, now)
+            game.updatePlayerInputs(username, data)
         })
     })
 });

@@ -8,8 +8,7 @@
     export let username : string
 	
     let NETWORK_LATENCY = -1
-
-	setInterval(() => {
+    const getNetworkLatency = () => {
 		const start = Date.now();
 
 		// volatile, so the packet will be discarded if the socket is not connected
@@ -17,7 +16,9 @@
 			NETWORK_LATENCY = Date.now() - start
             console.log('lag = ', NETWORK_LATENCY)
 		})
-	}, 5000);
+	}
+    getNetworkLatency()
+	setInterval(getNetworkLatency, 5000)
 
     let canvas : HTMLCanvasElement
     let ctx : CanvasRenderingContext2D
@@ -27,6 +28,7 @@
         pendingInputs : PlayerControlsMessage[]
         playerControls : PlayerControlsMessage
         playerProperties : { LAST_SHOT : number }
+        bulletReceptionTimes : WeakMap<SocketBullet, number>
         players : Record<string, SocketPlayer>
         bullets : SocketBullet[]
     }
@@ -43,6 +45,7 @@
         , playerProperties:
             { LAST_SHOT: -1
             }
+        , bulletReceptionTimes: new WeakMap()
         , players: { [username]: createPlayer(username) }
         , bullets: []
         }
@@ -71,7 +74,13 @@
         socket.on('gameTick', msg => {
             lastGameTickMessage = msg
 
+            const now = Date.now()
+
             state.bullets.push(...msg.newBullets)
+            for (const b of msg.newBullets)
+            {
+                state.bulletReceptionTimes.set(b, now)
+            }
 
             for (const p of msg.players)
             {
@@ -133,11 +142,11 @@
             requestAnimationFrame(updateRender)
             ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-            scoreboard.innerHTML = '<br>' + Object.values(state.players)
+            scoreboard.innerHTML = Object.values(state.players)
                 .sort((p1, p2) => p2.score - p1.score)
                 .map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`)
                 .join('<br>') 
-                + `<br><br><br> pending requests: ${state.pendingInputs.length}`
+                + `<br> pending requests: ${state.pendingInputs.length}`
                 + `<br> network latency: ${NETWORK_LATENCY}`
 
             for (const name in state.players)
@@ -161,13 +170,9 @@
 
             if (DEV_SETTINGS.showClientbullet)
             {
-                ctx.fillStyle = '#090'
+                ctx.fillStyle = '#090' 
                 state.bullets = state.bullets.filter(b => {
-                    const age = now - b.timeFired + 3 * NETWORK_LATENCY
-                    if (age < 0)
-                    {
-                        scoreboard.innerHTML = 'age = ' + age
-                    }
+                    const age = now - (state.bulletReceptionTimes.get(b) || 0) // - NETWORK_LATENCY
                     const bx = b.x + b.speedX * age
                     const by = b.y + b.speedY * age
                     const x = bx * canvas.width
@@ -320,7 +325,8 @@
     }
     .scoreboard {
         position: absolute;
-        top: 1rem;
+        top: 0;
+        padding-top: 2rem;
         right: 10px;
     }
     .settings-button {

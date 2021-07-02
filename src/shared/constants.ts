@@ -19,7 +19,7 @@ Object.assign(globalThis,
     , FPS
     , GAME_TICK
     , canShoot
-    , shootBullet
+    , createBullet
     , moveBullet
     , movePlayer
     , createPlayer
@@ -29,14 +29,15 @@ function canShoot(player : PlayerControlsMessage, now : number, lastTimeShot : n
     return player.isPressingTrigger && now - lastTimeShot > BULLET_COOLDOWN
 }
 
-function shootBullet(p : SocketPlayer, timeFired : number) : SocketBullet {
+let NEXT_BULLLET_ID = 0
+function createBullet(p : SocketPlayer) : SocketBullet {
     const speedX = BULLET_SPEED * Math.cos(p.angle)
     const speedY = BULLET_SPEED * Math.sin(p.angle)
-    const bullet = { x : p.x, y: p.y, speedX, speedY, timeFired }
+    const bullet = { x : p.x, y: p.y, speedX, speedY, id: NEXT_BULLLET_ID++ }
     return bullet
 }
 
-function moveBullet(p : { x : number, y : number, speedX : number, speedY : number }, timeDelta : number) {
+function moveBullet(p : SocketBullet, timeDelta : number) {
     p.x = p.x + p.speedX * timeDelta
     p.y = p.y + p.speedY * timeDelta
 }

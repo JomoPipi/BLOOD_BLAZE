@@ -72,7 +72,7 @@ type SocketBullet = {
   y : number
   speedX : number
   speedY : number
-  timeFired : number
+  id : number
 }
 
 type GameTickMessage = {

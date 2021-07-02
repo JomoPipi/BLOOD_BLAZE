@@ -1019,7 +1019,7 @@ var app = (function () {
     const { Object: Object_1, console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (198:4) {#if devMode()}
+    // (202:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1080,36 +1080,36 @@ var app = (function () {
     			t13 = space();
     			h43 = element("h4");
     			h43.textContent = "Show client bullet positions";
-    			attr_dev(button0, "class", "settings-button svelte-1048hx4");
-    			add_location(button0, file$1, 198, 8, 7421);
-    			add_location(button1, file$1, 202, 12, 7604);
+    			attr_dev(button0, "class", "settings-button svelte-15f4wix");
+    			add_location(button0, file$1, 202, 8, 7571);
+    			add_location(button1, file$1, 206, 12, 7754);
     			attr_dev(input0, "type", "checkbox");
-    			add_location(input0, file$1, 207, 16, 7729);
-    			attr_dev(h40, "class", "svelte-1048hx4");
-    			add_location(h40, file$1, 208, 16, 7823);
-    			attr_dev(label0, "class", "svelte-1048hx4");
-    			add_location(label0, file$1, 206, 12, 7704);
+    			add_location(input0, file$1, 211, 16, 7879);
+    			attr_dev(h40, "class", "svelte-15f4wix");
+    			add_location(h40, file$1, 212, 16, 7973);
+    			attr_dev(label0, "class", "svelte-15f4wix");
+    			add_location(label0, file$1, 210, 12, 7854);
     			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$1, 212, 16, 7940);
-    			attr_dev(h41, "class", "svelte-1048hx4");
-    			add_location(h41, file$1, 213, 16, 8024);
-    			attr_dev(label1, "class", "svelte-1048hx4");
-    			add_location(label1, file$1, 211, 12, 7915);
+    			add_location(input1, file$1, 216, 16, 8090);
+    			attr_dev(h41, "class", "svelte-15f4wix");
+    			add_location(h41, file$1, 217, 16, 8174);
+    			attr_dev(label1, "class", "svelte-15f4wix");
+    			add_location(label1, file$1, 215, 12, 8065);
     			attr_dev(input2, "type", "checkbox");
-    			add_location(input2, file$1, 217, 16, 8125);
-    			attr_dev(h42, "class", "svelte-1048hx4");
-    			add_location(h42, file$1, 218, 16, 8209);
-    			attr_dev(label2, "class", "svelte-1048hx4");
-    			add_location(label2, file$1, 216, 12, 8100);
+    			add_location(input2, file$1, 221, 16, 8275);
+    			attr_dev(h42, "class", "svelte-15f4wix");
+    			add_location(h42, file$1, 222, 16, 8359);
+    			attr_dev(label2, "class", "svelte-15f4wix");
+    			add_location(label2, file$1, 220, 12, 8250);
     			attr_dev(input3, "type", "checkbox");
-    			add_location(input3, file$1, 222, 16, 8311);
-    			attr_dev(h43, "class", "svelte-1048hx4");
-    			add_location(h43, file$1, 223, 16, 8395);
-    			attr_dev(label3, "class", "svelte-1048hx4");
-    			add_location(label3, file$1, 221, 12, 8286);
-    			attr_dev(div, "class", "settings-page svelte-1048hx4");
+    			add_location(input3, file$1, 226, 16, 8461);
+    			attr_dev(h43, "class", "svelte-15f4wix");
+    			add_location(h43, file$1, 227, 16, 8545);
+    			attr_dev(label3, "class", "svelte-15f4wix");
+    			add_location(label3, file$1, 225, 12, 8436);
+    			attr_dev(div, "class", "settings-page svelte-15f4wix");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 201, 8, 7530);
+    			add_location(div, file$1, 205, 8, 7680);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1208,7 +1208,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(198:4) {#if devMode()}",
+    		source: "(202:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1258,14 +1258,14 @@ var app = (function () {
     			if (if_block) if_block.c();
     			t5 = space();
     			create_component(directionpad.$$.fragment);
-    			attr_dev(center, "class", "svelte-1048hx4");
-    			add_location(center, file$1, 192, 0, 7206);
-    			attr_dev(div0, "class", "scoreboard svelte-1048hx4");
-    			add_location(div0, file$1, 193, 0, 7235);
-    			attr_dev(canvas_1, "class", "svelte-1048hx4");
-    			add_location(canvas_1, file$1, 194, 0, 7290);
-    			attr_dev(div1, "class", "input-container svelte-1048hx4");
-    			add_location(div1, file$1, 195, 0, 7320);
+    			attr_dev(center, "class", "svelte-15f4wix");
+    			add_location(center, file$1, 196, 0, 7356);
+    			attr_dev(div0, "class", "scoreboard svelte-15f4wix");
+    			add_location(div0, file$1, 197, 0, 7385);
+    			attr_dev(canvas_1, "class", "svelte-15f4wix");
+    			add_location(canvas_1, file$1, 198, 0, 7440);
+    			attr_dev(div1, "class", "input-container svelte-15f4wix");
+    			add_location(div1, file$1, 199, 0, 7470);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1344,21 +1344,20 @@ var app = (function () {
     	let { username } = $$props;
     	let NETWORK_LATENCY = -1;
 
-    	setInterval(
-    		() => {
-    			const start = Date.now();
+    	const getNetworkLatency = () => {
+    		const start = Date.now();
 
-    			// volatile, so the packet will be discarded if the socket is not connected
-    			
+    		// volatile, so the packet will be discarded if the socket is not connected
+    		
 
-    			socket.volatile.emit("ping", () => {
-    				NETWORK_LATENCY = Date.now() - start;
-    				console.log("lag = ", NETWORK_LATENCY);
-    			});
-    		},
-    		5000
-    	);
+    		socket.volatile.emit("ping", () => {
+    			NETWORK_LATENCY = Date.now() - start;
+    			console.log("lag = ", NETWORK_LATENCY);
+    		});
+    	};
 
+    	getNetworkLatency();
+    	setInterval(getNetworkLatency, 5000);
     	let canvas;
     	let ctx;
     	let scoreboard;
@@ -1374,6 +1373,7 @@ var app = (function () {
     			deltaTime: 0
     		},
     		playerProperties: { LAST_SHOT: -1 },
+    		bulletReceptionTimes: new WeakMap(),
     		players: { [username]: createPlayer(username) },
     		bullets: []
     	};
@@ -1396,7 +1396,12 @@ var app = (function () {
 
     		socket.on("gameTick", msg => {
     			lastGameTickMessage = msg;
+    			const now = Date.now();
     			state.bullets.push(...msg.newBullets);
+
+    			for (const b of msg.newBullets) {
+    				state.bulletReceptionTimes.set(b, now);
+    			}
 
     			for (const p of msg.players) {
     				// TODO: 'addPlayer' socket event?
@@ -1445,7 +1450,7 @@ var app = (function () {
     			processInputs(deltaTime, now);
     			requestAnimationFrame(updateRender);
     			ctx.clearRect(0, 0, canvas.width, canvas.height);
-    			$$invalidate(2, scoreboard.innerHTML = "<br>" + Object.values(state.players).sort((p1, p2) => p2.score - p1.score).map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`).join("<br>") + `<br><br><br> pending requests: ${state.pendingInputs.length}` + `<br> network latency: ${NETWORK_LATENCY}`, scoreboard);
+    			$$invalidate(2, scoreboard.innerHTML = Object.values(state.players).sort((p1, p2) => p2.score - p1.score).map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`).join("<br>") + `<br> pending requests: ${state.pendingInputs.length}` + `<br> network latency: ${NETWORK_LATENCY}`, scoreboard);
 
     			for (const name in state.players) {
     				drawPlayer(state.players[name], now);
@@ -1468,12 +1473,7 @@ var app = (function () {
     				ctx.fillStyle = "#090";
 
     				state.bullets = state.bullets.filter(b => {
-    					const age = now - b.timeFired + 3 * NETWORK_LATENCY;
-
-    					if (age < 0) {
-    						$$invalidate(2, scoreboard.innerHTML = "age = " + age, scoreboard);
-    					}
-
+    					const age = now - (state.bulletReceptionTimes.get(b) || 0); // - NETWORK_LATENCY
     					const bx = b.x + b.speedX * age;
     					const by = b.y + b.speedY * age;
     					const x = bx * canvas.width;
@@ -1612,6 +1612,7 @@ var app = (function () {
     		socket,
     		username,
     		NETWORK_LATENCY,
+    		getNetworkLatency,
     		canvas,
     		ctx,
     		scoreboard,
@@ -1708,7 +1709,7 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file = "src\\App.svelte";
 
-    // (17:0) {:else}
+    // (18:0) {:else}
     function create_else_block(ctx) {
     	let gameclient;
     	let current;
@@ -1752,15 +1753,15 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(17:0) {:else}",
+    		source: "(18:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (15:0) {#if username.length === 0}
-    function create_if_block(ctx) {
+    // (16:0) {#if username.length === 0}
+    function create_if_block_1(ctx) {
     	let nomination;
     	let current;
 
@@ -1802,9 +1803,40 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
+    		id: create_if_block_1.name,
+    		type: "if",
+    		source: "(16:0) {#if username.length === 0}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (21:0) {#if devMode()}
+    function create_if_block(ctx) {
+    	let div;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			div.textContent = "asdfasdf";
+    			attr_dev(div, "id", "debug-window");
+    			attr_dev(div, "class", "svelte-yuxzpj");
+    			add_location(div, file, 21, 1, 599);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(15:0) {#if username.length === 0}",
+    		source: "(21:0) {#if devMode()}",
     		ctx
     	});
 
@@ -1813,12 +1845,14 @@ var app = (function () {
 
     function create_fragment(ctx) {
     	let div;
-    	let t;
+    	let t0;
     	let current_block_type_index;
-    	let if_block;
-    	let if_block_anchor;
+    	let if_block0;
+    	let t1;
+    	let show_if = /*devMode*/ ctx[4]();
+    	let if_block1_anchor;
     	let current;
-    	const if_block_creators = [create_if_block, create_else_block];
+    	const if_block_creators = [create_if_block_1, create_else_block];
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
@@ -1827,26 +1861,31 @@ var app = (function () {
     	}
 
     	current_block_type_index = select_block_type(ctx);
-    	if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    	if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    	let if_block1 = show_if && create_if_block(ctx);
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			t = space();
-    			if_block.c();
-    			if_block_anchor = empty();
+    			t0 = space();
+    			if_block0.c();
+    			t1 = space();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
     			attr_dev(div, "id", "bloodscreen");
-    			attr_dev(div, "class", "svelte-146r0rr");
-    			add_location(div, file, 13, 0, 348);
+    			attr_dev(div, "class", "svelte-yuxzpj");
+    			add_location(div, file, 14, 0, 427);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
-    			insert_dev(target, t, anchor);
+    			insert_dev(target, t0, anchor);
     			if_blocks[current_block_type_index].m(target, anchor);
-    			insert_dev(target, if_block_anchor, anchor);
+    			insert_dev(target, t1, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert_dev(target, if_block1_anchor, anchor);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
@@ -1863,33 +1902,35 @@ var app = (function () {
     				});
 
     				check_outros();
-    				if_block = if_blocks[current_block_type_index];
+    				if_block0 = if_blocks[current_block_type_index];
 
-    				if (!if_block) {
-    					if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-    					if_block.c();
+    				if (!if_block0) {
+    					if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block0.c();
     				} else {
-    					if_block.p(ctx, dirty);
+    					if_block0.p(ctx, dirty);
     				}
 
-    				transition_in(if_block, 1);
-    				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				transition_in(if_block0, 1);
+    				if_block0.m(t1.parentNode, t1);
     			}
     		},
     		i: function intro(local) {
     			if (current) return;
-    			transition_in(if_block);
+    			transition_in(if_block0);
     			current = true;
     		},
     		o: function outro(local) {
-    			transition_out(if_block);
+    			transition_out(if_block0);
     			current = false;
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
-    			if (detaching) detach_dev(t);
+    			if (detaching) detach_dev(t0);
     			if_blocks[current_block_type_index].d(detaching);
-    			if (detaching) detach_dev(if_block_anchor);
+    			if (detaching) detach_dev(t1);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach_dev(if_block1_anchor);
     		}
     	};
 
@@ -1917,6 +1958,7 @@ var app = (function () {
     		$$invalidate(1, username = name);
     	}
 
+    	const devMode = () => DEV_MODE; // It's not defined outside of script tags 🤷
     	const writable_props = ["blaze"];
 
     	Object.keys($$props).forEach(key => {
@@ -1933,7 +1975,8 @@ var app = (function () {
     		GameClient,
     		socket,
     		username,
-    		proceed
+    		proceed,
+    		devMode
     	});
 
     	$$self.$inject_state = $$props => {
@@ -1945,7 +1988,7 @@ var app = (function () {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [blaze, username, socket, proceed];
+    	return [blaze, username, socket, proceed, devMode];
     }
 
     class App extends SvelteComponentDev {

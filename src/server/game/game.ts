@@ -1,26 +1,35 @@
 
+import { Bullet } from "./bullet.js"
+import { Player } from "./player.js"
+
 export class Game {
 
-    private players : SocketPlayer[] = []
-    private getPlayerByName : Record<string, SocketPlayer> = {}
-    private bullets : SocketBullet[] = []
+    private players : Player[] = []
+    private getPlayerByName : Record<string, Player> = {}
+    private bullets : Bullet[] = []
+    private newBullets : Bullet[] = []
 
     addPlayer(name : string) {
         if (this.playerExists(name)) return false
-        const player = createPlayer(name)
+        const player = new Player(name)
+
         this.players.push(player)
         this.getPlayerByName[name] = player
+
         return true
     }
+
     removePlayer(name : string, io : ServerSocket) {
-        if (!this.playerExists(name)) throw 'it should exist.'
-        this.players = this.players.filter(p => p.name !== name)
+        if (!this.playerExists(name)) throw 'Do not try to remove players that don\'t exist.'
+
+        this.players = this.players.filter(p => p.data.name !== name)
         delete this.getPlayerByName[name]
+
         io.emit('removedPlayer', name)
     }
-    private readonly LAST_SHOT = new WeakMap<SocketPlayer, number>()
-    private newBullets : SocketBullet[] = []
-    updatePlayerInputs(username : string, client : PlayerControlsMessage, now : number) {
+    
+    updatePlayerInputs(username : string, client : PlayerControlsMessage) {
+        const now = Date.now()
         const p = this.getPlayerByName[username]!
         
         const dx = client.x
@@ -41,40 +50,44 @@ export class Game {
             ? [dx * k, dy * k]
             : [dx, dy]
 
-        p.angle = client.shootingAngle
-        p.lastProcessedInput = client.messageNumber
+        p.data.angle = client.shootingAngle
+        p.data.lastProcessedInput = client.messageNumber
 
-        if (canShoot(client, now, this.LAST_SHOT.get(p) || 0))
+        if (canShoot(client, now, p.lastTimeShooting))
         {
-            const bullet = shootBullet(p, now)
-            this.bullets.push(bullet)
-            this.newBullets.push(bullet)
-            this.BULLET_OWNER.set(bullet, p.name)
-            this.LAST_SHOT.set(p, now)
+            this.addBullet(p)
         }
 
-        movePlayer(p, { x, y }, client.deltaTime)
+        movePlayer(p.data, { x, y }, client.deltaTime)
     }
-    private readonly BULLET_HAS_MOVED = new WeakSet<SocketBullet>()
-    private readonly BULLET_OWNER = new WeakMap<SocketBullet, string>()
+
+    private addBullet(p : Player) {
+        const bullet = new Bullet(p.data)
+
+        this.bullets.push(bullet)
+        this.newBullets.push(bullet)
+        
+        p.lastTimeShooting = bullet.timeCreated
+    }
+
     moveObjects(timeDelta : number, now : number) {
         
         const epsilon = 1e-3
-        this.players.sort(({ x }, { x: x2 }) => x - x2)
-        this.bullets = this.bullets.sort((a,b) => a.x - b.x).filter(bullet => {
-            const bx = bullet.x
-            const by = bullet.y
-            if (!this.BULLET_HAS_MOVED.has(bullet))
+        this.players.sort((p1, p2) => p1.data.x - p2.data.x)
+        this.bullets = this.bullets.sort((a,b) => a.data.x - b.data.x).filter(bullet => {
+            const bx = bullet.data.x
+            const by = bullet.data.y
+            if (!bullet.hasMovedSinceCreation)
             {
-                moveBullet(bullet, now - bullet.timeFired)
-                this.BULLET_HAS_MOVED.add(bullet)
+                moveBullet(bullet.data, now - bullet.timeCreated)
+                bullet.hasMovedSinceCreation = true
             }
             else
             {
-                moveBullet(bullet, timeDelta)
+                moveBullet(bullet.data, timeDelta)
             }
-            const newbx = bullet.x
-            const newby = bullet.y
+            const newbx = bullet.data.x
+            const newby = bullet.data.y
 
             // m and b define the equation of the line y = m * x + b.
             // that represents the path of the bullet:
@@ -105,15 +118,14 @@ export class Game {
                 return collides
             }
 
-            const bulletOwner = this.BULLET_OWNER.get(bullet)!
             for (const player of this.players)
             {
-                if (bulletOwner !== player.name && collidesWith(player))
+                if (bullet.shooter !== player.data.name && collidesWith(player.data))
                 {
-                    player.lastTimeGettingShot = now
-                    if (this.getPlayerByName[bulletOwner])
+                    player.data.lastTimeGettingShot = now
+                    if (this.getPlayerByName[bullet.shooter])
                     {
-                        this.getPlayerByName[bulletOwner]!.score++
+                        this.getPlayerByName[bullet.shooter]!.data.score++
                     }
                     return false
                 }
@@ -122,11 +134,13 @@ export class Game {
             return 0 <= newbx && newbx <= 1 && 0 <= newby && newby <= 1
         })
     }
+
     getRenderData() : GameTickMessage {
+        const bullets = this.bullets.map(b => b.data)
         const message =
-            { players: this.players
-            , bullets: this.bullets
-            , newBullets: this.newBullets
+            { players: this.players.map(p => p.data)
+            , bullets: bullets
+            , newBullets: bullets
             }
         this.newBullets = []
         return message

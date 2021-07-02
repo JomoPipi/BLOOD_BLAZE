@@ -13,6 +13,9 @@
 		console.log('Welcome to the game,', name + '!')
 		username = name
 	}
+
+    const devMode = () => DEV_MODE // It's not defined outside of script tags 🤷
+
 </script>
 
 <div id="bloodscreen"></div>
@@ -20,6 +23,9 @@
 	<Nomination {proceed} {socket} {blaze}/>
 {:else}
 	<GameClient {socket} {username}/>
+{/if}
+{#if devMode()}
+	<div id="debug-window">asdfasdf</div>
 {/if}
 
 <style lang="scss">
@@ -32,6 +38,19 @@
 		background-color: red;
 		opacity: 0;
 		pointer-events: none;
+		z-index: 99999
+	}
+
+	#debug-window {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		padding-top: 2rem;
+		background-color: transparent;
+		pointer-events: none;
+		color: black;
 		z-index: 99999
 	}
 </style>
