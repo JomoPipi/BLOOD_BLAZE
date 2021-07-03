@@ -25,7 +25,7 @@
 	<GameClient {socket} {username}/>
 {/if}
 {#if devMode()}
-	<div id="debug-window">asdfasdf</div>
+	<div id="debug-window"></div>
 {/if}
 
 <style lang="scss">

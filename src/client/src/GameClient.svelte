@@ -96,6 +96,7 @@
                     // Assign authoritative state from server:
                     Object.assign(player, p)
                     Object.assign(DEV_SETTINGS.serverplayer, p)
+                    if (DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue
                     let j = 0
                     while (j < state.pendingInputs.length)
                     {
@@ -158,7 +159,7 @@
                 drawPlayer(DEV_SETTINGS.serverplayer, now, 'purple')
             }
 
-            ctx.fillStyle = '#537'
+            ctx.fillStyle = '#099'
             const { bullets } = lastGameTickMessage
             if (DEV_SETTINGS.showServerbullet)
             {
@@ -170,7 +171,7 @@
 
             if (DEV_SETTINGS.showClientbullet)
             {
-                ctx.fillStyle = '#090' 
+                ctx.fillStyle = '#f50' 
                 state.bullets = state.bullets.filter(b => {
                     const age = now - (state.bulletReceptionTimes.get(b) || 0) // - NETWORK_LATENCY
                     const bx = b.x + b.speedX * age

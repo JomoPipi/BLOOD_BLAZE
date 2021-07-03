@@ -1019,7 +1019,7 @@ var app = (function () {
     const { Object: Object_1, console: console_1$1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (202:4) {#if devMode()}
+    // (204:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1081,35 +1081,35 @@ var app = (function () {
     			h43 = element("h4");
     			h43.textContent = "Show client bullet positions";
     			attr_dev(button0, "class", "settings-button svelte-15f4wix");
-    			add_location(button0, file$1, 202, 8, 7571);
-    			add_location(button1, file$1, 206, 12, 7754);
+    			add_location(button0, file$1, 204, 8, 7677);
+    			add_location(button1, file$1, 208, 12, 7860);
     			attr_dev(input0, "type", "checkbox");
-    			add_location(input0, file$1, 211, 16, 7879);
+    			add_location(input0, file$1, 213, 16, 7985);
     			attr_dev(h40, "class", "svelte-15f4wix");
-    			add_location(h40, file$1, 212, 16, 7973);
+    			add_location(h40, file$1, 214, 16, 8079);
     			attr_dev(label0, "class", "svelte-15f4wix");
-    			add_location(label0, file$1, 210, 12, 7854);
+    			add_location(label0, file$1, 212, 12, 7960);
     			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$1, 216, 16, 8090);
+    			add_location(input1, file$1, 218, 16, 8196);
     			attr_dev(h41, "class", "svelte-15f4wix");
-    			add_location(h41, file$1, 217, 16, 8174);
+    			add_location(h41, file$1, 219, 16, 8280);
     			attr_dev(label1, "class", "svelte-15f4wix");
-    			add_location(label1, file$1, 215, 12, 8065);
+    			add_location(label1, file$1, 217, 12, 8171);
     			attr_dev(input2, "type", "checkbox");
-    			add_location(input2, file$1, 221, 16, 8275);
+    			add_location(input2, file$1, 223, 16, 8381);
     			attr_dev(h42, "class", "svelte-15f4wix");
-    			add_location(h42, file$1, 222, 16, 8359);
+    			add_location(h42, file$1, 224, 16, 8465);
     			attr_dev(label2, "class", "svelte-15f4wix");
-    			add_location(label2, file$1, 220, 12, 8250);
+    			add_location(label2, file$1, 222, 12, 8356);
     			attr_dev(input3, "type", "checkbox");
-    			add_location(input3, file$1, 226, 16, 8461);
+    			add_location(input3, file$1, 228, 16, 8567);
     			attr_dev(h43, "class", "svelte-15f4wix");
-    			add_location(h43, file$1, 227, 16, 8545);
+    			add_location(h43, file$1, 229, 16, 8651);
     			attr_dev(label3, "class", "svelte-15f4wix");
-    			add_location(label3, file$1, 225, 12, 8436);
+    			add_location(label3, file$1, 227, 12, 8542);
     			attr_dev(div, "class", "settings-page svelte-15f4wix");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 205, 8, 7680);
+    			add_location(div, file$1, 207, 8, 7786);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1208,7 +1208,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(202:4) {#if devMode()}",
+    		source: "(204:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1259,13 +1259,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-15f4wix");
-    			add_location(center, file$1, 196, 0, 7356);
+    			add_location(center, file$1, 198, 0, 7462);
     			attr_dev(div0, "class", "scoreboard svelte-15f4wix");
-    			add_location(div0, file$1, 197, 0, 7385);
+    			add_location(div0, file$1, 199, 0, 7491);
     			attr_dev(canvas_1, "class", "svelte-15f4wix");
-    			add_location(canvas_1, file$1, 198, 0, 7440);
+    			add_location(canvas_1, file$1, 200, 0, 7546);
     			attr_dev(div1, "class", "input-container svelte-15f4wix");
-    			add_location(div1, file$1, 199, 0, 7470);
+    			add_location(div1, file$1, 201, 0, 7576);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1416,6 +1416,7 @@ var app = (function () {
     					Object.assign(player, p);
 
     					Object.assign(DEV_SETTINGS.serverplayer, p);
+    					if (DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue;
     					let j = 0;
 
     					while (j < state.pendingInputs.length) {
@@ -1460,7 +1461,7 @@ var app = (function () {
     				drawPlayer(DEV_SETTINGS.serverplayer, now, "purple");
     			}
 
-    			ctx.fillStyle = "#537";
+    			ctx.fillStyle = "#099";
     			const { bullets } = lastGameTickMessage;
 
     			if (DEV_SETTINGS.showServerbullet) {
@@ -1470,7 +1471,7 @@ var app = (function () {
     			}
 
     			if (DEV_SETTINGS.showClientbullet) {
-    				ctx.fillStyle = "#090";
+    				ctx.fillStyle = "#f50";
 
     				state.bullets = state.bullets.filter(b => {
     					const age = now - (state.bulletReceptionTimes.get(b) || 0); // - NETWORK_LATENCY
@@ -1819,7 +1820,6 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			div.textContent = "asdfasdf";
     			attr_dev(div, "id", "debug-window");
     			attr_dev(div, "class", "svelte-yuxzpj");
     			add_location(div, file, 21, 1, 599);

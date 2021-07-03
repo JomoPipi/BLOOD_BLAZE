@@ -137,10 +137,12 @@ export class Game {
 
     getRenderData() : GameTickMessage {
         const bullets = this.bullets.map(b => b.data)
+        const newBullets = this.newBullets.map(b => b.data)
+        const players = this.players.map(p => p.data)
         const message =
-            { players: this.players.map(p => p.data)
-            , bullets: bullets
-            , newBullets: bullets
+            { players
+            , bullets
+            , newBullets
             }
         this.newBullets = []
         return message

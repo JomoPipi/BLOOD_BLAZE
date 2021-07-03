@@ -7,7 +7,7 @@ const PLAYER_SPEED = 0.0006
 const BULLET_COOLDOWN = 80 // 200
 const BULLET_SPEED = 0.0003
 
-const FPS = 3 // 60
+const FPS = 99 // 4 // 3 // 60
 const GAME_TICK = 1000 / FPS
 
 Object.assign(globalThis, 
@@ -24,16 +24,19 @@ Object.assign(globalThis,
     , movePlayer
     , createPlayer
     })
-
+    
 function canShoot(player : PlayerControlsMessage, now : number, lastTimeShot : number) {
     return player.isPressingTrigger && now - lastTimeShot > BULLET_COOLDOWN
 }
 
 let NEXT_BULLLET_ID = 0
+const estimatedPlayerRadius = PLAYER_RADIUS / 415
 function createBullet(p : SocketPlayer) : SocketBullet {
     const speedX = BULLET_SPEED * Math.cos(p.angle)
     const speedY = BULLET_SPEED * Math.sin(p.angle)
-    const bullet = { x : p.x, y: p.y, speedX, speedY, id: NEXT_BULLLET_ID++ }
+    const x = p.x + estimatedPlayerRadius * Math.cos(p.angle)
+    const y = p.y + estimatedPlayerRadius * Math.sin(p.angle)
+    const bullet = { x, y, speedX, speedY, id: NEXT_BULLLET_ID++ }
     return bullet
 }
 
