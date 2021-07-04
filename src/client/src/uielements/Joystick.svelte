@@ -9,18 +9,20 @@
     let ctx : CanvasRenderingContext2D
     let point : [number, number]
 
-    const size2 = window.innerWidth / 2.5 / PHI
-    const size1 = window.innerWidth / 3
+    const size = window.innerWidth / 2.5 / PHI
+    const canvasScale = 1.5
+
     const radius = 40
     const lineWidth = 8
 
     export let callback : (x : number, y : number) => void = () => 0
 
     onMount(() => {
-        W = canvas.width = H = canvas.height = size1 | 0
-        container.style.width = container.style.height = size2 + 'px'
-        const d = size2 - size2 / PHI
-        canvas.style.left = canvas.style.top = Math.round(-d/2) + 'px'
+        container.style.width = container.style.height = Math.round(size) + 'px'
+        W = canvas.width = H = canvas.height = Math.round(size * canvasScale)
+        const d = Math.floor(size - size * canvasScale) * 0.5
+
+        canvas.style.left = canvas.style.top = d + 'px'
         ctx = canvas.getContext('2d')!
         point = [W/2, H/2]
         
@@ -39,8 +41,9 @@
         }
 
         function touchmove(e : TouchEvent) {
-            const dx = e.targetTouches[0]!.clientX - startX
-            const dy = e.targetTouches[0]!.clientY - startY
+            const sensitivity = 0.5
+            const dx = (e.targetTouches[0]!.clientX - startX) * sensitivity
+            const dy = (e.targetTouches[0]!.clientY - startY) * sensitivity
 
             /*
             -- "restrict" it to a circle of radius W/2:
@@ -96,7 +99,7 @@
         
         const X = x - W/2
         const Y = y - H/2
-        const rot = 1.5 * Math.PI / 4 // 16
+        const rot = 1.2 * Math.PI / 4 // 16
         
         canvas.style.transform = `
         perspective(200px) 
@@ -112,7 +115,6 @@
 <style lang="scss">
     div {
         border: 1px solid #fba;
-        box-sizing: border-box;
         position: relative;
         border-radius: 50%;
         flex-shrink: 0;
@@ -123,6 +125,5 @@
         position: absolute;
         background: transparent;
         box-sizing: border-box;
-        border: 1px solid red;
     }
 </style>

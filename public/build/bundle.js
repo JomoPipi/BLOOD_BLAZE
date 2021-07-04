@@ -806,10 +806,10 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			canvas_1 = element("canvas");
-    			attr_dev(canvas_1, "class", "svelte-lw7y8s");
-    			add_location(canvas_1, file$2, 87, 4, 2571);
-    			attr_dev(div, "class", "svelte-lw7y8s");
-    			add_location(div, file$2, 86, 0, 2538);
+    			attr_dev(canvas_1, "class", "svelte-18l9nl");
+    			add_location(canvas_1, file$2, 88, 4, 2663);
+    			attr_dev(div, "class", "svelte-18l9nl");
+    			add_location(div, file$2, 87, 0, 2630);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -841,6 +841,7 @@ var app = (function () {
     	return block;
     }
 
+    const canvasScale = 1.5;
     const radius = 40;
     const lineWidth = 8;
 
@@ -853,15 +854,14 @@ var app = (function () {
     	let H;
     	let ctx;
     	let point;
-    	const size2 = window.innerWidth / 2.5 / PHI;
-    	const size1 = window.innerWidth / 3;
+    	const size = window.innerWidth / 2.5 / PHI;
     	let { callback = () => 0 } = $$props;
 
     	onMount(() => {
-    		W = $$invalidate(1, canvas.width = H = $$invalidate(1, canvas.height = size1 | 0, canvas), canvas);
-    		$$invalidate(0, container.style.width = $$invalidate(0, container.style.height = size2 + "px", container), container);
-    		const d = size2 - size2 / PHI;
-    		$$invalidate(1, canvas.style.left = $$invalidate(1, canvas.style.top = Math.round(-d / 2) + "px", canvas), canvas);
+    		$$invalidate(0, container.style.width = $$invalidate(0, container.style.height = Math.round(size) + "px", container), container);
+    		W = $$invalidate(1, canvas.width = H = $$invalidate(1, canvas.height = Math.round(size * canvasScale), canvas), canvas);
+    		const d = Math.floor(size - size * canvasScale) * 0.5;
+    		$$invalidate(1, canvas.style.left = $$invalidate(1, canvas.style.top = d + "px", canvas), canvas);
     		ctx = canvas.getContext("2d");
     		point = [W / 2, H / 2];
     		render();
@@ -877,8 +877,9 @@ var app = (function () {
     		}
 
     		function touchmove(e) {
-    			const dx = e.targetTouches[0].clientX - startX;
-    			const dy = e.targetTouches[0].clientY - startY;
+    			const sensitivity = 0.5;
+    			const dx = (e.targetTouches[0].clientX - startX) * sensitivity;
+    			const dy = (e.targetTouches[0].clientY - startY) * sensitivity;
 
     			/*
     -- "restrict" it to a circle of radius W/2:
@@ -926,7 +927,7 @@ var app = (function () {
     		ctx.fill();
     		const X = x - W / 2;
     		const Y = y - H / 2;
-    		const rot = 1.5 * Math.PI / 4; // 16
+    		const rot = 1.2 * Math.PI / 4; // 16
 
     		$$invalidate(
     			1,
@@ -970,8 +971,8 @@ var app = (function () {
     		H,
     		ctx,
     		point,
-    		size2,
-    		size1,
+    		size,
+    		canvasScale,
     		radius,
     		lineWidth,
     		callback,
