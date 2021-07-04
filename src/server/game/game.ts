@@ -85,12 +85,12 @@ export class Game {
             // that represents the path of the bullet:
             const m = (by - newby) / (bx - newbx || epsilon)
             const b = by - m * bx
+            const m$ = -1 / (m || epsilon)
 
             const collidesWith = (p : SocketPlayer) => {
-                // the slope and y-intercept of the line
+                // the slope (m$) and y-intercept of the line
                 // perpendicular to y = m * x + b,
                 // passing through the player:
-                const m$ = -1 / (m || epsilon)
                 const b$ = p.y - m$ * p.x
 
                 // The point of intersection:
