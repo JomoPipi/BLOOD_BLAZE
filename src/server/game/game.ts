@@ -71,16 +71,13 @@ export class Game {
         this.bullets = this.bullets.sort((a,b) => a.data.x - b.data.x).filter(bullet => {
             const bx = bullet.data.x
             const by = bullet.data.y
-            if (!bullet.hasMovedSinceCreation)
-            {
-                const dt = now - bullet.timeCreated + this.getPlayerByName[bullet.shooter]!.lag
-                moveBullet(bullet.data, dt)
-                bullet.hasMovedSinceCreation = true
-            }
-            else
-            {
-                moveBullet(bullet.data, timeDelta)
-            }
+            const dt = bullet.hasMovedSinceCreation
+                ? timeDelta
+                : now - bullet.timeCreated + this.getPlayerByName[bullet.shooter]!.lag
+
+            bullet.hasMovedSinceCreation = true
+            moveBullet(bullet.data, dt)
+            
             const newbx = bullet.data.x
             const newby = bullet.data.y
 
@@ -89,7 +86,7 @@ export class Game {
             const m = (by - newby) / (bx - newbx || epsilon)
             const b = by - m * bx
 
-            function collidesWith(p : SocketPlayer) {
+            const collidesWith = (p : SocketPlayer) => {
                 // the slope and y-intercept of the line
                 // perpendicular to y = m * x + b,
                 // passing through the player:
@@ -100,15 +97,13 @@ export class Game {
                 const x = (b$ - b) / (m - m$)
                 const y = m * x + b
 
-                const radius = PLAYER_RADIUS / 415 // 415 =  approximate width of canvas
-
                 /* The bullet hits the player if:
                 1. The player is in the line of fire.
                 2. The bullet is within a frame of the closest point from the player to the line of fire.
                 */
-                const collides = distance(p.x, p.y, x, y) <= radius                       
-                    && distance(bx, by, x, y) <= BULLET_SPEED * timeDelta       
-                    && distance(newbx, newby, x, y) <= BULLET_SPEED * timeDelta
+                const collides = distance(p.x, p.y, x, y) <= PLAYER_RADIUS                       
+                    && distance(bx, by, x, y) <= BULLET_SPEED * dt       
+                    && distance(newbx, newby, x, y) <= BULLET_SPEED * dt
                     
                 return collides
             }

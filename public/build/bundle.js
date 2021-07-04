@@ -1032,7 +1032,7 @@ var app = (function () {
     const { Object: Object_1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (222:4) {#if devMode()}
+    // (223:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1105,41 +1105,41 @@ var app = (function () {
     			h44 = element("h4");
     			h44.textContent = "Show predicted client bullet positions";
     			attr_dev(button0, "class", "settings-button svelte-15f4wix");
-    			add_location(button0, file$1, 222, 8, 8532);
-    			add_location(button1, file$1, 226, 12, 8715);
+    			add_location(button0, file$1, 223, 8, 8610);
+    			add_location(button1, file$1, 227, 12, 8793);
     			attr_dev(input0, "type", "checkbox");
-    			add_location(input0, file$1, 231, 16, 8840);
+    			add_location(input0, file$1, 232, 16, 8918);
     			attr_dev(h40, "class", "svelte-15f4wix");
-    			add_location(h40, file$1, 232, 16, 8934);
+    			add_location(h40, file$1, 233, 16, 9012);
     			attr_dev(label0, "class", "svelte-15f4wix");
-    			add_location(label0, file$1, 230, 12, 8815);
+    			add_location(label0, file$1, 231, 12, 8893);
     			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$1, 236, 16, 9051);
+    			add_location(input1, file$1, 237, 16, 9129);
     			attr_dev(h41, "class", "svelte-15f4wix");
-    			add_location(h41, file$1, 237, 16, 9135);
+    			add_location(h41, file$1, 238, 16, 9213);
     			attr_dev(label1, "class", "svelte-15f4wix");
-    			add_location(label1, file$1, 235, 12, 9026);
+    			add_location(label1, file$1, 236, 12, 9104);
     			attr_dev(input2, "type", "checkbox");
-    			add_location(input2, file$1, 241, 16, 9236);
+    			add_location(input2, file$1, 242, 16, 9314);
     			attr_dev(h42, "class", "svelte-15f4wix");
-    			add_location(h42, file$1, 242, 16, 9320);
+    			add_location(h42, file$1, 243, 16, 9398);
     			attr_dev(label2, "class", "svelte-15f4wix");
-    			add_location(label2, file$1, 240, 12, 9211);
+    			add_location(label2, file$1, 241, 12, 9289);
     			attr_dev(input3, "type", "checkbox");
-    			add_location(input3, file$1, 246, 16, 9422);
+    			add_location(input3, file$1, 247, 16, 9500);
     			attr_dev(h43, "class", "svelte-15f4wix");
-    			add_location(h43, file$1, 247, 16, 9506);
+    			add_location(h43, file$1, 248, 16, 9584);
     			attr_dev(label3, "class", "svelte-15f4wix");
-    			add_location(label3, file$1, 245, 12, 9397);
+    			add_location(label3, file$1, 246, 12, 9475);
     			attr_dev(input4, "type", "checkbox");
-    			add_location(input4, file$1, 251, 16, 9608);
+    			add_location(input4, file$1, 252, 16, 9686);
     			attr_dev(h44, "class", "svelte-15f4wix");
-    			add_location(h44, file$1, 252, 16, 9701);
+    			add_location(h44, file$1, 253, 16, 9779);
     			attr_dev(label4, "class", "svelte-15f4wix");
-    			add_location(label4, file$1, 250, 12, 9583);
+    			add_location(label4, file$1, 251, 12, 9661);
     			attr_dev(div, "class", "settings-page svelte-15f4wix");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 225, 8, 8641);
+    			add_location(div, file$1, 226, 8, 8719);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1249,7 +1249,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(222:4) {#if devMode()}",
+    		source: "(223:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1300,13 +1300,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-15f4wix");
-    			add_location(center, file$1, 216, 0, 8317);
+    			add_location(center, file$1, 217, 0, 8395);
     			attr_dev(div0, "class", "scoreboard svelte-15f4wix");
-    			add_location(div0, file$1, 217, 0, 8346);
+    			add_location(div0, file$1, 218, 0, 8424);
     			attr_dev(canvas_1, "class", "svelte-15f4wix");
-    			add_location(canvas_1, file$1, 218, 0, 8401);
+    			add_location(canvas_1, file$1, 219, 0, 8479);
     			attr_dev(div1, "class", "input-container svelte-15f4wix");
-    			add_location(div1, file$1, 219, 0, 8431);
+    			add_location(div1, file$1, 220, 0, 8509);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1430,6 +1430,8 @@ var app = (function () {
     		showClientBullet: true,
     		showClientPredictedBullet: true
     	};
+
+    	const clientPlayerRadius = PLAYER_RADIUS * window.innerWidth;
 
     	onMount(() => {
     		ctx = canvas.getContext("2d");
@@ -1592,13 +1594,17 @@ var app = (function () {
     			throttled(traumatize, wait, now);
     		}
 
-    		circle(x, y, PLAYER_RADIUS);
+    		circle(x, y, clientPlayerRadius);
 
     		const angle = p.name === username
     		? state.playerControls.angle
     		: p.angle;
 
-    		const [X, Y] = [x + PLAYER_RADIUS * Math.cos(angle), y + PLAYER_RADIUS * Math.sin(angle)];
+    		const [X, Y] = [
+    			x + clientPlayerRadius * Math.cos(angle),
+    			y + clientPlayerRadius * Math.sin(angle)
+    		];
+
     		circle(X, Y, playerGunSize);
     		ctx.fillStyle = "#40f";
     		ctx.fillText(p.name, x - 17, y - 17);
@@ -1685,6 +1691,7 @@ var app = (function () {
     		state,
     		lastGameTickMessage,
     		DEV_SETTINGS,
+    		clientPlayerRadius,
     		processInputs,
     		sendInputsToServer,
     		moveJoystick,
@@ -1776,7 +1783,7 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file = "src\\App.svelte";
 
-    // (18:0) {:else}
+    // (17:0) {:else}
     function create_else_block(ctx) {
     	let gameclient;
     	let current;
@@ -1820,14 +1827,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(18:0) {:else}",
+    		source: "(17:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (16:0) {#if username.length === 0}
+    // (15:0) {#if username.length === 0}
     function create_if_block_1(ctx) {
     	let nomination;
     	let current;
@@ -1872,14 +1879,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(16:0) {#if username.length === 0}",
+    		source: "(15:0) {#if username.length === 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (21:0) {#if devMode()}
+    // (20:0) {#if devMode()}
     function create_if_block(ctx) {
     	let div;
 
@@ -1888,7 +1895,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "id", "debug-window");
     			attr_dev(div, "class", "svelte-yuxzpj");
-    			add_location(div, file, 21, 1, 599);
+    			add_location(div, file, 20, 1, 544);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1902,7 +1909,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(21:0) {#if devMode()}",
+    		source: "(20:0) {#if devMode()}",
     		ctx
     	});
 
@@ -1940,7 +1947,7 @@ var app = (function () {
     			if_block1_anchor = empty();
     			attr_dev(div, "id", "bloodscreen");
     			attr_dev(div, "class", "svelte-yuxzpj");
-    			add_location(div, file, 14, 0, 427);
+    			add_location(div, file, 13, 0, 372);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2016,7 +2023,6 @@ var app = (function () {
     	validate_slots("App", slots, []);
     	let { blaze } = $$props;
     	const socket = io();
-    	console.log("client PLAYER_RADIUS =", PLAYER_RADIUS);
     	let username = "";
 
     	function proceed(name) {

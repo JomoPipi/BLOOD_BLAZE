@@ -68,6 +68,8 @@
         , showClientPredictedBullet: true
         }
 
+    const clientPlayerRadius = PLAYER_RADIUS * window.innerWidth
+
     onMount(() => {
         ctx = canvas.getContext('2d')!
         canvas.height = window.innerWidth
@@ -261,14 +263,14 @@
             throttled(traumatize, wait, now)
         }
         
-        circle(x, y, PLAYER_RADIUS)
+        circle(x, y, clientPlayerRadius)
         const angle = p.name === username 
             ? state.playerControls.angle
             : p.angle
             
         const [X, Y] = 
-            [ x + PLAYER_RADIUS * Math.cos(angle)
-            , y + PLAYER_RADIUS * Math.sin(angle)
+            [ x + clientPlayerRadius * Math.cos(angle)
+            , y + clientPlayerRadius * Math.sin(angle)
             ]
         circle(X, Y, playerGunSize)
         ctx.fillStyle = '#40f'

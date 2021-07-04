@@ -6,8 +6,6 @@
 
 	const socket = io()
 	
-	console.log('client PLAYER_RADIUS =', PLAYER_RADIUS)
-
 	let username = ''
 	function proceed(name : string) {
 		console.log('Welcome to the game,', name + '!')

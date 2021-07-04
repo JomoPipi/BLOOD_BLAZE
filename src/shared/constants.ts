@@ -1,7 +1,7 @@
 
 const DEV_MODE = true
 
-const PLAYER_RADIUS = 9 as const
+const PLAYER_RADIUS = 0.02
 const PLAYER_SPEED = 0.0002
 
 const BULLET_COOLDOWN = 80 // 200
@@ -31,12 +31,11 @@ function canShoot(player : PlayerControlsMessage, now : number, lastTimeShot : n
 }
 
 let NEXT_BULLLET_ID = 0
-const estimatedPlayerRadius = PLAYER_RADIUS / 415
 function createBullet(p : RotatingPoint, joystick : Point) : SocketBullet {
     const speedX = BULLET_SPEED * Math.cos(p.angle) + joystick.x * PLAYER_SPEED
     const speedY = BULLET_SPEED * Math.sin(p.angle) + joystick.y * PLAYER_SPEED
-    const x = p.x + estimatedPlayerRadius * Math.cos(p.angle)
-    const y = p.y + estimatedPlayerRadius * Math.sin(p.angle)
+    const x = p.x + PLAYER_RADIUS * Math.cos(p.angle)
+    const y = p.y + PLAYER_RADIUS * Math.sin(p.angle)
     const bullet = { x, y, speedX, speedY, id: NEXT_BULLLET_ID++ }
     return bullet
 }
