@@ -7,7 +7,7 @@ const PLAYER_SPEED = 0.0006
 const BULLET_COOLDOWN = 80 // 200
 const BULLET_SPEED = 0.0003
 
-const FPS = 99 // 4 // 3 // 60
+const FPS = 4 // 60
 const GAME_TICK = 1000 / FPS
 
 Object.assign(globalThis, 

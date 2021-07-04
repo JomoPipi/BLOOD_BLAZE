@@ -20,7 +20,8 @@
       "coverage/"
     ],
     "watch": [
-      "src/server/"
+      "src/server/",
+      "src/shared/"
     ],
     "exec": "node --loader ts-node/esm src/server/main.ts --emit",
     "env": {
