@@ -27,7 +27,6 @@ io.on('connection', socket => {
         // if (typeof cb === "function")
         cb()
     })
-
     let username = ''
 
     socket.on('disconnect', () => {
@@ -46,6 +45,11 @@ io.on('connection', socket => {
         username = name
         socket.on('controlsInput', data => {
             game.updatePlayerInputs(username, data)
+        })
+        
+        ;(socket as any).on("networkLatency", (lag : number) => {
+            console.log('network lag =', lag)
+            game.setPlayerLag(username, lag)
         })
     })
 });

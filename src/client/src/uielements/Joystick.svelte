@@ -39,8 +39,8 @@
         }
 
         function touchmove(e : TouchEvent) {
-            const x = e.targetTouches[0]!.clientX - startX
-            const y = e.targetTouches[0]!.clientY - startY
+            const dx = e.targetTouches[0]!.clientX - startX
+            const dy = e.targetTouches[0]!.clientY - startY
 
             /*
             -- "restrict" it to a circle of radius W/2:
@@ -54,27 +54,30 @@
                 k = sqrt((W/2)**2 / (x**2 + y**2))
             */
 
-            const r2 = (W/2 - radius - lineWidth)**2
-            const a = x**2 + y**2
+            const r = W/2 - radius - lineWidth
+            const r2 = r ** 2
+            const a = dx**2 + dy**2
             const k = Math.sqrt(r2 / a)
             const [jx, jy] = a > r2
-                ? [x * k, y * k]
-                : [x, y]
+                ? [dx * k, dy * k]
+                : [dx, dy]
 
             point[0] = jx + W/2
             point[1] = jy + W/2
 
             render()
 
-            callback(2 * (point[0] / W - 0.5), 2 * (point[1] / H - 0.5))
+            const x = jx / r
+            const y = jy / r
+            
+            callback(x, y)
         }
         
         function touchend() { 
             point[0] = W/2
             point[1] = H/2
             render() 
-            
-            return callback(0, 0)
+            callback(0, 0)
         }
     })
 
@@ -120,6 +123,6 @@
         position: absolute;
         background: transparent;
         box-sizing: border-box;
-        border: 1px solid transparent;
+        border: 1px solid red;
     }
 </style>

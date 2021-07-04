@@ -3,7 +3,6 @@ import { Bullet } from "./bullet.js"
 import { Player } from "./player.js"
 
 export class Game {
-
     private players : Player[] = []
     private getPlayerByName : Record<string, Player> = {}
     private bullets : Bullet[] = []
@@ -61,13 +60,8 @@ export class Game {
         movePlayer(p.data, { x, y }, client.deltaTime)
     }
 
-    private addBullet(p : Player, joystick : Point) {
-        const bullet = new Bullet(p.data, joystick)
-
-        this.bullets.push(bullet)
-        this.newBullets.push(bullet)
-        
-        p.lastTimeShooting = bullet.timeCreated
+    setPlayerLag(username : string, lag : number) {
+        this.getPlayerByName[username]!.lag = lag
     }
 
     moveObjects(timeDelta : number, now : number) {
@@ -79,7 +73,8 @@ export class Game {
             const by = bullet.data.y
             if (!bullet.hasMovedSinceCreation)
             {
-                moveBullet(bullet.data, now - bullet.timeCreated + 160)
+                const dt = now - bullet.timeCreated + this.getPlayerByName[bullet.shooter]!.lag
+                moveBullet(bullet.data, dt)
                 bullet.hasMovedSinceCreation = true
             }
             else
@@ -146,6 +141,15 @@ export class Game {
             }
         this.newBullets = []
         return message
+    }
+
+    private addBullet(p : Player, joystick : Point) {
+        const bullet = new Bullet(p.data, joystick)
+
+        this.bullets.push(bullet)
+        this.newBullets.push(bullet)
+        
+        p.lastTimeShooting = bullet.timeCreated
     }
 
     private playerExists = (name : string) => this.getPlayerByName[name]

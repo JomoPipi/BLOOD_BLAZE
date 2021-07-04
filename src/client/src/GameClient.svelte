@@ -15,7 +15,7 @@
 		// volatile, so the packet will be discarded if the socket is not connected
 		;(socket as any).volatile.emit("ping", () => {
 			NETWORK_LATENCY = Date.now() - start
-            console.log('lag = ', NETWORK_LATENCY)
+            ;(socket as any).volatile.emit("networkLatency", NETWORK_LATENCY)
 		})
 	}
     getNetworkLatency()

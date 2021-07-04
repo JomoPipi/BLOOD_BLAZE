@@ -5,12 +5,13 @@ const PLAYER_RADIUS = 9 as const
 const PLAYER_SPEED = 0.0006
 
 const BULLET_COOLDOWN = 80 // 200
-const BULLET_SPEED = 0.0003
+const BULLET_SPEED = 0.0006
 
-const FPS = 3 // 4 // 60
+const FPS = 30 // 4 // 60
 const GAME_TICK = 1000 / FPS
 
 Object.assign(globalThis, 
+
     { DEV_MODE
     , PLAYER_RADIUS
     , PLAYER_SPEED
