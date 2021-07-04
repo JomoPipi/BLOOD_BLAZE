@@ -3,6 +3,7 @@
     import { onMount } from "svelte";
     import DirectionPad from "./uielements/DirectionPad.svelte";
     import Joystick from "./uielements/Joystick.svelte";
+    import { ClientPredictedBullet } from "./ClientPredictedBullet.js";
 
     export let socket : ClientSocket
     export let username : string
@@ -31,13 +32,14 @@
         bulletReceptionTimes : WeakMap<SocketBullet, number>
         players : Record<string, SocketPlayer>
         bullets : SocketBullet[]
+        playerBullets : ClientPredictedBullet[]
     }
     
     const state : ClientState =
         { pendingInputs: []
         , playerControls:
             { x: 0, y: 0
-            , shootingAngle: 0
+            , angle: 0
             , isPressingTrigger: false
             , messageNumber: 0
             , deltaTime: 0
@@ -48,6 +50,7 @@
         , bulletReceptionTimes: new WeakMap()
         , players: { [username]: createPlayer(username) }
         , bullets: []
+        , playerBullets: []
         }
     
     let lastGameTickMessage : GameTickMessage =
@@ -60,8 +63,9 @@
         { enableClientSidePrediction: true
         , showServerPlayer: false
         , serverplayer: {} as SocketPlayer
-        , showServerbullet: false
-        , showClientbullet: true
+        , showServerBullet: false
+        , showClientBullet: true
+        , showClientPredictedBullet: true
         }
 
     onMount(() => {
@@ -93,9 +97,9 @@
                 const player = state.players[p.name]!
                 if (p.name === username)
                 {
-                    // Assign authoritative state from server:
                     Object.assign(player, p)
                     Object.assign(DEV_SETTINGS.serverplayer, p)
+
                     if (DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue
                     let j = 0
                     while (j < state.pendingInputs.length)
@@ -159,17 +163,17 @@
                 drawPlayer(DEV_SETTINGS.serverplayer, now, 'purple')
             }
 
-            ctx.fillStyle = '#099'
-            const { bullets } = lastGameTickMessage
-            if (DEV_SETTINGS.showServerbullet)
+            if (DEV_SETTINGS.showServerBullet)
             {
+                ctx.fillStyle = '#099'
+                const { bullets } = lastGameTickMessage
                 for (const { x, y } of bullets)
                 {
                     circle(x * canvas.width, y * canvas.height, 2)
                 }
             }
 
-            if (DEV_SETTINGS.showClientbullet)
+            if (DEV_SETTINGS.showClientBullet)
             {
                 ctx.fillStyle = '#f50' 
                 state.bullets = state.bullets.filter(b => {
@@ -182,17 +186,28 @@
                     return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
                 })
             }
+
+            if (DEV_SETTINGS.showClientPredictedBullet)
+            {
+                ctx.fillStyle = '#c0c'
+                state.playerBullets = state.playerBullets.filter(bullet => {
+                    const age = now - bullet.timeCreated
+                    const b = bullet.data
+                    const bx = b.x + b.speedX * age
+                    const by = b.y + b.speedY * age
+                    const x = bx * canvas.width
+                    const y = by * canvas.height
+                    circle(x, y, 2)
+                    return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
+                })
+
+            }
         })()
     })
     
     function processInputs(deltaTime : number, now : number) {
 
         state.playerControls.deltaTime = deltaTime
-
-        if (canShoot(state.playerControls, now, state.playerProperties.LAST_SHOT))
-        {
-            state.playerProperties.LAST_SHOT = now
-        }
         
         // TODO: avoid sending controls while idling?
         sendInputsToServer(state.playerControls)
@@ -201,6 +216,15 @@
         if (!DEV_MODE || DEV_SETTINGS.enableClientSidePrediction)
         {
             movePlayer(state.players[username]!, state.playerControls, deltaTime)
+        }
+
+        if (canShoot(state.playerControls, now, state.playerProperties.LAST_SHOT))
+        {
+            state.playerProperties.LAST_SHOT = now
+            
+            const { x, y } = state.players[username]!
+            const { angle } = state.playerControls
+            state.playerBullets.push(new ClientPredictedBullet({ x, y, angle }))
         }
     }
 
@@ -219,7 +243,7 @@
     }
 
     function moveRightPad(angle : number, active : boolean) {
-        state.playerControls.shootingAngle = angle
+        state.playerControls.angle = angle
         state.playerControls.isPressingTrigger = active
     }
 
@@ -239,7 +263,7 @@
         
         circle(x, y, PLAYER_RADIUS)
         const angle = p.name === username 
-            ? state.playerControls.shootingAngle
+            ? state.playerControls.angle
             : p.angle
             
         const [X, Y] = 
@@ -295,13 +319,18 @@
             </label>
 
             <label>
-                <input type=checkbox bind:checked={DEV_SETTINGS.showServerbullet}>
+                <input type=checkbox bind:checked={DEV_SETTINGS.showServerBullet}>
                 <h4> Show server bullet positions </h4>
             </label>
 
             <label>
-                <input type=checkbox bind:checked={DEV_SETTINGS.showClientbullet}>
+                <input type=checkbox bind:checked={DEV_SETTINGS.showClientBullet}>
                 <h4> Show client bullet positions </h4>
+            </label>
+
+            <label>
+                <input type=checkbox bind:checked={DEV_SETTINGS.showClientPredictedBullet}>
+                <h4> Show predicted client bullet positions </h4>
             </label>
         </div>
     {/if}

@@ -50,7 +50,7 @@ export class Game {
             ? [dx * k, dy * k]
             : [dx, dy]
 
-        p.data.angle = client.shootingAngle
+        p.data.angle = client.angle
         p.data.lastProcessedInput = client.messageNumber
 
         if (canShoot(client, now, p.lastTimeShooting))

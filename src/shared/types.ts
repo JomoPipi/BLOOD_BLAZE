@@ -1,10 +1,7 @@
 
 type Point = { x : number, y : number }
-// type BasePlayer = {
-//   x : number
-//   y : number
-//   lastTimeShooting : number
-// }
+type Rotating = { angle : number }
+type RotatingPoint = Point & Rotating
 
 type ServerToClientSocketEvents = keyof ServerToClientMessageTypes
 type ServerToClientMessageTypes = {
@@ -47,10 +44,13 @@ interface ClientSocket {
 }
 
 type Joystick = Point
+
+
+
 type PlayerControlsMessage = { 
   x : number
   y : number
-  shootingAngle : number
+  angle : number
   isPressingTrigger : boolean
   messageNumber : number
   deltaTime : number
@@ -99,8 +99,3 @@ type GameTickMessage = {
 //   timeFired : number
 //   id : number
 // }[]
-
-
-// interface ObjectConstructor {
-//   keys<set extends string>(o : { readonly [key in set] : any }) : set[]
-// }
