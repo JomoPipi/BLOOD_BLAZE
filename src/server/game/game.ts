@@ -55,14 +55,14 @@ export class Game {
 
         if (canShoot(client, now, p.lastTimeShooting))
         {
-            this.addBullet(p)
+            this.addBullet(p, client)
         }
 
         movePlayer(p.data, { x, y }, client.deltaTime)
     }
 
-    private addBullet(p : Player) {
-        const bullet = new Bullet(p.data)
+    private addBullet(p : Player, joystick : Point) {
+        const bullet = new Bullet(p.data, joystick)
 
         this.bullets.push(bullet)
         this.newBullets.push(bullet)
@@ -79,7 +79,7 @@ export class Game {
             const by = bullet.data.y
             if (!bullet.hasMovedSinceCreation)
             {
-                moveBullet(bullet.data, now - bullet.timeCreated)
+                moveBullet(bullet.data, now - bullet.timeCreated + 160)
                 bullet.hasMovedSinceCreation = true
             }
             else

@@ -224,7 +224,7 @@
             
             const { x, y } = state.players[username]!
             const { angle } = state.playerControls
-            state.playerBullets.push(new ClientPredictedBullet({ x, y, angle }))
+            state.playerBullets.push(new ClientPredictedBullet({ x, y, angle }, state.playerControls))
         }
     }
 

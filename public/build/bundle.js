@@ -1017,9 +1017,9 @@ var app = (function () {
     class ClientPredictedBullet {
         timeCreated;
         data;
-        constructor(p) {
+        constructor(p, joystick) {
             this.timeCreated = Date.now();
-            this.data = createBullet(p);
+            this.data = createBullet(p, joystick);
         }
     }
 
@@ -1101,41 +1101,41 @@ var app = (function () {
     			h44 = element("h4");
     			h44.textContent = "Show predicted client bullet positions";
     			attr_dev(button0, "class", "settings-button svelte-15f4wix");
-    			add_location(button0, file$1, 222, 8, 8493);
-    			add_location(button1, file$1, 226, 12, 8676);
+    			add_location(button0, file$1, 222, 8, 8515);
+    			add_location(button1, file$1, 226, 12, 8698);
     			attr_dev(input0, "type", "checkbox");
-    			add_location(input0, file$1, 231, 16, 8801);
+    			add_location(input0, file$1, 231, 16, 8823);
     			attr_dev(h40, "class", "svelte-15f4wix");
-    			add_location(h40, file$1, 232, 16, 8895);
+    			add_location(h40, file$1, 232, 16, 8917);
     			attr_dev(label0, "class", "svelte-15f4wix");
-    			add_location(label0, file$1, 230, 12, 8776);
+    			add_location(label0, file$1, 230, 12, 8798);
     			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$1, 236, 16, 9012);
+    			add_location(input1, file$1, 236, 16, 9034);
     			attr_dev(h41, "class", "svelte-15f4wix");
-    			add_location(h41, file$1, 237, 16, 9096);
+    			add_location(h41, file$1, 237, 16, 9118);
     			attr_dev(label1, "class", "svelte-15f4wix");
-    			add_location(label1, file$1, 235, 12, 8987);
+    			add_location(label1, file$1, 235, 12, 9009);
     			attr_dev(input2, "type", "checkbox");
-    			add_location(input2, file$1, 241, 16, 9197);
+    			add_location(input2, file$1, 241, 16, 9219);
     			attr_dev(h42, "class", "svelte-15f4wix");
-    			add_location(h42, file$1, 242, 16, 9281);
+    			add_location(h42, file$1, 242, 16, 9303);
     			attr_dev(label2, "class", "svelte-15f4wix");
-    			add_location(label2, file$1, 240, 12, 9172);
+    			add_location(label2, file$1, 240, 12, 9194);
     			attr_dev(input3, "type", "checkbox");
-    			add_location(input3, file$1, 246, 16, 9383);
+    			add_location(input3, file$1, 246, 16, 9405);
     			attr_dev(h43, "class", "svelte-15f4wix");
-    			add_location(h43, file$1, 247, 16, 9467);
+    			add_location(h43, file$1, 247, 16, 9489);
     			attr_dev(label3, "class", "svelte-15f4wix");
-    			add_location(label3, file$1, 245, 12, 9358);
+    			add_location(label3, file$1, 245, 12, 9380);
     			attr_dev(input4, "type", "checkbox");
-    			add_location(input4, file$1, 251, 16, 9569);
+    			add_location(input4, file$1, 251, 16, 9591);
     			attr_dev(h44, "class", "svelte-15f4wix");
-    			add_location(h44, file$1, 252, 16, 9662);
+    			add_location(h44, file$1, 252, 16, 9684);
     			attr_dev(label4, "class", "svelte-15f4wix");
-    			add_location(label4, file$1, 250, 12, 9544);
+    			add_location(label4, file$1, 250, 12, 9566);
     			attr_dev(div, "class", "settings-page svelte-15f4wix");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 225, 8, 8602);
+    			add_location(div, file$1, 225, 8, 8624);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1296,13 +1296,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-15f4wix");
-    			add_location(center, file$1, 216, 0, 8278);
+    			add_location(center, file$1, 216, 0, 8300);
     			attr_dev(div0, "class", "scoreboard svelte-15f4wix");
-    			add_location(div0, file$1, 217, 0, 8307);
+    			add_location(div0, file$1, 217, 0, 8329);
     			attr_dev(canvas_1, "class", "svelte-15f4wix");
-    			add_location(canvas_1, file$1, 218, 0, 8362);
+    			add_location(canvas_1, file$1, 218, 0, 8384);
     			attr_dev(div1, "class", "input-container svelte-15f4wix");
-    			add_location(div1, file$1, 219, 0, 8392);
+    			add_location(div1, file$1, 219, 0, 8414);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1553,7 +1553,7 @@ var app = (function () {
     			state.playerProperties.LAST_SHOT = now;
     			const { x, y } = state.players[username];
     			const { angle } = state.playerControls;
-    			state.playerBullets.push(new ClientPredictedBullet({ x, y, angle }));
+    			state.playerBullets.push(new ClientPredictedBullet({ x, y, angle }, state.playerControls));
     		}
     	}
 

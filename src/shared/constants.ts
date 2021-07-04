@@ -7,7 +7,7 @@ const PLAYER_SPEED = 0.0006
 const BULLET_COOLDOWN = 80 // 200
 const BULLET_SPEED = 0.0003
 
-const FPS = 2 // 4 // 60
+const FPS = 3 // 4 // 60
 const GAME_TICK = 1000 / FPS
 
 Object.assign(globalThis, 
@@ -31,9 +31,9 @@ function canShoot(player : PlayerControlsMessage, now : number, lastTimeShot : n
 
 let NEXT_BULLLET_ID = 0
 const estimatedPlayerRadius = PLAYER_RADIUS / 415
-function createBullet(p : RotatingPoint) : SocketBullet {
-    const speedX = BULLET_SPEED * Math.cos(p.angle)
-    const speedY = BULLET_SPEED * Math.sin(p.angle)
+function createBullet(p : RotatingPoint, joystick : Point) : SocketBullet {
+    const speedX = BULLET_SPEED * Math.cos(p.angle) + joystick.x * PLAYER_SPEED
+    const speedY = BULLET_SPEED * Math.sin(p.angle) + joystick.y * PLAYER_SPEED
     const x = p.x + estimatedPlayerRadius * Math.cos(p.angle)
     const y = p.y + estimatedPlayerRadius * Math.sin(p.angle)
     const bullet = { x, y, speedX, speedY, id: NEXT_BULLLET_ID++ }
