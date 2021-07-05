@@ -1,5 +1,5 @@
 
-export class Bullet implements BulletProperties {
+export class Bullet  {
     timeCreated : number
     shooter : string
     data : SocketBullet

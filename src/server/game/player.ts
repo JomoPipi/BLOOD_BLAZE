@@ -1,5 +1,5 @@
 
-export class Player implements PlayerProperties {
+export class Player {
     lag : number = 0
     data : SocketPlayer
     lastTimeShooting = 0
