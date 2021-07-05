@@ -28,7 +28,7 @@
     type ClientState = {
         pendingInputs : PlayerControlsMessage[]
         playerControls : PlayerControlsMessage
-        playerProperties : { LAST_SHOT : number }
+        playerProperties : { LAST_SHOT : number, isPressingTrigger : boolean }
         bulletReceptionTimes : WeakMap<SocketBullet, number>
         players : Record<string, SocketPlayer>
         bullets : SocketBullet[]
@@ -38,14 +38,15 @@
     const state : ClientState =
         { pendingInputs: []
         , playerControls:
-            { x: 0, y: 0
+            { x: 0
+            , y: 0
             , angle: 0
-            , isPressingTrigger: false
             , messageNumber: 0
             , deltaTime: 0
             }
         , playerProperties:
             { LAST_SHOT: -1
+            , isPressingTrigger: false
             }
         , bulletReceptionTimes: new WeakMap()
         , players: { [username]: createPlayer(username) }
@@ -57,6 +58,7 @@
         { players: []
         , bullets: []
         , newBullets: []
+        , deletedBullets: []
         }
 
     const DEV_SETTINGS =
@@ -169,7 +171,7 @@
             {
                 ctx.fillStyle = '#099'
                 const { bullets } = lastGameTickMessage
-                for (const { x, y } of bullets)
+                for (const { x, y, id } of bullets)
                 {
                     circle(x * canvas.width, y * canvas.height, 2)
                 }
@@ -177,8 +179,10 @@
 
             if (DEV_SETTINGS.showClientBullet)
             {
-                ctx.fillStyle = '#f50' 
+                ctx.fillStyle = '#770' 
+                const { deletedBullets } = lastGameTickMessage
                 state.bullets = state.bullets.filter(b => {
+                    if (deletedBullets[b.id]) return false
                     const age = now - (state.bulletReceptionTimes.get(b) || 0) // - NETWORK_LATENCY
                     const bx = b.x + b.speedX * age
                     const by = b.y + b.speedY * age
@@ -192,7 +196,9 @@
             if (DEV_SETTINGS.showClientPredictedBullet)
             {
                 ctx.fillStyle = '#c0c'
+                const { deletedBullets } = lastGameTickMessage
                 state.playerBullets = state.playerBullets.filter(bullet => {
+                    if (deletedBullets[bullet.data.id]) return false
                     const age = now - bullet.timeCreated
                     const b = bullet.data
                     const bx = b.x + b.speedX * age
@@ -211,23 +217,27 @@
 
         state.playerControls.deltaTime = deltaTime
         
-        // TODO: avoid sending controls while idling?
-        sendInputsToServer(state.playerControls)
-        
         // TODO: make babel plugin to remove if conditions for production mode
         if (!DEV_MODE || DEV_SETTINGS.enableClientSidePrediction)
         {
             movePlayer(state.players[username]!, state.playerControls, deltaTime)
         }
 
-        if (canShoot(state.playerControls, now, state.playerProperties.LAST_SHOT))
+        if (state.playerProperties.isPressingTrigger &&
+            canShoot(state.playerControls, now, state.playerProperties.LAST_SHOT))
         {
             state.playerProperties.LAST_SHOT = now
             
             const { x, y } = state.players[username]!
             const { angle } = state.playerControls
-            state.playerBullets.push(new ClientPredictedBullet({ x, y, angle }, state.playerControls))
+            const bullet = new ClientPredictedBullet({ x, y, angle }, state.playerControls)
+            state.playerBullets.push(bullet)
+            state.playerControls.requestedBullet = bullet.data
         }
+
+        // TODO: avoid sending controls while idling?
+        sendInputsToServer(state.playerControls)
+        
     }
 
     function sendInputsToServer(playerControls : PlayerControlsMessage) {
@@ -237,6 +247,7 @@
         socket.emit('controlsInput', playerControls)
 
         playerControls.messageNumber++
+        playerControls.requestedBullet = undefined
     }
 
     function moveJoystick(x : number, y : number) {
@@ -246,7 +257,7 @@
 
     function moveRightPad(angle : number, active : boolean) {
         state.playerControls.angle = angle
-        state.playerControls.isPressingTrigger = active
+        state.playerProperties.isPressingTrigger = active
     }
 
     function drawPlayer(p : SocketPlayer, now : number, color = '#333') {

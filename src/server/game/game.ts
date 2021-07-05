@@ -2,11 +2,12 @@
 import { Bullet } from "./bullet.js"
 import { Player } from "./player.js"
 
-export class Game {
+export class Game  {
     private players : Player[] = []
     private getPlayerByName : Record<string, Player> = {}
     private bullets : Bullet[] = []
     private newBullets : Bullet[] = []
+    private deletedBullets : Record<number, true> = {}
 
     addPlayer(name : string) {
         if (this.playerExists(name)) return false
@@ -52,9 +53,9 @@ export class Game {
         p.data.angle = client.angle
         p.data.lastProcessedInput = client.messageNumber
 
-        if (canShoot(client, now, p.lastTimeShooting))
-        {
-            this.addBullet(p, client)
+        if (client.requestedBullet && canShoot(client, now, p.lastTimeShooting))
+        { // TODO: && isValidBullet(p, client.requestedBullet)))
+            this.addBullet(p, client.requestedBullet)
         }
 
         movePlayer(p.data, { x, y }, client.deltaTime)
@@ -73,7 +74,7 @@ export class Game {
             const by = bullet.data.y
             const dt = bullet.hasMovedSinceCreation
                 ? timeDelta
-                : now - bullet.timeCreated + this.getPlayerByName[bullet.shooter]!.lag
+                : now - bullet.timeCreated + (this.getPlayerByName[bullet.shooter]?.lag || 0)
 
             bullet.hasMovedSinceCreation = true
             moveBullet(bullet.data, dt)
@@ -113,6 +114,7 @@ export class Game {
                 if (bullet.shooter !== player.data.name && collidesWith(player.data))
                 {
                     player.data.lastTimeGettingShot = now
+                    this.deletedBullets[bullet.data.id] = true
                     if (this.getPlayerByName[bullet.shooter])
                     {
                         this.getPlayerByName[bullet.shooter]!.data.score++
@@ -133,13 +135,15 @@ export class Game {
             { players
             , bullets
             , newBullets
+            , deletedBullets: this.deletedBullets
             }
         this.newBullets = []
+        this.deletedBullets = {}
         return message
     }
 
-    private addBullet(p : Player, joystick : Point) {
-        const bullet = new Bullet(p.data, joystick)
+    private addBullet(p : Player, bulletData : SocketBullet) {
+        const bullet = new Bullet(p.data, bulletData)
 
         this.bullets.push(bullet)
         this.newBullets.push(bullet)

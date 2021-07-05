@@ -15,8 +15,10 @@ type ClientToServerSocketEvents = keyof ClientToServerMessageTypes
 type ClientToServerMessageTypes = {
   nomination : string
   controlsInput : PlayerControlsMessage
-  // newBullets : NewBulletForServerMessage
-  
+  networkLatency : number
+
+  // Builtin events
+  ping : Function
   connection : ServerSocket
   disconnect : never
 }
@@ -51,9 +53,9 @@ type PlayerControlsMessage = {
   x : number
   y : number
   angle : number
-  isPressingTrigger : boolean
   messageNumber : number
   deltaTime : number
+  requestedBullet? : SocketBullet
 }
 
 type SocketPlayer = {
@@ -79,6 +81,7 @@ type GameTickMessage = {
   players : SocketPlayer[]
   bullets : SocketBullet[]
   newBullets : SocketBullet[]
+  deletedBullets : Record<number, true>
 }
 
 // type NewBulletForServerMessage = {

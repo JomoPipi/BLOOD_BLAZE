@@ -1,3 +1,4 @@
+
 import express from 'express'
 import path from "path"
 import http from 'http'
@@ -7,7 +8,7 @@ import '../shared/constants.js'
 import '../shared/helpers.js'
 import { Game } from './game/game.js'
 
-// Understanding just 1% of something brings you closer to understanding 100% of it
+// Understanding just 1% of something brings you closer to understanding 100% of it.
 
 const app = express()
 const server = http.createServer(app)
@@ -23,10 +24,8 @@ console.log('FPS =', FPS)
 const game = new Game()
 
 io.on('connection', socket => {
-    ;(socket as any).on("ping", (cb : any) => {
-        // if (typeof cb === "function")
-        cb()
-    })
+    socket.on("ping", cb => cb())
+
     let username = ''
 
     socket.on('disconnect', () => {
@@ -37,18 +36,22 @@ io.on('connection', socket => {
     console.log('a user connected');
 
     socket.on('nomination', name => {
+
         const accepted = game.addPlayer(name)
+
         socket.emit('nomination', [accepted, name])
 
         if (!accepted) return
-        console.log('accepted new user,',name)
+
+        console.log('accepted new user:', name)
+
         username = name
+
         socket.on('controlsInput', data => {
             game.updatePlayerInputs(username, data)
         })
         
-        ;(socket as any).on("networkLatency", (lag : number) => {
-            console.log('network lag =', lag)
+        socket.on("networkLatency", lag => {
             game.setPlayerLag(username, lag)
         })
     })
@@ -63,9 +66,9 @@ console.log('GAME_TICK =',GAME_TICK)
     lastGameLoop = now
     
     game.moveObjects(timeDelta, now)
+
     io.emit('gameTick', game.getRenderData())
 
-    // setImmediate(gameLoop)
     setTimeout(gameLoop, GAME_TICK)
 })()
 

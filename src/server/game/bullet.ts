@@ -5,9 +5,9 @@ export class Bullet implements BulletProperties {
     data : SocketBullet
     hasMovedSinceCreation = false
 
-    constructor(p : SocketPlayer, joystick : Point) {
+    constructor(p : SocketPlayer, data : SocketBullet) {
         this.timeCreated = Date.now()
         this.shooter = p.name
-        this.data = createBullet(p, joystick)
+        this.data = data
     }
 }
