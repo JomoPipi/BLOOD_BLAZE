@@ -434,30 +434,30 @@ var app = (function () {
     			t8 = space();
     			bloodblaze = element("bloodblaze");
     			attr_dev(h1, "class", "svelte-1ggq3y7");
-    			add_location(h1, file$4, 35, 2, 912);
+    			add_location(h1, file$4, 35, 2, 922);
     			attr_dev(h2, "class", "svelte-1ggq3y7");
-    			add_location(h2, file$4, 36, 2, 940);
+    			add_location(h2, file$4, 36, 2, 950);
     			attr_dev(div0, "class", "title svelte-1ggq3y7");
-    			add_location(div0, file$4, 34, 1, 889);
+    			add_location(div0, file$4, 34, 1, 899);
     			attr_dev(input, "autocomplete", "off");
     			attr_dev(input, "placeholder", "Enter your name");
     			attr_dev(input, "pattern", "[A-Za-z0-9 _]*");
     			attr_dev(input, "class", "svelte-1ggq3y7");
-    			add_location(input, file$4, 41, 4, 1101);
+    			add_location(input, file$4, 41, 4, 1111);
     			attr_dev(button, "class", "svelte-1ggq3y7");
-    			add_location(button, file$4, 45, 4, 1234);
+    			add_location(button, file$4, 45, 4, 1244);
     			attr_dev(form, "type", "text");
     			attr_dev(form, "action", "");
-    			add_location(form, file$4, 40, 3, 1043);
-    			add_location(span0, file$4, 47, 2, 1271);
+    			add_location(form, file$4, 40, 3, 1053);
+    			add_location(span0, file$4, 47, 2, 1281);
     			attr_dev(span1, "class", "inner svelte-1ggq3y7");
-    			add_location(span1, file$4, 39, 2, 1018);
+    			add_location(span1, file$4, 39, 2, 1028);
     			attr_dev(div1, "class", "svelte-1ggq3y7");
-    			add_location(div1, file$4, 38, 1, 1009);
+    			add_location(div1, file$4, 38, 1, 1019);
     			attr_dev(bloodblaze, "class", "svelte-1ggq3y7");
-    			add_location(bloodblaze, file$4, 49, 1, 1290);
+    			add_location(bloodblaze, file$4, 49, 1, 1300);
     			attr_dev(main, "class", "svelte-1ggq3y7");
-    			add_location(main, file$4, 33, 0, 880);
+    			add_location(main, file$4, 33, 0, 890);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -538,7 +538,7 @@ var app = (function () {
     		});
 
     		// To speed things up while testing:
-    		if (DEV_MODE) {
+    		if (CONSTANTS.DEV_MODE) {
     			socket.emit("nomination", Math.random().toString());
     		}
     	});
@@ -1020,12 +1020,11 @@ var app = (function () {
     }
 
     class ClientPredictedBullet {
-        // static NEXT_BULLLET_ID = 0
         timeCreated;
         data;
         constructor(p, joystick) {
             this.timeCreated = Date.now();
-            this.data = createBullet(p, joystick, Math.random()); // ++ClientPredictedBullet.NEXT_BULLLET_ID)
+            this.data = CONSTANTS.CREATE_BULLET(p, joystick, Math.random());
         }
     }
 
@@ -1107,41 +1106,41 @@ var app = (function () {
     			h44 = element("h4");
     			h44.textContent = "Show predicted client bullet positions";
     			attr_dev(button0, "class", "settings-button svelte-15f4wix");
-    			add_location(button0, file$1, 235, 8, 9129);
-    			add_location(button1, file$1, 239, 12, 9312);
+    			add_location(button0, file$1, 235, 8, 9191);
+    			add_location(button1, file$1, 239, 12, 9374);
     			attr_dev(input0, "type", "checkbox");
-    			add_location(input0, file$1, 244, 16, 9437);
+    			add_location(input0, file$1, 244, 16, 9499);
     			attr_dev(h40, "class", "svelte-15f4wix");
-    			add_location(h40, file$1, 245, 16, 9531);
+    			add_location(h40, file$1, 245, 16, 9593);
     			attr_dev(label0, "class", "svelte-15f4wix");
-    			add_location(label0, file$1, 243, 12, 9412);
+    			add_location(label0, file$1, 243, 12, 9474);
     			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$1, 249, 16, 9648);
+    			add_location(input1, file$1, 249, 16, 9710);
     			attr_dev(h41, "class", "svelte-15f4wix");
-    			add_location(h41, file$1, 250, 16, 9732);
+    			add_location(h41, file$1, 250, 16, 9794);
     			attr_dev(label1, "class", "svelte-15f4wix");
-    			add_location(label1, file$1, 248, 12, 9623);
+    			add_location(label1, file$1, 248, 12, 9685);
     			attr_dev(input2, "type", "checkbox");
-    			add_location(input2, file$1, 254, 16, 9833);
+    			add_location(input2, file$1, 254, 16, 9895);
     			attr_dev(h42, "class", "svelte-15f4wix");
-    			add_location(h42, file$1, 255, 16, 9917);
+    			add_location(h42, file$1, 255, 16, 9979);
     			attr_dev(label2, "class", "svelte-15f4wix");
-    			add_location(label2, file$1, 253, 12, 9808);
+    			add_location(label2, file$1, 253, 12, 9870);
     			attr_dev(input3, "type", "checkbox");
-    			add_location(input3, file$1, 259, 16, 10019);
+    			add_location(input3, file$1, 259, 16, 10081);
     			attr_dev(h43, "class", "svelte-15f4wix");
-    			add_location(h43, file$1, 260, 16, 10103);
+    			add_location(h43, file$1, 260, 16, 10165);
     			attr_dev(label3, "class", "svelte-15f4wix");
-    			add_location(label3, file$1, 258, 12, 9994);
+    			add_location(label3, file$1, 258, 12, 10056);
     			attr_dev(input4, "type", "checkbox");
-    			add_location(input4, file$1, 264, 16, 10205);
+    			add_location(input4, file$1, 264, 16, 10267);
     			attr_dev(h44, "class", "svelte-15f4wix");
-    			add_location(h44, file$1, 265, 16, 10298);
+    			add_location(h44, file$1, 265, 16, 10360);
     			attr_dev(label4, "class", "svelte-15f4wix");
-    			add_location(label4, file$1, 263, 12, 10180);
+    			add_location(label4, file$1, 263, 12, 10242);
     			attr_dev(div, "class", "settings-page svelte-15f4wix");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 238, 8, 9238);
+    			add_location(div, file$1, 238, 8, 9300);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1302,13 +1301,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-15f4wix");
-    			add_location(center, file$1, 229, 0, 8914);
+    			add_location(center, file$1, 229, 0, 8976);
     			attr_dev(div0, "class", "scoreboard svelte-15f4wix");
-    			add_location(div0, file$1, 230, 0, 8943);
+    			add_location(div0, file$1, 230, 0, 9005);
     			attr_dev(canvas_1, "class", "svelte-15f4wix");
-    			add_location(canvas_1, file$1, 231, 0, 8998);
+    			add_location(canvas_1, file$1, 231, 0, 9060);
     			attr_dev(div1, "class", "input-container svelte-15f4wix");
-    			add_location(div1, file$1, 232, 0, 9028);
+    			add_location(div1, file$1, 232, 0, 9090);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1416,7 +1415,9 @@ var app = (function () {
     		},
     		playerProperties: { LAST_SHOT: -1, isPressingTrigger: false },
     		bulletReceptionTimes: new WeakMap(),
-    		players: { [username]: createPlayer(username) },
+    		players: {
+    			[username]: CONSTANTS.CREATE_PLAYER(username)
+    		},
     		bullets: [],
     		playerBullets: []
     	};
@@ -1437,7 +1438,7 @@ var app = (function () {
     		showClientPredictedBullet: true
     	};
 
-    	const clientPlayerRadius = PLAYER_RADIUS * window.innerWidth;
+    	const clientPlayerRadius = CONSTANTS.PLAYER_RADIUS * window.innerWidth;
 
     	onMount(() => {
     		ctx = canvas.getContext("2d");
@@ -1465,7 +1466,7 @@ var app = (function () {
     				if (p.name === username) {
     					Object.assign(player, p);
     					Object.assign(DEV_SETTINGS.serverplayer, p);
-    					if (DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue;
+    					if (CONSTANTS.DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue;
     					let j = 0;
 
     					while (j < state.pendingInputs.length) {
@@ -1477,7 +1478,7 @@ var app = (function () {
     							state.pendingInputs.splice(j, 1);
     						} else {
     							// Not processed by the server yet. Re-apply it.
-    							movePlayer(player, input, input.deltaTime);
+    							CONSTANTS.MOVE_PLAYER(player, input, input.deltaTime);
 
     							j++;
     						}
@@ -1558,11 +1559,11 @@ var app = (function () {
     		state.playerControls.deltaTime = deltaTime;
 
     		// TODO: make babel plugin to remove if conditions for production mode
-    		if (!DEV_MODE || DEV_SETTINGS.enableClientSidePrediction) {
-    			movePlayer(state.players[username], state.playerControls, deltaTime);
+    		if (!CONSTANTS.DEV_MODE || DEV_SETTINGS.enableClientSidePrediction) {
+    			CONSTANTS.MOVE_PLAYER(state.players[username], state.playerControls, deltaTime);
     		}
 
-    		if (state.playerProperties.isPressingTrigger && canShoot(state.playerControls, now, state.playerProperties.LAST_SHOT)) {
+    		if (state.playerProperties.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, state.playerProperties.LAST_SHOT)) {
     			state.playerProperties.LAST_SHOT = now;
     			const { x, y } = state.players[username];
     			const { angle } = state.playerControls;
@@ -1630,7 +1631,7 @@ var app = (function () {
     		ctx.closePath();
     	}
 
-    	const devMode = () => DEV_MODE; // It's not defined outside of script tags 🤷
+    	const devMode = () => CONSTANTS.DEV_MODE; // It's not defined outside of script tags 🤷
 
     	const settingsPage = {
     		toggle() {
@@ -1908,7 +1909,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "id", "debug-window");
     			attr_dev(div, "class", "svelte-yuxzpj");
-    			add_location(div, file, 20, 1, 544);
+    			add_location(div, file, 20, 1, 554);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1960,7 +1961,7 @@ var app = (function () {
     			if_block1_anchor = empty();
     			attr_dev(div, "id", "bloodscreen");
     			attr_dev(div, "class", "svelte-yuxzpj");
-    			add_location(div, file, 13, 0, 372);
+    			add_location(div, file, 13, 0, 382);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2043,7 +2044,7 @@ var app = (function () {
     		$$invalidate(1, username = name);
     	}
 
-    	const devMode = () => DEV_MODE; // It's not defined outside of script tags 🤷
+    	const devMode = () => CONSTANTS.DEV_MODE; // It's not defined outside of script tags 🤷
     	const writable_props = ["blaze"];
 
     	Object.keys($$props).forEach(key => {

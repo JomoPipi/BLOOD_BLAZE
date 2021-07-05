@@ -18,8 +18,8 @@ const staticPath = path.join(__dirname, '..', '..')
 
 app.use(express.static(staticPath))
 
-console.log('FPS =', FPS)
-console.log('GAME_TICK =',GAME_TICK)
+console.log('FPS =', CONSTANTS.FPS)
+console.log('GAME_TICK =',CONSTANTS.GAME_TICK)
 
 const game = new Game()
 
@@ -70,7 +70,7 @@ let lastGameLoop = Date.now()
 
     io.emit('gameTick', game.getRenderData())
 
-    setTimeout(gameLoop, GAME_TICK)
+    setTimeout(gameLoop, CONSTANTS.GAME_TICK)
 })()
 
 server.listen(3000, () => console.log('SERVER IS LISTENING!'))

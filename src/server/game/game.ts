@@ -53,12 +53,12 @@ export class Game  {
         p.data.angle = client.angle
         p.data.lastProcessedInput = client.messageNumber
 
-        if (client.requestedBullet && canShoot(client, now, p.lastTimeShooting))
+        if (client.requestedBullet && CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting))
         { // TODO: && isValidBullet(p, client.requestedBullet)))
             this.addBullet(p, client.requestedBullet)
         }
 
-        movePlayer(p.data, { x, y }, client.deltaTime)
+        CONSTANTS.MOVE_PLAYER(p.data, { x, y }, client.deltaTime)
     }
 
     setPlayerLag(username : string, lag : number) {
@@ -77,7 +77,7 @@ export class Game  {
                 : now - bullet.timeCreated + (this.getPlayerByName[bullet.shooter]?.lag || 0)
 
             bullet.hasMovedSinceCreation = true
-            moveBullet(bullet.data, dt)
+            CONSTANTS.MOVE_BULLET(bullet.data, dt)
             
             const newbx = bullet.data.x
             const newby = bullet.data.y
@@ -102,9 +102,9 @@ export class Game  {
                 1. The player is in the line of fire.
                 2. The bullet is within a frame of the closest point from the player to the line of fire.
                 */
-                const collides = distance(p.x, p.y, x, y) <= PLAYER_RADIUS                       
-                    && distance(bx, by, x, y) <= BULLET_SPEED * dt       
-                    && distance(newbx, newby, x, y) <= BULLET_SPEED * dt
+                const collides = distance(p.x, p.y, x, y) <= CONSTANTS.PLAYER_RADIUS                       
+                    && distance(bx, by, x, y) <= CONSTANTS.BULLET_SPEED * dt       
+                    && distance(newbx, newby, x, y) <= CONSTANTS.BULLET_SPEED * dt
                     
                 return collides
             }

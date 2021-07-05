@@ -49,7 +49,7 @@
             , isPressingTrigger: false
             }
         , bulletReceptionTimes: new WeakMap()
-        , players: { [username]: createPlayer(username) }
+        , players: { [username]: CONSTANTS.CREATE_PLAYER(username) }
         , bullets: []
         , playerBullets: []
         }
@@ -70,7 +70,7 @@
         , showClientPredictedBullet: true
         }
 
-    const clientPlayerRadius = PLAYER_RADIUS * window.innerWidth
+    const clientPlayerRadius = CONSTANTS.PLAYER_RADIUS * window.innerWidth
 
     onMount(() => {
         ctx = canvas.getContext('2d')!
@@ -104,7 +104,7 @@
                     Object.assign(player, p)
                     Object.assign(DEV_SETTINGS.serverplayer, p)
 
-                    if (DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue
+                    if (CONSTANTS.DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue
                     let j = 0
                     while (j < state.pendingInputs.length)
                     {
@@ -119,7 +119,7 @@
                         else
                         {
                             // Not processed by the server yet. Re-apply it.
-                            movePlayer(player, input, input.deltaTime)
+                            CONSTANTS.MOVE_PLAYER(player, input, input.deltaTime)
                             j++
                         }
                     }
@@ -218,13 +218,13 @@
         state.playerControls.deltaTime = deltaTime
         
         // TODO: make babel plugin to remove if conditions for production mode
-        if (!DEV_MODE || DEV_SETTINGS.enableClientSidePrediction)
+        if (!CONSTANTS.DEV_MODE || DEV_SETTINGS.enableClientSidePrediction)
         {
-            movePlayer(state.players[username]!, state.playerControls, deltaTime)
+            CONSTANTS.MOVE_PLAYER(state.players[username]!, state.playerControls, deltaTime)
         }
 
         if (state.playerProperties.isPressingTrigger &&
-            canShoot(state.playerControls, now, state.playerProperties.LAST_SHOT))
+            CONSTANTS.CAN_SHOOT(now, state.playerProperties.LAST_SHOT))
         {
             state.playerProperties.LAST_SHOT = now
             
@@ -302,7 +302,7 @@
         b.toggle('bleed2', !a.toggle('shake2'))
     }
 
-    const devMode = () => DEV_MODE // It's not defined outside of script tags 🤷
+    const devMode = () => CONSTANTS.DEV_MODE // It's not defined outside of script tags 🤷
 
     const settingsPage = { toggle() { settingsPage.isOpen ^= 1 }, isOpen: 0 }
 </script>

@@ -17,13 +17,11 @@ import { onMount } from "svelte";
 		})
 
 		// To speed things up while testing:
-		if (DEV_MODE)
+		if (CONSTANTS.DEV_MODE)
 		{
 			socket.emit('nomination', Math.random().toString())
 		}
 	})
-
-
 
 	function tryUsername(e : Event) {
 		e.preventDefault()

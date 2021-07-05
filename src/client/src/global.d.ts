@@ -1,4 +1,4 @@
 /// <reference types="svelte" />
 
 declare function io() : ClientSocket
-declare const DEV_MODE : boolean
+// declare const CONSTANTS : { DEV_MODE : boolean }
