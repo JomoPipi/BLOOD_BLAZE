@@ -171,7 +171,7 @@
             {
                 ctx.fillStyle = '#099'
                 const { bullets } = lastGameTickMessage
-                for (const { x, y, id } of bullets)
+                for (const { x, y } of bullets)
                 {
                     circle(x * canvas.width, y * canvas.height, 2)
                 }

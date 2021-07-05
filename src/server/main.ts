@@ -14,26 +14,27 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server) as unknown as ServerSocket
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
 const staticPath = path.join(__dirname, '..', '..')
 
 app.use(express.static(staticPath))
 
 console.log('FPS =', FPS)
+console.log('GAME_TICK =',GAME_TICK)
 
 const game = new Game()
 
 io.on('connection', socket => {
-    socket.on("ping", cb => cb())
 
     let username = ''
+
+    console.log('a user connected');
+
+    socket.on("ping", cb => cb())
 
     socket.on('disconnect', () => {
         console.log('a user disconnected');
         if (username) game.removePlayer(username, io)
-    });
-
-    console.log('a user connected');
+    })
 
     socket.on('nomination', name => {
 
@@ -42,6 +43,8 @@ io.on('connection', socket => {
         socket.emit('nomination', [accepted, name])
 
         if (!accepted) return
+
+        socket.removeAllListeners('nomination')
 
         console.log('accepted new user:', name)
 
@@ -55,11 +58,9 @@ io.on('connection', socket => {
             game.setPlayerLag(username, lag)
         })
     })
-});
+})
 
 let lastGameLoop = Date.now()
-
-console.log('GAME_TICK =',GAME_TICK)
 ;(function gameLoop() {
     const now = Date.now()
     const timeDelta = now - lastGameLoop

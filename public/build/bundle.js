@@ -434,30 +434,30 @@ var app = (function () {
     			t8 = space();
     			bloodblaze = element("bloodblaze");
     			attr_dev(h1, "class", "svelte-1ggq3y7");
-    			add_location(h1, file$4, 34, 2, 858);
+    			add_location(h1, file$4, 35, 2, 912);
     			attr_dev(h2, "class", "svelte-1ggq3y7");
-    			add_location(h2, file$4, 35, 2, 886);
+    			add_location(h2, file$4, 36, 2, 940);
     			attr_dev(div0, "class", "title svelte-1ggq3y7");
-    			add_location(div0, file$4, 33, 1, 835);
+    			add_location(div0, file$4, 34, 1, 889);
     			attr_dev(input, "autocomplete", "off");
     			attr_dev(input, "placeholder", "Enter your name");
     			attr_dev(input, "pattern", "[A-Za-z0-9 _]*");
     			attr_dev(input, "class", "svelte-1ggq3y7");
-    			add_location(input, file$4, 40, 4, 1047);
+    			add_location(input, file$4, 41, 4, 1101);
     			attr_dev(button, "class", "svelte-1ggq3y7");
-    			add_location(button, file$4, 44, 4, 1180);
+    			add_location(button, file$4, 45, 4, 1234);
     			attr_dev(form, "type", "text");
     			attr_dev(form, "action", "");
-    			add_location(form, file$4, 39, 3, 989);
-    			add_location(span0, file$4, 46, 2, 1217);
+    			add_location(form, file$4, 40, 3, 1043);
+    			add_location(span0, file$4, 47, 2, 1271);
     			attr_dev(span1, "class", "inner svelte-1ggq3y7");
-    			add_location(span1, file$4, 38, 2, 964);
+    			add_location(span1, file$4, 39, 2, 1018);
     			attr_dev(div1, "class", "svelte-1ggq3y7");
-    			add_location(div1, file$4, 37, 1, 955);
+    			add_location(div1, file$4, 38, 1, 1009);
     			attr_dev(bloodblaze, "class", "svelte-1ggq3y7");
-    			add_location(bloodblaze, file$4, 48, 1, 1236);
+    			add_location(bloodblaze, file$4, 49, 1, 1290);
     			attr_dev(main, "class", "svelte-1ggq3y7");
-    			add_location(main, file$4, 32, 0, 826);
+    			add_location(main, file$4, 33, 0, 880);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -528,6 +528,7 @@ var app = (function () {
     	onMount(() => {
     		socket.on("nomination", ([success, name]) => {
     			if (success) {
+    				socket.removeAllListeners("nomination");
     				proceed(name);
     			}
 
@@ -1106,41 +1107,41 @@ var app = (function () {
     			h44 = element("h4");
     			h44.textContent = "Show predicted client bullet positions";
     			attr_dev(button0, "class", "settings-button svelte-15f4wix");
-    			add_location(button0, file$1, 235, 8, 9133);
-    			add_location(button1, file$1, 239, 12, 9316);
+    			add_location(button0, file$1, 235, 8, 9129);
+    			add_location(button1, file$1, 239, 12, 9312);
     			attr_dev(input0, "type", "checkbox");
-    			add_location(input0, file$1, 244, 16, 9441);
+    			add_location(input0, file$1, 244, 16, 9437);
     			attr_dev(h40, "class", "svelte-15f4wix");
-    			add_location(h40, file$1, 245, 16, 9535);
+    			add_location(h40, file$1, 245, 16, 9531);
     			attr_dev(label0, "class", "svelte-15f4wix");
-    			add_location(label0, file$1, 243, 12, 9416);
+    			add_location(label0, file$1, 243, 12, 9412);
     			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$1, 249, 16, 9652);
+    			add_location(input1, file$1, 249, 16, 9648);
     			attr_dev(h41, "class", "svelte-15f4wix");
-    			add_location(h41, file$1, 250, 16, 9736);
+    			add_location(h41, file$1, 250, 16, 9732);
     			attr_dev(label1, "class", "svelte-15f4wix");
-    			add_location(label1, file$1, 248, 12, 9627);
+    			add_location(label1, file$1, 248, 12, 9623);
     			attr_dev(input2, "type", "checkbox");
-    			add_location(input2, file$1, 254, 16, 9837);
+    			add_location(input2, file$1, 254, 16, 9833);
     			attr_dev(h42, "class", "svelte-15f4wix");
-    			add_location(h42, file$1, 255, 16, 9921);
+    			add_location(h42, file$1, 255, 16, 9917);
     			attr_dev(label2, "class", "svelte-15f4wix");
-    			add_location(label2, file$1, 253, 12, 9812);
+    			add_location(label2, file$1, 253, 12, 9808);
     			attr_dev(input3, "type", "checkbox");
-    			add_location(input3, file$1, 259, 16, 10023);
+    			add_location(input3, file$1, 259, 16, 10019);
     			attr_dev(h43, "class", "svelte-15f4wix");
-    			add_location(h43, file$1, 260, 16, 10107);
+    			add_location(h43, file$1, 260, 16, 10103);
     			attr_dev(label3, "class", "svelte-15f4wix");
-    			add_location(label3, file$1, 258, 12, 9998);
+    			add_location(label3, file$1, 258, 12, 9994);
     			attr_dev(input4, "type", "checkbox");
-    			add_location(input4, file$1, 264, 16, 10209);
+    			add_location(input4, file$1, 264, 16, 10205);
     			attr_dev(h44, "class", "svelte-15f4wix");
-    			add_location(h44, file$1, 265, 16, 10302);
+    			add_location(h44, file$1, 265, 16, 10298);
     			attr_dev(label4, "class", "svelte-15f4wix");
-    			add_location(label4, file$1, 263, 12, 10184);
+    			add_location(label4, file$1, 263, 12, 10180);
     			attr_dev(div, "class", "settings-page svelte-15f4wix");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 238, 8, 9242);
+    			add_location(div, file$1, 238, 8, 9238);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1301,13 +1302,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-15f4wix");
-    			add_location(center, file$1, 229, 0, 8918);
+    			add_location(center, file$1, 229, 0, 8914);
     			attr_dev(div0, "class", "scoreboard svelte-15f4wix");
-    			add_location(div0, file$1, 230, 0, 8947);
+    			add_location(div0, file$1, 230, 0, 8943);
     			attr_dev(canvas_1, "class", "svelte-15f4wix");
-    			add_location(canvas_1, file$1, 231, 0, 9002);
+    			add_location(canvas_1, file$1, 231, 0, 8998);
     			attr_dev(div1, "class", "input-container svelte-15f4wix");
-    			add_location(div1, file$1, 232, 0, 9032);
+    			add_location(div1, file$1, 232, 0, 9028);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1513,7 +1514,7 @@ var app = (function () {
     				ctx.fillStyle = "#099";
     				const { bullets } = lastGameTickMessage;
 
-    				for (const { x, y, id } of bullets) {
+    				for (const { x, y } of bullets) {
     					circle(x * canvas.width, y * canvas.height, 2);
     				}
     			}

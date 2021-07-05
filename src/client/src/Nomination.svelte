@@ -10,6 +10,7 @@ import { onMount } from "svelte";
 		socket.on('nomination', ([success, name]) => {
 			if (success)
 			{
+        		socket.removeAllListeners('nomination')
 				proceed(name)
 			}
 			alert(success ? `Welcome, ${name}!` : `Sorry, "${name}" is not available.`)

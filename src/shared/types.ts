@@ -32,6 +32,8 @@ interface ServerSocket {
 
   emit <T extends ServerToClientSocketEvents>
     (event : T, data : ServerToClientMessageTypes[T]) : void
+
+  removeAllListeners(e : keyof ClientToServerMessageTypes) : void
 }
 
 interface ClientSocket {
@@ -43,6 +45,8 @@ interface ClientSocket {
 
   emit <T extends ClientToServerSocketEvents>
     (event : T, data : ClientToServerMessageTypes[T]) : void
+
+  removeAllListeners(x : keyof ServerToClientMessageTypes) : void
 }
 
 type Joystick = Point
