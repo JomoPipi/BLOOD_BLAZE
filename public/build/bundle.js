@@ -37,6 +37,12 @@ var app = (function () {
     function detach(node) {
         node.parentNode.removeChild(node);
     }
+    function destroy_each(iterations, detaching) {
+        for (let i = 0; i < iterations.length; i += 1) {
+            if (iterations[i])
+                iterations[i].d(detaching);
+        }
+    }
     function element(name) {
         return document.createElement(name);
     }
@@ -358,6 +364,15 @@ var app = (function () {
             return;
         dispatch_dev('SvelteDOMSetData', { node: text, data });
         text.data = data;
+    }
+    function validate_each_argument(arg) {
+        if (typeof arg !== 'string' && !(arg && typeof arg === 'object' && 'length' in arg)) {
+            let msg = '{#each} only iterates over array-like objects.';
+            if (typeof Symbol === 'function' && arg && Symbol.iterator in arg) {
+                msg += ' You can use a spread to convert this iterable into an array.';
+            }
+            throw new Error(msg);
+        }
     }
     function validate_slots(name, slot, keys) {
         for (const slot_key of Object.keys(slot)) {
@@ -1033,11 +1048,11 @@ var app = (function () {
         serverplayer: {},
         showServerBullet: false,
         showClientBullet: true,
-        showClientPredictedBullet: true };
+        showClientPredictedBullet: true,
+        interpolateEnemies: true };
 
     const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth;
     class GameRenderer {
-        lastRender = 0;
         canvas;
         ctx;
         username;
@@ -1049,11 +1064,9 @@ var app = (function () {
             this.state = state;
         }
         render(now) {
-            this.lastRender || now;
-            this.lastRender = now;
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             for (const name in this.state.players) {
-                this.drawPlayer(this.state.players[name], now);
+                this.drawPlayer(this.state.players[name].data, now);
             }
             if (DEV_SETTINGS.showServerPlayer && DEV_SETTINGS.serverplayer.name) {
                 this.drawPlayer(DEV_SETTINGS.serverplayer, now, 'purple');
@@ -1130,6 +1143,14 @@ var app = (function () {
         b.toggle('bleed2', !a.toggle('shake2'));
     }
 
+    class Player {
+        positionBuffer = [];
+        data;
+        constructor(data) {
+            this.data = data;
+        }
+    }
+
     const defaultClientState = username => ({ pendingInputs: [],
         playerControls: { x: 0,
             y: 0,
@@ -1141,7 +1162,7 @@ var app = (function () {
             isPressingTrigger: false
         },
         bulletReceptionTimes: new WeakMap(),
-        players: { [username]: CONSTANTS.CREATE_PLAYER(username) },
+        players: { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) },
         bullets: [],
         playerBullets: [],
         lastGameTickMessage: { players: [],
@@ -1156,39 +1177,30 @@ var app = (function () {
     const { Object: Object_1 } = globals;
     const file$1 = "src\\game\\GameClient.svelte";
 
-    // (140:4) {#if devMode()}
+    function get_each_context(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[19] = list[i];
+    	child_ctx[20] = list;
+    	child_ctx[21] = i;
+    	return child_ctx;
+    }
+
+    // (146:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
     	let div;
     	let button1;
     	let t3;
-    	let label0;
-    	let input0;
-    	let t4;
-    	let h40;
-    	let t6;
-    	let label1;
-    	let input1;
-    	let t7;
-    	let h41;
-    	let t9;
-    	let label2;
-    	let input2;
-    	let t10;
-    	let h42;
-    	let t12;
-    	let label3;
-    	let input3;
-    	let t13;
-    	let h43;
-    	let t15;
-    	let label4;
-    	let input4;
-    	let t16;
-    	let h44;
     	let mounted;
     	let dispose;
+    	let each_value = /*devSwitches*/ ctx[8]();
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    	}
 
     	const block = {
     		c: function create() {
@@ -1199,71 +1211,17 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "back";
     			t3 = space();
-    			label0 = element("label");
-    			input0 = element("input");
-    			t4 = space();
-    			h40 = element("h4");
-    			h40.textContent = "Enable client-side prediction (reduces lag)";
-    			t6 = space();
-    			label1 = element("label");
-    			input1 = element("input");
-    			t7 = space();
-    			h41 = element("h4");
-    			h41.textContent = "Show server player position";
-    			t9 = space();
-    			label2 = element("label");
-    			input2 = element("input");
-    			t10 = space();
-    			h42 = element("h4");
-    			h42.textContent = "Show server bullet positions";
-    			t12 = space();
-    			label3 = element("label");
-    			input3 = element("input");
-    			t13 = space();
-    			h43 = element("h4");
-    			h43.textContent = "Show client bullet positions";
-    			t15 = space();
-    			label4 = element("label");
-    			input4 = element("input");
-    			t16 = space();
-    			h44 = element("h4");
-    			h44.textContent = "Show predicted client bullet positions";
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
     			attr_dev(button0, "class", "settings-button svelte-15f4wix");
-    			add_location(button0, file$1, 140, 8, 5760);
-    			add_location(button1, file$1, 144, 12, 5943);
-    			attr_dev(input0, "type", "checkbox");
-    			add_location(input0, file$1, 149, 16, 6068);
-    			attr_dev(h40, "class", "svelte-15f4wix");
-    			add_location(h40, file$1, 150, 16, 6162);
-    			attr_dev(label0, "class", "svelte-15f4wix");
-    			add_location(label0, file$1, 148, 12, 6043);
-    			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$1, 154, 16, 6279);
-    			attr_dev(h41, "class", "svelte-15f4wix");
-    			add_location(h41, file$1, 155, 16, 6363);
-    			attr_dev(label1, "class", "svelte-15f4wix");
-    			add_location(label1, file$1, 153, 12, 6254);
-    			attr_dev(input2, "type", "checkbox");
-    			add_location(input2, file$1, 159, 16, 6464);
-    			attr_dev(h42, "class", "svelte-15f4wix");
-    			add_location(h42, file$1, 160, 16, 6548);
-    			attr_dev(label2, "class", "svelte-15f4wix");
-    			add_location(label2, file$1, 158, 12, 6439);
-    			attr_dev(input3, "type", "checkbox");
-    			add_location(input3, file$1, 164, 16, 6650);
-    			attr_dev(h43, "class", "svelte-15f4wix");
-    			add_location(h43, file$1, 165, 16, 6734);
-    			attr_dev(label3, "class", "svelte-15f4wix");
-    			add_location(label3, file$1, 163, 12, 6625);
-    			attr_dev(input4, "type", "checkbox");
-    			add_location(input4, file$1, 169, 16, 6836);
-    			attr_dev(h44, "class", "svelte-15f4wix");
-    			add_location(h44, file$1, 170, 16, 6929);
-    			attr_dev(label4, "class", "svelte-15f4wix");
-    			add_location(label4, file$1, 168, 12, 6811);
+    			add_location(button0, file$1, 146, 8, 6095);
+    			add_location(button1, file$1, 150, 12, 6278);
     			attr_dev(div, "class", "settings-page svelte-15f4wix");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 143, 8, 5869);
+    			add_location(div, file$1, 149, 8, 6204);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1271,35 +1229,10 @@ var app = (function () {
     			insert_dev(target, div, anchor);
     			append_dev(div, button1);
     			append_dev(div, t3);
-    			append_dev(div, label0);
-    			append_dev(label0, input0);
-    			input0.checked = /*DEV_SETTINGS*/ ctx[1].enableClientSidePrediction;
-    			append_dev(label0, t4);
-    			append_dev(label0, h40);
-    			append_dev(div, t6);
-    			append_dev(div, label1);
-    			append_dev(label1, input1);
-    			input1.checked = /*DEV_SETTINGS*/ ctx[1].showServerPlayer;
-    			append_dev(label1, t7);
-    			append_dev(label1, h41);
-    			append_dev(div, t9);
-    			append_dev(div, label2);
-    			append_dev(label2, input2);
-    			input2.checked = /*DEV_SETTINGS*/ ctx[1].showServerBullet;
-    			append_dev(label2, t10);
-    			append_dev(label2, h42);
-    			append_dev(div, t12);
-    			append_dev(div, label3);
-    			append_dev(label3, input3);
-    			input3.checked = /*DEV_SETTINGS*/ ctx[1].showClientBullet;
-    			append_dev(label3, t13);
-    			append_dev(label3, h43);
-    			append_dev(div, t15);
-    			append_dev(div, label4);
-    			append_dev(label4, input4);
-    			input4.checked = /*DEV_SETTINGS*/ ctx[1].showClientPredictedBullet;
-    			append_dev(label4, t16);
-    			append_dev(label4, h44);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
 
     			if (!mounted) {
     				dispose = [
@@ -1322,12 +1255,7 @@ var app = (function () {
     						false,
     						false,
     						false
-    					),
-    					listen_dev(input0, "change", /*input0_change_handler*/ ctx[11]),
-    					listen_dev(input1, "change", /*input1_change_handler*/ ctx[12]),
-    					listen_dev(input2, "change", /*input2_change_handler*/ ctx[13]),
-    					listen_dev(input3, "change", /*input3_change_handler*/ ctx[14]),
-    					listen_dev(input4, "change", /*input4_change_handler*/ ctx[15])
+    					)
     				];
 
     				mounted = true;
@@ -1336,24 +1264,28 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (dirty & /*DEV_SETTINGS*/ 2) {
-    				input0.checked = /*DEV_SETTINGS*/ ctx[1].enableClientSidePrediction;
-    			}
+    			if (dirty & /*devSwitches, camelCase, DEV_SETTINGS*/ 258) {
+    				each_value = /*devSwitches*/ ctx[8]();
+    				validate_each_argument(each_value);
+    				let i;
 
-    			if (dirty & /*DEV_SETTINGS*/ 2) {
-    				input1.checked = /*DEV_SETTINGS*/ ctx[1].showServerPlayer;
-    			}
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context(ctx, each_value, i);
 
-    			if (dirty & /*DEV_SETTINGS*/ 2) {
-    				input2.checked = /*DEV_SETTINGS*/ ctx[1].showServerBullet;
-    			}
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div, null);
+    					}
+    				}
 
-    			if (dirty & /*DEV_SETTINGS*/ 2) {
-    				input3.checked = /*DEV_SETTINGS*/ ctx[1].showClientBullet;
-    			}
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
 
-    			if (dirty & /*DEV_SETTINGS*/ 2) {
-    				input4.checked = /*DEV_SETTINGS*/ ctx[1].showClientPredictedBullet;
+    				each_blocks.length = each_value.length;
     			}
 
     			if (dirty & /*settingsPage*/ 16) {
@@ -1364,6 +1296,7 @@ var app = (function () {
     			if (detaching) detach_dev(button0);
     			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(div);
+    			destroy_each(each_blocks, detaching);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -1373,7 +1306,77 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(140:4) {#if devMode()}",
+    		source: "(146:4) {#if devMode()}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (155:12) {#each devSwitches() as option}
+    function create_each_block(ctx) {
+    	let label;
+    	let input;
+    	let t0;
+    	let h4;
+    	let t1_value = /*option*/ ctx[19].split(camelCase).map(func).join(" ") + "";
+    	let t1;
+    	let t2;
+    	let mounted;
+    	let dispose;
+
+    	function input_change_handler() {
+    		/*input_change_handler*/ ctx[12].call(input, /*option*/ ctx[19]);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			label = element("label");
+    			input = element("input");
+    			t0 = space();
+    			h4 = element("h4");
+    			t1 = text(t1_value);
+    			t2 = space();
+    			attr_dev(input, "type", "checkbox");
+    			add_location(input, file$1, 156, 20, 6456);
+    			attr_dev(h4, "class", "svelte-15f4wix");
+    			add_location(h4, file$1, 157, 20, 6535);
+    			attr_dev(label, "class", "svelte-15f4wix");
+    			add_location(label, file$1, 155, 16, 6427);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, label, anchor);
+    			append_dev(label, input);
+    			input.checked = /*DEV_SETTINGS*/ ctx[1][/*option*/ ctx[19]];
+    			append_dev(label, t0);
+    			append_dev(label, h4);
+    			append_dev(h4, t1);
+    			append_dev(label, t2);
+
+    			if (!mounted) {
+    				dispose = listen_dev(input, "change", input_change_handler);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+
+    			if (dirty & /*DEV_SETTINGS, devSwitches*/ 258) {
+    				input.checked = /*DEV_SETTINGS*/ ctx[1][/*option*/ ctx[19]];
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(label);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block.name,
+    		type: "each",
+    		source: "(155:12) {#each devSwitches() as option}",
     		ctx
     	});
 
@@ -1424,13 +1427,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-15f4wix");
-    			add_location(center, file$1, 134, 0, 5545);
+    			add_location(center, file$1, 140, 0, 5880);
     			attr_dev(div0, "class", "scoreboard svelte-15f4wix");
-    			add_location(div0, file$1, 135, 0, 5574);
+    			add_location(div0, file$1, 141, 0, 5909);
     			attr_dev(canvas_1, "class", "svelte-15f4wix");
-    			add_location(canvas_1, file$1, 136, 0, 5629);
+    			add_location(canvas_1, file$1, 142, 0, 5964);
     			attr_dev(div1, "class", "input-container svelte-15f4wix");
-    			add_location(div1, file$1, 137, 0, 5659);
+    			add_location(div1, file$1, 143, 0, 5994);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1440,10 +1443,10 @@ var app = (function () {
     			append_dev(center, t0);
     			insert_dev(target, t1, anchor);
     			insert_dev(target, div0, anchor);
-    			/*div0_binding*/ ctx[9](div0);
+    			/*div0_binding*/ ctx[10](div0);
     			insert_dev(target, t2, anchor);
     			insert_dev(target, canvas_1, anchor);
-    			/*canvas_1_binding*/ ctx[10](canvas_1);
+    			/*canvas_1_binding*/ ctx[11](canvas_1);
     			insert_dev(target, t3, anchor);
     			insert_dev(target, div1, anchor);
     			mount_component(joystick, div1, null);
@@ -1472,10 +1475,10 @@ var app = (function () {
     			if (detaching) detach_dev(center);
     			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(div0);
-    			/*div0_binding*/ ctx[9](null);
+    			/*div0_binding*/ ctx[10](null);
     			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(canvas_1);
-    			/*canvas_1_binding*/ ctx[10](null);
+    			/*canvas_1_binding*/ ctx[11](null);
     			if (detaching) detach_dev(t3);
     			if (detaching) detach_dev(div1);
     			destroy_component(joystick);
@@ -1494,6 +1497,9 @@ var app = (function () {
 
     	return block;
     }
+
+    const camelCase = /([A-Z]+|[A-Z]?[a-z]+)(?=[A-Z]|\b)/;
+    const func = s => !s[0] ? s : s[0].toUpperCase() + s.slice(1);
 
     function instance$1($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
@@ -1525,7 +1531,10 @@ var app = (function () {
     		ctx = canvas.getContext("2d");
     		$$invalidate(2, canvas.height = window.innerWidth, canvas);
     		$$invalidate(2, canvas.width = window.innerWidth, canvas);
-    		socket.on("removedPlayer", name => delete state.players[name]);
+
+    		socket.on("removedPlayer", name => {
+    			delete state.players[name];
+    		});
 
     		socket.on("gameTick", msg => {
     			state.lastGameTickMessage = msg;
@@ -1539,7 +1548,7 @@ var app = (function () {
     			for (const p of msg.players) {
     				// TODO: 'addPlayer' socket event?
     				if (!state.players[p.name]) {
-    					state.players[p.name] = p;
+    					state.players[p.name] = new Player(p);
     				}
 
     				const player = state.players[p.name];
@@ -1559,16 +1568,17 @@ var app = (function () {
     							state.pendingInputs.splice(j, 1);
     						} else {
     							// Not processed by the server yet. Re-apply it.
-    							CONSTANTS.MOVE_PLAYER(player, input, input.deltaTime);
+    							CONSTANTS.MOVE_PLAYER(player.data, input, input.deltaTime);
 
     							j++;
     						}
     					}
 
-    					player.angle = state.playerControls.angle; // We don't want the server's angle.
+    					player.data.angle = state.playerControls.angle; // We don't want the server's angle.
     				} else {
     					{
-    						Object.assign(player, p); // do interpolation
+    						// Object.assign(player, p)
+    						state.players[p.name].data = p; // do interpolation
     					}
     				}
     			}
@@ -1584,7 +1594,7 @@ var app = (function () {
     			const deltaTime = now - lastTime;
     			lastUpdate = now;
     			processInputs(deltaTime, now);
-    			$$invalidate(3, scoreboard.innerHTML = Object.values(state.players).sort((p1, p2) => p2.score - p1.score).map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`).join("<br>") + `<br> pending requests: ${state.pendingInputs.length}` + `<br> network latency: ${NETWORK_LATENCY}`, scoreboard);
+    			$$invalidate(3, scoreboard.innerHTML = Object.values(state.players).sort((p1, p2) => p2.data.score - p1.data.score).map(p => `<span style="color: orange">${p.data.name}:</span> ${p.data.score}`).join("<br>") + `<br> pending requests: ${state.pendingInputs.length}` + `<br> network latency: ${NETWORK_LATENCY}`, scoreboard);
     			renderer.render(now);
     		})();
     	});
@@ -1594,12 +1604,12 @@ var app = (function () {
 
     		// TODO: make babel plugin to remove if conditions for production mode
     		if (!CONSTANTS.DEV_MODE || DEV_SETTINGS.enableClientSidePrediction) {
-    			CONSTANTS.MOVE_PLAYER(state.players[username], state.playerControls, deltaTime);
+    			CONSTANTS.MOVE_PLAYER(state.players[username].data, state.playerControls, deltaTime);
     		}
 
     		if (state.playerProperties.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, state.playerProperties.LAST_SHOT)) {
     			state.playerProperties.LAST_SHOT = now;
-    			const bullet = new ClientPredictedBullet(state.players[username], state.playerControls);
+    			const bullet = new ClientPredictedBullet(state.players[username].data, state.playerControls);
     			state.playerBullets.push(bullet);
     			state.playerControls.requestedBullet = bullet.data;
     		}
@@ -1628,7 +1638,7 @@ var app = (function () {
     	function moveRightPad(angle, active) {
     		// Assign state.players[username].angle for a minor
     		// convenience when shooting client predicted bullets:
-    		state.playerControls.angle = state.players[username].angle = angle;
+    		state.playerControls.angle = state.players[username].data.angle = angle;
 
     		state.playerProperties.isPressingTrigger = active;
     	}
@@ -1642,6 +1652,7 @@ var app = (function () {
     		isOpen: 0
     	};
 
+    	const devSwitches = () => Object.keys(DEV_SETTINGS).filter(k => typeof DEV_SETTINGS[k] === "boolean");
     	const writable_props = ["socket", "username"];
 
     	Object_1.keys($$props).forEach(key => {
@@ -1662,33 +1673,14 @@ var app = (function () {
     		});
     	}
 
-    	function input0_change_handler() {
-    		DEV_SETTINGS.enableClientSidePrediction = this.checked;
+    	function input_change_handler(option) {
+    		DEV_SETTINGS[option] = this.checked;
     		$$invalidate(1, DEV_SETTINGS);
-    	}
-
-    	function input1_change_handler() {
-    		DEV_SETTINGS.showServerPlayer = this.checked;
-    		$$invalidate(1, DEV_SETTINGS);
-    	}
-
-    	function input2_change_handler() {
-    		DEV_SETTINGS.showServerBullet = this.checked;
-    		$$invalidate(1, DEV_SETTINGS);
-    	}
-
-    	function input3_change_handler() {
-    		DEV_SETTINGS.showClientBullet = this.checked;
-    		$$invalidate(1, DEV_SETTINGS);
-    	}
-
-    	function input4_change_handler() {
-    		DEV_SETTINGS.showClientPredictedBullet = this.checked;
-    		$$invalidate(1, DEV_SETTINGS);
+    		$$invalidate(8, devSwitches);
     	}
 
     	$$self.$$set = $$props => {
-    		if ("socket" in $$props) $$invalidate(8, socket = $$props.socket);
+    		if ("socket" in $$props) $$invalidate(9, socket = $$props.socket);
     		if ("username" in $$props) $$invalidate(0, username = $$props.username);
     	};
 
@@ -1700,6 +1692,7 @@ var app = (function () {
     		DEV_SETTINGS,
     		GameRenderer,
     		defaultClientState,
+    		Player,
     		socket,
     		username,
     		NETWORK_LATENCY,
@@ -1713,11 +1706,13 @@ var app = (function () {
     		moveJoystick,
     		moveRightPad,
     		devMode,
-    		settingsPage
+    		settingsPage,
+    		devSwitches,
+    		camelCase
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("socket" in $$props) $$invalidate(8, socket = $$props.socket);
+    		if ("socket" in $$props) $$invalidate(9, socket = $$props.socket);
     		if ("username" in $$props) $$invalidate(0, username = $$props.username);
     		if ("NETWORK_LATENCY" in $$props) NETWORK_LATENCY = $$props.NETWORK_LATENCY;
     		if ("canvas" in $$props) $$invalidate(2, canvas = $$props.canvas);
@@ -1738,21 +1733,18 @@ var app = (function () {
     		moveJoystick,
     		moveRightPad,
     		devMode,
+    		devSwitches,
     		socket,
     		div0_binding,
     		canvas_1_binding,
-    		input0_change_handler,
-    		input1_change_handler,
-    		input2_change_handler,
-    		input3_change_handler,
-    		input4_change_handler
+    		input_change_handler
     	];
     }
 
     class GameClient extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { socket: 8, username: 0 });
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { socket: 9, username: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -1764,7 +1756,7 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*socket*/ ctx[8] === undefined && !("socket" in props)) {
+    		if (/*socket*/ ctx[9] === undefined && !("socket" in props)) {
     			console.warn("<GameClient> was created without expected prop 'socket'");
     		}
 

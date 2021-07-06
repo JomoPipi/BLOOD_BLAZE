@@ -6,7 +6,6 @@ const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth
 
 export class GameRenderer {
 
-    private lastRender = 0
     private readonly canvas
     private readonly ctx
     private readonly username
@@ -21,15 +20,11 @@ export class GameRenderer {
     
     render(now : number) {
 
-        const lastTime = this.lastRender || now
-        const deltaTime = now - lastTime
-        this.lastRender = now
-
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     
         for (const name in this.state.players)
         {
-            this.drawPlayer(this.state.players[name]!, now)
+            this.drawPlayer(this.state.players[name]!.data, now)
         }
         if (DEV_SETTINGS.showServerPlayer && DEV_SETTINGS.serverplayer.name)
         {

@@ -1,5 +1,5 @@
 
-<script lang="ts">
+<script lang="typescript">
     import { onMount } from "svelte";
     import DirectionPad from "../uielements/DirectionPad.svelte";
     import Joystick from "../uielements/Joystick.svelte";
@@ -7,6 +7,7 @@
     import { DEV_SETTINGS } from './DEV_SETTINGS'
     import { GameRenderer } from "./GameRenderer";
     import { defaultClientState } from './ClientState'
+    import { Player } from "./Player";
 
     export let socket : ClientSocket
     export let username : string
@@ -35,7 +36,9 @@
         canvas.height = window.innerWidth
         canvas.width = window.innerWidth
 
-        socket.on('removedPlayer', name => delete state.players[name])
+        socket.on('removedPlayer', name => {
+            delete state.players[name]
+        })
 
         socket.on('gameTick', msg => {
             state.lastGameTickMessage = msg
@@ -53,7 +56,7 @@
                 // TODO: 'addPlayer' socket event?
                 if (!state.players[p.name])
                 {
-                    state.players[p.name] = p
+                    state.players[p.name] = new Player(p)
                 }
 
                 const player = state.players[p.name]!
@@ -77,11 +80,11 @@
                         else
                         {
                             // Not processed by the server yet. Re-apply it.
-                            CONSTANTS.MOVE_PLAYER(player, input, input.deltaTime)
+                            CONSTANTS.MOVE_PLAYER(player.data, input, input.deltaTime)
                             j++
                         }
                     }
-                    player.angle = state.playerControls.angle // We don't want the server's angle.
+                    player.data.angle = state.playerControls.angle // We don't want the server's angle.
                 }
                 else
                 {
@@ -91,7 +94,8 @@
                     }
                     else 
                     {
-                        Object.assign(player, p)
+                        // Object.assign(player, p)
+                        state.players[p.name]!.data = p
                     }
                 }
             }
@@ -110,8 +114,8 @@
             processInputs(deltaTime, now)
 
             scoreboard.innerHTML = Object.values(state.players)
-                .sort((p1, p2) => p2.score - p1.score)
-                .map(p => `<span style="color: orange">${p.name}:</span> ${p.score}`)
+                .sort((p1, p2) => p2.data.score - p1.data.score)
+                .map(p => `<span style="color: orange">${p.data.name}:</span> ${p.data.score}`)
                 .join('<br>') 
                 + `<br> pending requests: ${state.pendingInputs.length}`
                 + `<br> network latency: ${NETWORK_LATENCY}`
@@ -127,7 +131,7 @@
         // TODO: make babel plugin to remove if conditions for production mode
         if (!CONSTANTS.DEV_MODE || DEV_SETTINGS.enableClientSidePrediction)
         {
-            CONSTANTS.MOVE_PLAYER(state.players[username]!, state.playerControls, deltaTime)
+            CONSTANTS.MOVE_PLAYER(state.players[username]!.data, state.playerControls, deltaTime)
         }
 
         if (state.playerProperties.isPressingTrigger &&
@@ -135,7 +139,7 @@
         {
             state.playerProperties.LAST_SHOT = now
             
-            const bullet = new ClientPredictedBullet(state.players[username]!, state.playerControls)
+            const bullet = new ClientPredictedBullet(state.players[username]!.data, state.playerControls)
             state.playerBullets.push(bullet)
             state.playerControls.requestedBullet = bullet.data
         }
@@ -169,13 +173,20 @@
     function moveRightPad(angle : number, active : boolean) {
         // Assign state.players[username].angle for a minor
         // convenience when shooting client predicted bullets:
-        state.playerControls.angle = state.players[username]!.angle = angle
+        state.playerControls.angle = state.players[username]!.data.angle = angle
         state.playerProperties.isPressingTrigger = active
     }
 
     const devMode = () => CONSTANTS.DEV_MODE // It's not defined outside of script tags 🤷
 
     const settingsPage = { toggle() { settingsPage.isOpen ^= 1 }, isOpen: 0 }
+
+    const devSwitches = () => 
+        Object.keys(DEV_SETTINGS).filter(k => 
+            typeof DEV_SETTINGS[k as keyof typeof DEV_SETTINGS] === 'boolean'
+        ) as (keyof PickByValue<boolean, typeof DEV_SETTINGS>)[]
+
+    const camelCase = /([A-Z]+|[A-Z]?[a-z]+)(?=[A-Z]|\b)/
 </script>
 
 <center>{username}</center>
@@ -192,30 +203,16 @@
                 back
             </button>
 
-            <label>
-                <input type=checkbox bind:checked={DEV_SETTINGS.enableClientSidePrediction}>
-                <h4> Enable client-side prediction (reduces lag) </h4>
-            </label>
-
-            <label>
-                <input type=checkbox bind:checked={DEV_SETTINGS.showServerPlayer}>
-                <h4> Show server player position </h4>
-            </label>
-
-            <label>
-                <input type=checkbox bind:checked={DEV_SETTINGS.showServerBullet}>
-                <h4> Show server bullet positions </h4>
-            </label>
-
-            <label>
-                <input type=checkbox bind:checked={DEV_SETTINGS.showClientBullet}>
-                <h4> Show client bullet positions </h4>
-            </label>
-
-            <label>
-                <input type=checkbox bind:checked={DEV_SETTINGS.showClientPredictedBullet}>
-                <h4> Show predicted client bullet positions </h4>
-            </label>
+            {#each devSwitches() as option}
+                <label>
+                    <input type=checkbox bind:checked={DEV_SETTINGS[option]}>
+                    <h4> {option
+                        .split(camelCase)
+                        .map(s => !s[0] ? s :  s[0].toUpperCase() + s.slice(1))
+                        .join(' ')} 
+                    </h4>
+                </label>
+            {/each}
         </div>
     {/if}
     <DirectionPad callback={moveRightPad}/>

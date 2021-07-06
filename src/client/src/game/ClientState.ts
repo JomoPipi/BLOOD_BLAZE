@@ -1,12 +1,13 @@
 
 import type { ClientPredictedBullet } from './ClientPredictedBullet'
+import { Player } from './Player'
 
 export type ClientState = {
     pendingInputs : PlayerControlsMessage[]
     playerControls : PlayerControlsMessage
     playerProperties : { LAST_SHOT : number, isPressingTrigger : boolean }
     bulletReceptionTimes : WeakMap<SocketBullet, number>
-    players : Record<string, SocketPlayer>
+    players : Record<string, Player>
     bullets : SocketBullet[]
     playerBullets : ClientPredictedBullet[]
     lastGameTickMessage : GameTickMessage
@@ -26,7 +27,7 @@ export const defaultClientState : (username : string) => ClientState = username 
         , isPressingTrigger: false
         }
     , bulletReceptionTimes: new WeakMap()
-    , players: { [username]: CONSTANTS.CREATE_PLAYER(username) }
+    , players: { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) }
     , bullets: []
     , playerBullets: []
     , lastGameTickMessage: 
