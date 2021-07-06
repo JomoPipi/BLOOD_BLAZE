@@ -1,7 +1,7 @@
 
 export class Bullet  {
-    timeCreated : number
-    shooter : string
+    readonly timeCreated : number
+    readonly shooter : string
     data : SocketBullet
     hasMovedSinceCreation = false
 

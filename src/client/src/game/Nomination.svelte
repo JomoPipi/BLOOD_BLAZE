@@ -1,6 +1,6 @@
 
 <script lang="ts">
-import { onMount } from "svelte";
+	import { onMount } from "svelte";
 
 	export let proceed : (name : string) => void
 	export let blaze : string

@@ -1,9 +1,12 @@
 
 <script lang="ts">
     import { onMount } from "svelte";
-    import DirectionPad from "./uielements/DirectionPad.svelte";
-    import Joystick from "./uielements/Joystick.svelte";
-    import { ClientPredictedBullet } from "./ClientPredictedBullet.js";
+    import DirectionPad from "../uielements/DirectionPad.svelte";
+    import Joystick from "../uielements/Joystick.svelte";
+    import { ClientPredictedBullet } from "./ClientPredictedBullet";
+    import { DEV_SETTINGS } from './DEV_SETTINGS'
+    import { GameRenderer } from "./GameRenderer";
+    import { defaultClientState } from './ClientState'
 
     export let socket : ClientSocket
     export let username : string
@@ -25,52 +28,7 @@
     let ctx : CanvasRenderingContext2D
     let scoreboard : HTMLDivElement
     
-    type ClientState = {
-        pendingInputs : PlayerControlsMessage[]
-        playerControls : PlayerControlsMessage
-        playerProperties : { LAST_SHOT : number, isPressingTrigger : boolean }
-        bulletReceptionTimes : WeakMap<SocketBullet, number>
-        players : Record<string, SocketPlayer>
-        bullets : SocketBullet[]
-        playerBullets : ClientPredictedBullet[]
-    }
-    
-    const state : ClientState =
-        { pendingInputs: []
-        , playerControls:
-            { x: 0
-            , y: 0
-            , angle: 0
-            , messageNumber: 0
-            , deltaTime: 0
-            }
-        , playerProperties:
-            { LAST_SHOT: -1
-            , isPressingTrigger: false
-            }
-        , bulletReceptionTimes: new WeakMap()
-        , players: { [username]: CONSTANTS.CREATE_PLAYER(username) }
-        , bullets: []
-        , playerBullets: []
-        }
-    
-    let lastGameTickMessage : GameTickMessage =
-        { players: []
-        , bullets: []
-        , newBullets: []
-        , deletedBullets: []
-        }
-
-    const DEV_SETTINGS =
-        { enableClientSidePrediction: true
-        , showServerPlayer: false
-        , serverplayer: {} as SocketPlayer
-        , showServerBullet: false
-        , showClientBullet: true
-        , showClientPredictedBullet: true
-        }
-
-    const clientPlayerRadius = CONSTANTS.PLAYER_RADIUS * window.innerWidth
+    const state = defaultClientState(username)
 
     onMount(() => {
         ctx = canvas.getContext('2d')!
@@ -80,7 +38,7 @@
         socket.on('removedPlayer', name => delete state.players[name])
 
         socket.on('gameTick', msg => {
-            lastGameTickMessage = msg
+            state.lastGameTickMessage = msg
 
             const now = Date.now()
 
@@ -123,6 +81,7 @@
                             j++
                         }
                     }
+                    player.angle = state.playerControls.angle // We don't want the server's angle.
                 }
                 else
                 {
@@ -138,18 +97,17 @@
             }
         })
 
-        let lastRender = -1
-        ;(function updateRender() {
+        let lastUpdate = 0
+        const renderer = new GameRenderer(canvas, username, state)
+        ;(function updateLoop() {
+            requestAnimationFrame(updateLoop)
 
             const now = Date.now() 
-            const lastTime = lastRender || now
+            const lastTime = lastUpdate || now
             const deltaTime = now - lastTime
-            lastRender = now
+            lastUpdate = now
 
             processInputs(deltaTime, now)
-
-            requestAnimationFrame(updateRender)
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
 
             scoreboard.innerHTML = Object.values(state.players)
                 .sort((p1, p2) => p2.score - p1.score)
@@ -158,58 +116,7 @@
                 + `<br> pending requests: ${state.pendingInputs.length}`
                 + `<br> network latency: ${NETWORK_LATENCY}`
 
-            for (const name in state.players)
-            {
-                drawPlayer(state.players[name]!, now)
-            }
-            if (DEV_SETTINGS.showServerPlayer && DEV_SETTINGS.serverplayer.name)
-            {
-                drawPlayer(DEV_SETTINGS.serverplayer, now, 'purple')
-            }
-
-            if (DEV_SETTINGS.showServerBullet)
-            {
-                ctx.fillStyle = '#099'
-                const { bullets } = lastGameTickMessage
-                for (const { x, y } of bullets)
-                {
-                    circle(x * canvas.width, y * canvas.height, 2)
-                }
-            }
-
-            if (DEV_SETTINGS.showClientBullet)
-            {
-                ctx.fillStyle = '#770' 
-                const { deletedBullets } = lastGameTickMessage
-                state.bullets = state.bullets.filter(b => {
-                    if (deletedBullets[b.id]) return false
-                    const age = now - (state.bulletReceptionTimes.get(b) || 0) // - NETWORK_LATENCY
-                    const bx = b.x + b.speedX * age
-                    const by = b.y + b.speedY * age
-                    const x = bx * canvas.width
-                    const y = by * canvas.height
-                    circle(x, y, 2)
-                    return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
-                })
-            }
-
-            if (DEV_SETTINGS.showClientPredictedBullet)
-            {
-                ctx.fillStyle = '#c0c'
-                const { deletedBullets } = lastGameTickMessage
-                state.playerBullets = state.playerBullets.filter(bullet => {
-                    if (deletedBullets[bullet.data.id]) return false
-                    const age = now - bullet.timeCreated
-                    const b = bullet.data
-                    const bx = b.x + b.speedX * age
-                    const by = b.y + b.speedY * age
-                    const x = bx * canvas.width
-                    const y = by * canvas.height
-                    circle(x, y, 2)
-                    return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
-                })
-
-            }
+            renderer.render(now)
         })()
     })
     
@@ -228,9 +135,7 @@
         {
             state.playerProperties.LAST_SHOT = now
             
-            const { x, y } = state.players[username]!
-            const { angle } = state.playerControls
-            const bullet = new ClientPredictedBullet({ x, y, angle }, state.playerControls)
+            const bullet = new ClientPredictedBullet(state.players[username]!, state.playerControls)
             state.playerBullets.push(bullet)
             state.playerControls.requestedBullet = bullet.data
         }
@@ -244,7 +149,6 @@
         {
             sendInputsToServer(state.playerControls)
         }
-        
     }
 
     function sendInputsToServer(playerControls : PlayerControlsMessage) {
@@ -263,50 +167,10 @@
     }
 
     function moveRightPad(angle : number, active : boolean) {
-        state.playerControls.angle = angle
+        // Assign state.players[username].angle for a minor
+        // convenience when shooting client predicted bullets:
+        state.playerControls.angle = state.players[username]!.angle = angle
         state.playerProperties.isPressingTrigger = active
-    }
-
-    function drawPlayer(p : SocketPlayer, now : number, color = '#333') {
-        const [x, y] = [p.x * canvas.width, p.y * canvas.height]
-        const playerGunSize = 2
-        const bloodCooldown = 256
-        const R = now - p.lastTimeGettingShot | 0
-        const isGettingShot = R <= bloodCooldown
-        ctx.fillStyle = isGettingShot ? `rgb(${bloodCooldown - R},0,0)` : color
-        
-        if (p.name === username && isGettingShot)
-        {
-            const wait = 50 + Math.random() * 200
-            throttled(traumatize, wait, now)
-        }
-        
-        circle(x, y, clientPlayerRadius)
-        const angle = p.name === username 
-            ? state.playerControls.angle
-            : p.angle
-            
-        const [X, Y] = 
-            [ x + clientPlayerRadius * Math.cos(angle)
-            , y + clientPlayerRadius * Math.sin(angle)
-            ]
-        circle(X, Y, playerGunSize)
-        ctx.fillStyle = '#40f'
-        ctx.fillText(p.name, x - 17, y - 17)
-    }
-
-    function circle(x : number, y : number, r : number) {
-        ctx.beginPath()
-        ctx.arc(x, y, r, 0, 7)
-        ctx.fill()
-        ctx.closePath()
-    }
-
-    function traumatize() {
-        const a = document.body.classList
-        const b = document.getElementById('bloodscreen')!.classList
-        a.toggle('shake', !b.toggle('bleed'))
-        b.toggle('bleed2', !a.toggle('shake2'))
     }
 
     const devMode = () => CONSTANTS.DEV_MODE // It's not defined outside of script tags 🤷
