@@ -1033,7 +1033,7 @@ var app = (function () {
     const { Object: Object_1 } = globals;
     const file$1 = "src\\GameClient.svelte";
 
-    // (235:4) {#if devMode()}
+    // (239:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1106,41 +1106,41 @@ var app = (function () {
     			h44 = element("h4");
     			h44.textContent = "Show predicted client bullet positions";
     			attr_dev(button0, "class", "settings-button svelte-15f4wix");
-    			add_location(button0, file$1, 235, 8, 9191);
-    			add_location(button1, file$1, 239, 12, 9374);
+    			add_location(button0, file$1, 239, 8, 9328);
+    			add_location(button1, file$1, 243, 12, 9511);
     			attr_dev(input0, "type", "checkbox");
-    			add_location(input0, file$1, 244, 16, 9499);
+    			add_location(input0, file$1, 248, 16, 9636);
     			attr_dev(h40, "class", "svelte-15f4wix");
-    			add_location(h40, file$1, 245, 16, 9593);
+    			add_location(h40, file$1, 249, 16, 9730);
     			attr_dev(label0, "class", "svelte-15f4wix");
-    			add_location(label0, file$1, 243, 12, 9474);
+    			add_location(label0, file$1, 247, 12, 9611);
     			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$1, 249, 16, 9710);
+    			add_location(input1, file$1, 253, 16, 9847);
     			attr_dev(h41, "class", "svelte-15f4wix");
-    			add_location(h41, file$1, 250, 16, 9794);
+    			add_location(h41, file$1, 254, 16, 9931);
     			attr_dev(label1, "class", "svelte-15f4wix");
-    			add_location(label1, file$1, 248, 12, 9685);
+    			add_location(label1, file$1, 252, 12, 9822);
     			attr_dev(input2, "type", "checkbox");
-    			add_location(input2, file$1, 254, 16, 9895);
+    			add_location(input2, file$1, 258, 16, 10032);
     			attr_dev(h42, "class", "svelte-15f4wix");
-    			add_location(h42, file$1, 255, 16, 9979);
+    			add_location(h42, file$1, 259, 16, 10116);
     			attr_dev(label2, "class", "svelte-15f4wix");
-    			add_location(label2, file$1, 253, 12, 9870);
+    			add_location(label2, file$1, 257, 12, 10007);
     			attr_dev(input3, "type", "checkbox");
-    			add_location(input3, file$1, 259, 16, 10081);
+    			add_location(input3, file$1, 263, 16, 10218);
     			attr_dev(h43, "class", "svelte-15f4wix");
-    			add_location(h43, file$1, 260, 16, 10165);
+    			add_location(h43, file$1, 264, 16, 10302);
     			attr_dev(label3, "class", "svelte-15f4wix");
-    			add_location(label3, file$1, 258, 12, 10056);
+    			add_location(label3, file$1, 262, 12, 10193);
     			attr_dev(input4, "type", "checkbox");
-    			add_location(input4, file$1, 264, 16, 10267);
+    			add_location(input4, file$1, 268, 16, 10404);
     			attr_dev(h44, "class", "svelte-15f4wix");
-    			add_location(h44, file$1, 265, 16, 10360);
+    			add_location(h44, file$1, 269, 16, 10497);
     			attr_dev(label4, "class", "svelte-15f4wix");
-    			add_location(label4, file$1, 263, 12, 10242);
+    			add_location(label4, file$1, 267, 12, 10379);
     			attr_dev(div, "class", "settings-page svelte-15f4wix");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 238, 8, 9300);
+    			add_location(div, file$1, 242, 8, 9437);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1250,7 +1250,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(235:4) {#if devMode()}",
+    		source: "(239:4) {#if devMode()}",
     		ctx
     	});
 
@@ -1301,13 +1301,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-15f4wix");
-    			add_location(center, file$1, 229, 0, 8976);
+    			add_location(center, file$1, 233, 0, 9113);
     			attr_dev(div0, "class", "scoreboard svelte-15f4wix");
-    			add_location(div0, file$1, 230, 0, 9005);
+    			add_location(div0, file$1, 234, 0, 9142);
     			attr_dev(canvas_1, "class", "svelte-15f4wix");
-    			add_location(canvas_1, file$1, 231, 0, 9060);
+    			add_location(canvas_1, file$1, 235, 0, 9197);
     			attr_dev(div1, "class", "input-container svelte-15f4wix");
-    			add_location(div1, file$1, 232, 0, 9090);
+    			add_location(div1, file$1, 236, 0, 9227);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1572,8 +1572,11 @@ var app = (function () {
     			state.playerControls.requestedBullet = bullet.data;
     		}
 
-    		// TODO: avoid sending controls while idling?
-    		sendInputsToServer(state.playerControls);
+    		const userIsNotIdle = state.playerControls.x !== 0 || state.playerControls.y !== 0 || state.playerProperties.isPressingTrigger;
+
+    		if (userIsNotIdle) {
+    			sendInputsToServer(state.playerControls);
+    		}
     	}
 
     	function sendInputsToServer(playerControls) {

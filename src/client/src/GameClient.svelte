@@ -235,8 +235,15 @@
             state.playerControls.requestedBullet = bullet.data
         }
 
-        // TODO: avoid sending controls while idling?
-        sendInputsToServer(state.playerControls)
+        const userIsNotIdle = 
+            state.playerControls.x !== 0 ||
+            state.playerControls.y !== 0 ||
+            state.playerProperties.isPressingTrigger
+
+        if (userIsNotIdle)
+        {
+            sendInputsToServer(state.playerControls)
+        }
         
     }
 
