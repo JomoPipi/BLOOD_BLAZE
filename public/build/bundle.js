@@ -1049,7 +1049,7 @@ var app = (function () {
         showServerBullet: false,
         showClientBullet: true,
         showClientPredictedBullet: true,
-        interpolateEnemies: true };
+        interpolateEnemyPositions: false };
 
     const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth;
     class GameRenderer {
@@ -1066,7 +1066,32 @@ var app = (function () {
         render(now) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             for (const name in this.state.players) {
-                this.drawPlayer(this.state.players[name].data, now);
+                const p = this.state.players[name];
+                if (name !== this.username && DEV_SETTINGS.interpolateEnemyPositions) {
+                    // const [[ta, a], [tb, b]] = p.positionBuffer
+                    const props = ['x', 'y', 'angle'];
+                    const extrapolated = { ...p.data };
+                    for (const prop of props) {
+                        // const xa = a[prop]
+                        // const xb = b[prop]
+                        // const speed = (xb - xa) / (tb - ta)
+                        // const deltaTime = now - tb
+                        // extrapolated[prop] = xb + deltaTime * speed
+                        const oneGameTickAway = now - CONSTANTS.GAME_TICK;
+                        const buffer = p.positionBuffer;
+                        if (buffer.length >= 2 && buffer[0][0] <= oneGameTickAway && oneGameTickAway <= buffer[1][0]) {
+                            const x0 = buffer[0][1][prop];
+                            const x1 = buffer[1][1][prop];
+                            const t0 = buffer[0][0];
+                            const t1 = buffer[1][0];
+                            extrapolated[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0);
+                        }
+                    }
+                    this.drawPlayer(extrapolated, now);
+                }
+                else {
+                    this.drawPlayer(p.data, now);
+                }
             }
             if (DEV_SETTINGS.showServerPlayer && DEV_SETTINGS.serverplayer.name) {
                 this.drawPlayer(DEV_SETTINGS.serverplayer, now, 'purple');
@@ -1144,7 +1169,7 @@ var app = (function () {
     }
 
     class Player {
-        positionBuffer = [];
+        positionBuffer = [[0, {}], [1, {}]];
         data;
         constructor(data) {
             this.data = data;
@@ -1185,7 +1210,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (146:4) {#if devMode()}
+    // (147:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1217,11 +1242,11 @@ var app = (function () {
     			}
 
     			attr_dev(button0, "class", "settings-button svelte-15f4wix");
-    			add_location(button0, file$1, 146, 8, 6095);
-    			add_location(button1, file$1, 150, 12, 6278);
+    			add_location(button0, file$1, 147, 8, 6240);
+    			add_location(button1, file$1, 151, 12, 6423);
     			attr_dev(div, "class", "settings-page svelte-15f4wix");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 149, 8, 6204);
+    			add_location(div, file$1, 150, 8, 6349);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1306,14 +1331,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(146:4) {#if devMode()}",
+    		source: "(147:4) {#if devMode()}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (155:12) {#each devSwitches() as option}
+    // (156:12) {#each devSwitches() as option}
     function create_each_block(ctx) {
     	let label;
     	let input;
@@ -1338,11 +1363,11 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = space();
     			attr_dev(input, "type", "checkbox");
-    			add_location(input, file$1, 156, 20, 6456);
+    			add_location(input, file$1, 157, 20, 6601);
     			attr_dev(h4, "class", "svelte-15f4wix");
-    			add_location(h4, file$1, 157, 20, 6535);
+    			add_location(h4, file$1, 158, 20, 6680);
     			attr_dev(label, "class", "svelte-15f4wix");
-    			add_location(label, file$1, 155, 16, 6427);
+    			add_location(label, file$1, 156, 16, 6572);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, label, anchor);
@@ -1376,7 +1401,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(155:12) {#each devSwitches() as option}",
+    		source: "(156:12) {#each devSwitches() as option}",
     		ctx
     	});
 
@@ -1427,13 +1452,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-15f4wix");
-    			add_location(center, file$1, 140, 0, 5880);
+    			add_location(center, file$1, 141, 0, 6025);
     			attr_dev(div0, "class", "scoreboard svelte-15f4wix");
-    			add_location(div0, file$1, 141, 0, 5909);
+    			add_location(div0, file$1, 142, 0, 6054);
     			attr_dev(canvas_1, "class", "svelte-15f4wix");
-    			add_location(canvas_1, file$1, 142, 0, 5964);
+    			add_location(canvas_1, file$1, 143, 0, 6109);
     			attr_dev(div1, "class", "input-container svelte-15f4wix");
-    			add_location(div1, file$1, 143, 0, 5994);
+    			add_location(div1, file$1, 144, 0, 6139);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1554,7 +1579,7 @@ var app = (function () {
     				const player = state.players[p.name];
 
     				if (p.name === username) {
-    					Object.assign(player, p);
+    					Object.assign(player.data, p);
     					Object.assign(DEV_SETTINGS.serverplayer, p);
     					if (CONSTANTS.DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue;
     					let j = 0;
@@ -1576,10 +1601,15 @@ var app = (function () {
 
     					player.data.angle = state.playerControls.angle; // We don't want the server's angle.
     				} else {
-    					{
-    						// Object.assign(player, p)
-    						state.players[p.name].data = p; // do interpolation
+    					if (DEV_SETTINGS.interpolateEnemyPositions) {
+    						// do interpolation
+    						const buffer = state.players[p.name].positionBuffer;
+
+    						buffer.push([now, p]);
+    						if (buffer.length > 2) buffer.shift();
     					}
+
+    					state.players[p.name].data = p;
     				}
     			}
     		});

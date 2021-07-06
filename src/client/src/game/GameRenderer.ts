@@ -22,10 +22,49 @@ export class GameRenderer {
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     
+
         for (const name in this.state.players)
         {
-            this.drawPlayer(this.state.players[name]!.data, now)
+            const p = this.state.players[name]!
+            
+            if (name !== this.username && DEV_SETTINGS.interpolateEnemyPositions)
+            {
+                
+                // const [[ta, a], [tb, b]] = p.positionBuffer
+                
+                const props = ['x','y','angle'] as const
+
+                const extrapolated = { ...p.data }
+
+                for (const prop of props)
+                {
+                    // const xa = a[prop]
+                    // const xb = b[prop]
+                    // const speed = (xb - xa) / (tb - ta)
+                    // const deltaTime = now - tb
+                    // extrapolated[prop] = xb + deltaTime * speed
+
+                    const oneGameTickAway = now - CONSTANTS.GAME_TICK
+                    const buffer = p.positionBuffer
+                    if (buffer.length >= 2 && buffer[0]![0] <= oneGameTickAway && oneGameTickAway <= buffer[1]![0])
+                    {
+                        const x0 = buffer[0]![1][prop]
+                        const x1 = buffer[1]![1][prop]
+                        const t0 = buffer[0]![0]
+                        const t1 = buffer[1]![0]
+
+                        extrapolated[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
+                    }
+                }
+
+                this.drawPlayer(extrapolated, now)
+            }
+            else
+            {
+                this.drawPlayer(p.data, now)
+            }
         }
+        
         if (DEV_SETTINGS.showServerPlayer && DEV_SETTINGS.serverplayer.name)
         {
             this.drawPlayer(DEV_SETTINGS.serverplayer, now, 'purple')

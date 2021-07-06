@@ -62,7 +62,7 @@
                 const player = state.players[p.name]!
                 if (p.name === username)
                 {
-                    Object.assign(player, p)
+                    Object.assign(player.data, p)
                     Object.assign(DEV_SETTINGS.serverplayer, p)
 
                     if (CONSTANTS.DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue
@@ -88,15 +88,15 @@
                 }
                 else
                 {
-                    if (false)
+                    if (DEV_SETTINGS.interpolateEnemyPositions)
                     {
                         // do interpolation
+                        const buffer = state.players[p.name]!.positionBuffer
+                        buffer.push([now, p])
+                        if (buffer.length > 2) buffer.shift()
                     }
-                    else 
-                    {
-                        // Object.assign(player, p)
-                        state.players[p.name]!.data = p
-                    }
+                    
+                    state.players[p.name]!.data = p
                 }
             }
         })
@@ -144,7 +144,7 @@
             state.playerControls.requestedBullet = bullet.data
         }
 
-        const userIsNotIdle = 
+        const userIsNotIdle =
             state.playerControls.x !== 0 ||
             state.playerControls.y !== 0 ||
             state.playerProperties.isPressingTrigger
