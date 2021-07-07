@@ -43,13 +43,13 @@ export class GameRenderer {
 
                 if (buffer.length >= 2 && buffer[0]![0] <= oneGameTickAway && oneGameTickAway <= buffer[1]![0])
                 {
-                    const d_ = CONSTANTS.PLAYER_SPEED * NETWORK_LATENCY.value * 2
+                    const d_ = CONSTANTS.PLAYER_SPEED * CONSTANTS.GAME_TICK //NETWORK_LATENCY.value * 2
                     const dx = buffer[1]![1].controls.x * d_
                     const dy = buffer[1]![1].controls.y * d_
                     for (const prop of props)
                     {
                         const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
-                        const x0 = buffer[0]![1][prop] + predictionDelta
+                        const x0 = buffer[1]![1][prop] //+ predictionDelta
                         const x1 = buffer[1]![1][prop] + predictionDelta
                         const t0 = buffer[0]![0]
                         const t1 = buffer[1]![0]

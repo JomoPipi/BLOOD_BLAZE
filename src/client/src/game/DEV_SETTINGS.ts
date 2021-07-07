@@ -6,5 +6,5 @@ export const DEV_SETTINGS =
     , showServerBullet: false
     , showClientBullet: true
     , showClientPredictedBullet: true
-    , interpolateEnemyPositions: false
+    , interpolateEnemyPositions: true
     } as const
