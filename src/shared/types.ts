@@ -47,6 +47,8 @@ interface ClientSocket {
     (event : T, data : ClientToServerMessageTypes[T]) : void
 
   removeAllListeners(x : keyof ServerToClientMessageTypes) : void
+
+  volatile : Omit<ClientSocket, 'volatile'>
 }
 
 type Joystick = Point
@@ -70,6 +72,7 @@ type SocketPlayer = {
   name : string
   lastTimeGettingShot : number
   lastProcessedInput : number
+  controls : Point
   // isSpeaking : boolean
 }
 

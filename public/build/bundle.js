@@ -1051,6 +1051,20 @@ var app = (function () {
         showClientPredictedBullet: true,
         interpolateEnemyPositions: false };
 
+    const NETWORK_LATENCY = { value: 0,
+        beginRetrieving(socket) {
+            const go = () => {
+                const start = Date.now();
+                socket.volatile.emit("ping", () => {
+                    this.value = Date.now() - start;
+                    socket.volatile.emit("networkLatency", this.value);
+                });
+            };
+            setInterval(go, 5000);
+            go();
+        }
+    };
+
     const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth;
     class GameRenderer {
         canvas;
@@ -1068,30 +1082,28 @@ var app = (function () {
             for (const name in this.state.players) {
                 const p = this.state.players[name];
                 if (name !== this.username && DEV_SETTINGS.interpolateEnemyPositions) {
-                    // const [[ta, a], [tb, b]] = p.positionBuffer
                     const props = ['x', 'y', 'angle'];
-                    const extrapolated = { ...p.data };
-                    for (const prop of props) {
-                        // const xa = a[prop]
-                        // const xb = b[prop]
-                        // const speed = (xb - xa) / (tb - ta)
-                        // const deltaTime = now - tb
-                        // extrapolated[prop] = xb + deltaTime * speed
-                        const oneGameTickAway = now - CONSTANTS.GAME_TICK;
-                        const buffer = p.positionBuffer;
-                        if (buffer.length >= 2 && buffer[0][0] <= oneGameTickAway && oneGameTickAway <= buffer[1][0]) {
-                            const x0 = buffer[0][1][prop];
-                            const x1 = buffer[1][1][prop];
+                    const buffer = p.positionBuffer;
+                    const oneGameTickAway = now - CONSTANTS.GAME_TICK;
+                    // Drop older positions.
+                    while (buffer.length >= 2 && buffer[1][0] <= oneGameTickAway) {
+                        buffer.shift();
+                    }
+                    if (buffer.length >= 2 && buffer[0][0] <= oneGameTickAway && oneGameTickAway <= buffer[1][0]) {
+                        const d_ = CONSTANTS.PLAYER_SPEED * NETWORK_LATENCY.value * 2;
+                        const dx = buffer[1][1].controls.x * d_;
+                        const dy = buffer[1][1].controls.y * d_;
+                        for (const prop of props) {
+                            const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0;
+                            const x0 = buffer[0][1][prop] + predictionDelta;
+                            const x1 = buffer[1][1][prop] + predictionDelta;
                             const t0 = buffer[0][0];
                             const t1 = buffer[1][0];
-                            extrapolated[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0);
+                            p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0);
                         }
                     }
-                    this.drawPlayer(extrapolated, now);
                 }
-                else {
-                    this.drawPlayer(p.data, now);
-                }
+                this.drawPlayer(p.data, now);
             }
             if (DEV_SETTINGS.showServerPlayer && DEV_SETTINGS.serverplayer.name) {
                 this.drawPlayer(DEV_SETTINGS.serverplayer, now, 'purple');
@@ -1139,18 +1151,20 @@ var app = (function () {
             const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height];
             const playerGunSize = 2;
             const bloodCooldown = 256;
-            const R = now - p.lastTimeGettingShot | 0;
+            const R = now - p.lastTimeGettingShot;
             const isGettingShot = R <= bloodCooldown;
             this.ctx.fillStyle = isGettingShot ? `rgb(${bloodCooldown - R},0,0)` : color;
             if (p.name === this.username && isGettingShot) {
                 const wait = 50 + Math.random() * 200;
                 throttled(traumatize, wait, now);
             }
-            this.circle(x, y, PLAYER_RADIUS);
+            const [dx, dy] = [0, 0]
+                ;
+            this.circle(x + dx, y + dy, PLAYER_RADIUS);
             const [X, Y] = [x + PLAYER_RADIUS * Math.cos(p.angle),
                 y + PLAYER_RADIUS * Math.sin(p.angle)
             ];
-            this.circle(X, Y, playerGunSize);
+            this.circle(X + dx, Y + dy, playerGunSize);
             this.ctx.fillStyle = '#40f';
             this.ctx.fillText(p.name, x - 17, y - 17);
         }
@@ -1169,7 +1183,7 @@ var app = (function () {
     }
 
     class Player {
-        positionBuffer = [[0, {}], [1, {}]];
+        positionBuffer = [];
         data;
         constructor(data) {
             this.data = data;
@@ -1204,13 +1218,13 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[19] = list[i];
-    	child_ctx[20] = list;
-    	child_ctx[21] = i;
+    	child_ctx[17] = list[i];
+    	child_ctx[18] = list;
+    	child_ctx[19] = i;
     	return child_ctx;
     }
 
-    // (147:4) {#if devMode()}
+    // (137:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1242,11 +1256,11 @@ var app = (function () {
     			}
 
     			attr_dev(button0, "class", "settings-button svelte-15f4wix");
-    			add_location(button0, file$1, 147, 8, 6240);
-    			add_location(button1, file$1, 151, 12, 6423);
+    			add_location(button0, file$1, 137, 8, 5898);
+    			add_location(button1, file$1, 141, 12, 6081);
     			attr_dev(div, "class", "settings-page svelte-15f4wix");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 150, 8, 6349);
+    			add_location(div, file$1, 140, 8, 6007);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1331,27 +1345,27 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(147:4) {#if devMode()}",
+    		source: "(137:4) {#if devMode()}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (156:12) {#each devSwitches() as option}
+    // (146:12) {#each devSwitches() as option}
     function create_each_block(ctx) {
     	let label;
     	let input;
     	let t0;
     	let h4;
-    	let t1_value = /*option*/ ctx[19].split(camelCase).map(func).join(" ") + "";
+    	let t1_value = /*option*/ ctx[17].split(camelCase).map(func).join(" ") + "";
     	let t1;
     	let t2;
     	let mounted;
     	let dispose;
 
     	function input_change_handler() {
-    		/*input_change_handler*/ ctx[12].call(input, /*option*/ ctx[19]);
+    		/*input_change_handler*/ ctx[12].call(input, /*option*/ ctx[17]);
     	}
 
     	const block = {
@@ -1363,16 +1377,16 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = space();
     			attr_dev(input, "type", "checkbox");
-    			add_location(input, file$1, 157, 20, 6601);
+    			add_location(input, file$1, 147, 20, 6259);
     			attr_dev(h4, "class", "svelte-15f4wix");
-    			add_location(h4, file$1, 158, 20, 6680);
+    			add_location(h4, file$1, 148, 20, 6338);
     			attr_dev(label, "class", "svelte-15f4wix");
-    			add_location(label, file$1, 156, 16, 6572);
+    			add_location(label, file$1, 146, 16, 6230);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, label, anchor);
     			append_dev(label, input);
-    			input.checked = /*DEV_SETTINGS*/ ctx[1][/*option*/ ctx[19]];
+    			input.checked = /*DEV_SETTINGS*/ ctx[1][/*option*/ ctx[17]];
     			append_dev(label, t0);
     			append_dev(label, h4);
     			append_dev(h4, t1);
@@ -1387,7 +1401,7 @@ var app = (function () {
     			ctx = new_ctx;
 
     			if (dirty & /*DEV_SETTINGS, devSwitches*/ 258) {
-    				input.checked = /*DEV_SETTINGS*/ ctx[1][/*option*/ ctx[19]];
+    				input.checked = /*DEV_SETTINGS*/ ctx[1][/*option*/ ctx[17]];
     			}
     		},
     		d: function destroy(detaching) {
@@ -1401,7 +1415,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(156:12) {#each devSwitches() as option}",
+    		source: "(146:12) {#each devSwitches() as option}",
     		ctx
     	});
 
@@ -1452,13 +1466,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-15f4wix");
-    			add_location(center, file$1, 141, 0, 6025);
+    			add_location(center, file$1, 131, 0, 5683);
     			attr_dev(div0, "class", "scoreboard svelte-15f4wix");
-    			add_location(div0, file$1, 142, 0, 6054);
+    			add_location(div0, file$1, 132, 0, 5712);
     			attr_dev(canvas_1, "class", "svelte-15f4wix");
-    			add_location(canvas_1, file$1, 143, 0, 6109);
+    			add_location(canvas_1, file$1, 133, 0, 5767);
     			attr_dev(div1, "class", "input-container svelte-15f4wix");
-    			add_location(div1, file$1, 144, 0, 6139);
+    			add_location(div1, file$1, 134, 0, 5797);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1531,22 +1545,6 @@ var app = (function () {
     	validate_slots("GameClient", slots, []);
     	let { socket } = $$props;
     	let { username } = $$props;
-    	let NETWORK_LATENCY = -1;
-
-    	const getNetworkLatency = () => {
-    		const start = Date.now();
-
-    		// volatile, so the packet will be discarded if the socket is not connected
-    		
-
-    		socket.volatile.emit("ping", () => {
-    			NETWORK_LATENCY = Date.now() - start;
-    			socket.volatile.emit("networkLatency", NETWORK_LATENCY);
-    		});
-    	};
-
-    	getNetworkLatency();
-    	setInterval(getNetworkLatency, 5000);
     	let canvas;
     	let ctx;
     	let scoreboard;
@@ -1556,6 +1554,7 @@ var app = (function () {
     		ctx = canvas.getContext("2d");
     		$$invalidate(2, canvas.height = window.innerWidth, canvas);
     		$$invalidate(2, canvas.width = window.innerWidth, canvas);
+    		NETWORK_LATENCY.beginRetrieving(socket);
 
     		socket.on("removedPlayer", name => {
     			delete state.players[name];
@@ -1606,10 +1605,9 @@ var app = (function () {
     						const buffer = state.players[p.name].positionBuffer;
 
     						buffer.push([now, p]);
-    						if (buffer.length > 2) buffer.shift();
+    					} else {
+    						state.players[p.name].data = p;
     					}
-
-    					state.players[p.name].data = p;
     				}
     			}
     		});
@@ -1624,7 +1622,7 @@ var app = (function () {
     			const deltaTime = now - lastTime;
     			lastUpdate = now;
     			processInputs(deltaTime, now);
-    			$$invalidate(3, scoreboard.innerHTML = Object.values(state.players).sort((p1, p2) => p2.data.score - p1.data.score).map(p => `<span style="color: orange">${p.data.name}:</span> ${p.data.score}`).join("<br>") + `<br> pending requests: ${state.pendingInputs.length}` + `<br> network latency: ${NETWORK_LATENCY}`, scoreboard);
+    			$$invalidate(3, scoreboard.innerHTML = Object.values(state.players).sort((p1, p2) => p2.data.score - p1.data.score).map(p => `<span style="color: orange">${p.data.name}:</span> ${p.data.score}`).join("<br>") + `<br> pending requests: ${state.pendingInputs.length}` + `<br> network latency: ${NETWORK_LATENCY.value}`, scoreboard);
     			renderer.render(now);
     		})();
     	});
@@ -1723,10 +1721,9 @@ var app = (function () {
     		GameRenderer,
     		defaultClientState,
     		Player,
+    		NETWORK_LATENCY,
     		socket,
     		username,
-    		NETWORK_LATENCY,
-    		getNetworkLatency,
     		canvas,
     		ctx,
     		scoreboard,
@@ -1744,7 +1741,6 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ("socket" in $$props) $$invalidate(9, socket = $$props.socket);
     		if ("username" in $$props) $$invalidate(0, username = $$props.username);
-    		if ("NETWORK_LATENCY" in $$props) NETWORK_LATENCY = $$props.NETWORK_LATENCY;
     		if ("canvas" in $$props) $$invalidate(2, canvas = $$props.canvas);
     		if ("ctx" in $$props) ctx = $$props.ctx;
     		if ("scoreboard" in $$props) $$invalidate(3, scoreboard = $$props.scoreboard);

@@ -1,6 +1,6 @@
 
 export class Player {
-    positionBuffer : [[number, RotatingPoint], [number, RotatingPoint]] = [[0,{}],[1,{}]] as any
+    positionBuffer : [number, SocketPlayer][] = []
     data : SocketPlayer
 
     constructor(data : SocketPlayer) {

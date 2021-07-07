@@ -52,6 +52,7 @@ export class Game  {
 
         p.data.angle = client.angle
         p.data.lastProcessedInput = client.messageNumber
+        p.data.controls = { x: client.x, y: client.y }
 
         if (client.requestedBullet && CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting))
         { // TODO: && isValidBullet(p, client.requestedBullet)))
@@ -77,6 +78,7 @@ export class Game  {
                 : now - bullet.timeCreated + (this.getPlayerByName[bullet.shooter]?.lag || 0)
 
             bullet.hasMovedSinceCreation = true
+            
             CONSTANTS.MOVE_BULLET(bullet.data, dt)
             
             const newbx = bullet.data.x

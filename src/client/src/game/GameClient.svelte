@@ -8,22 +8,10 @@
     import { GameRenderer } from "./GameRenderer";
     import { defaultClientState } from './ClientState'
     import { Player } from "./Player";
+    import { NETWORK_LATENCY } from "./NETWORK_LATENCY";
 
     export let socket : ClientSocket
     export let username : string
-	
-    let NETWORK_LATENCY = -1
-    const getNetworkLatency = () => {
-		const start = Date.now();
-
-		// volatile, so the packet will be discarded if the socket is not connected
-		;(socket as any).volatile.emit("ping", () => {
-			NETWORK_LATENCY = Date.now() - start
-            ;(socket as any).volatile.emit("networkLatency", NETWORK_LATENCY)
-		})
-	}
-    getNetworkLatency()
-	setInterval(getNetworkLatency, 5000)
 
     let canvas : HTMLCanvasElement
     let ctx : CanvasRenderingContext2D
@@ -35,6 +23,8 @@
         ctx = canvas.getContext('2d')!
         canvas.height = window.innerWidth
         canvas.width = window.innerWidth
+
+        NETWORK_LATENCY.beginRetrieving(socket)
 
         socket.on('removedPlayer', name => {
             delete state.players[name]
@@ -93,10 +83,11 @@
                         // do interpolation
                         const buffer = state.players[p.name]!.positionBuffer
                         buffer.push([now, p])
-                        if (buffer.length > 2) buffer.shift()
                     }
-                    
-                    state.players[p.name]!.data = p
+                    else 
+                    {
+                        state.players[p.name]!.data = p
+                    }
                 }
             }
         })
@@ -118,7 +109,7 @@
                 .map(p => `<span style="color: orange">${p.data.name}:</span> ${p.data.score}`)
                 .join('<br>') 
                 + `<br> pending requests: ${state.pendingInputs.length}`
-                + `<br> network latency: ${NETWORK_LATENCY}`
+                + `<br> network latency: ${NETWORK_LATENCY.value}`
 
             renderer.render(now)
         })()

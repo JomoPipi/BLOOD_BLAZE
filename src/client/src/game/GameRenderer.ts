@@ -1,6 +1,7 @@
 
 import { DEV_SETTINGS } from "./DEV_SETTINGS"
 import type { ClientState } from './ClientState'
+import { NETWORK_LATENCY } from "./NETWORK_LATENCY"
 
 const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth
 
@@ -29,40 +30,36 @@ export class GameRenderer {
             
             if (name !== this.username && DEV_SETTINGS.interpolateEnemyPositions)
             {
-                
-                // const [[ta, a], [tb, b]] = p.positionBuffer
-                
                 const props = ['x','y','angle'] as const
 
-                const extrapolated = { ...p.data }
+                const buffer = p.positionBuffer
+                const oneGameTickAway = now - CONSTANTS.GAME_TICK
 
-                for (const prop of props)
+                // Drop older positions.
+                while (buffer.length >= 2 && buffer[1]![0] <= oneGameTickAway)
                 {
-                    // const xa = a[prop]
-                    // const xb = b[prop]
-                    // const speed = (xb - xa) / (tb - ta)
-                    // const deltaTime = now - tb
-                    // extrapolated[prop] = xb + deltaTime * speed
+                    buffer.shift()
+                }
 
-                    const oneGameTickAway = now - CONSTANTS.GAME_TICK
-                    const buffer = p.positionBuffer
-                    if (buffer.length >= 2 && buffer[0]![0] <= oneGameTickAway && oneGameTickAway <= buffer[1]![0])
+                if (buffer.length >= 2 && buffer[0]![0] <= oneGameTickAway && oneGameTickAway <= buffer[1]![0])
+                {
+                    const d_ = CONSTANTS.PLAYER_SPEED * NETWORK_LATENCY.value * 2
+                    const dx = buffer[1]![1].controls.x * d_
+                    const dy = buffer[1]![1].controls.y * d_
+                    for (const prop of props)
                     {
-                        const x0 = buffer[0]![1][prop]
-                        const x1 = buffer[1]![1][prop]
+                        const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
+                        const x0 = buffer[0]![1][prop] + predictionDelta
+                        const x1 = buffer[1]![1][prop] + predictionDelta
                         const t0 = buffer[0]![0]
                         const t1 = buffer[1]![0]
 
-                        extrapolated[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
+                        p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
                     }
                 }
+            }
 
-                this.drawPlayer(extrapolated, now)
-            }
-            else
-            {
-                this.drawPlayer(p.data, now)
-            }
+            this.drawPlayer(p.data, now)
         }
         
         if (DEV_SETTINGS.showServerPlayer && DEV_SETTINGS.serverplayer.name)
@@ -91,6 +88,7 @@ export class GameRenderer {
                 const by = b.y + b.speedY * age
                 const x = bx * this.canvas.width
                 const y = by * this.canvas.height
+                
                 this.circle(x, y, 2)
                 return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
             })
@@ -119,7 +117,7 @@ export class GameRenderer {
         const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height]
         const playerGunSize = 2
         const bloodCooldown = 256
-        const R = now - p.lastTimeGettingShot | 0
+        const R = now - p.lastTimeGettingShot
         const isGettingShot = R <= bloodCooldown
         this.ctx.fillStyle = isGettingShot ? `rgb(${bloodCooldown - R},0,0)` : color
         
@@ -128,14 +126,17 @@ export class GameRenderer {
             const wait = 50 + Math.random() * 200
             throttled(traumatize, wait, now)
         }
-        
-        this.circle(x, y, PLAYER_RADIUS)
+        const [dx, dy] = true // p.name === this.username 
+            ? [0, 0]
+            : [p.controls.x,  p.controls.y].map(x => x * 400 * CONSTANTS.PLAYER_SPEED * this.canvas.width)
+
+        this.circle(x + dx!, y + dy!, PLAYER_RADIUS)
         
         const [X, Y] = 
             [ x + PLAYER_RADIUS * Math.cos(p.angle)
             , y + PLAYER_RADIUS * Math.sin(p.angle)
             ]
-        this.circle(X, Y, playerGunSize)
+        this.circle(X + dx!, Y + dy!, playerGunSize)
         this.ctx.fillStyle = '#40f'
         this.ctx.fillText(p.name, x - 17, y - 17)
     }

@@ -12,7 +12,7 @@ import { Game } from './game/game.js'
 
 const app = express()
 const server = http.createServer(app)
-const io = new Server(server) as unknown as ServerSocket
+const io = new Server(server) as ServerSocket
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const staticPath = path.join(__dirname, '..', '..')
 
