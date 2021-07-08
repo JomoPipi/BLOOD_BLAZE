@@ -31,9 +31,11 @@
         })
 
         socket.on('gameTick', msg => {
-            state.lastGameTickMessage = msg
 
             const now = Date.now()
+
+            state.lastGameTickMessage = msg
+            state.lastGameTickMessageTime = now
 
             state.bullets.push(...msg.newBullets)
             for (const b of msg.newBullets)
@@ -74,17 +76,18 @@
                             j++
                         }
                     }
-                    player.data.angle = state.playerControls.angle // We don't want the server's angle.
+                    player.data.angle = state.myPlayer.controls.angle // We don't want the server's angle.
                 }
                 else
                 {
-                    if (DEV_SETTINGS.interpolateEnemyPositions)
-                    {
-                        // do interpolation
-                        const buffer = state.players[p.name]!.positionBuffer
-                        buffer.push([now, p])
-                    }
-                    else 
+                    // if (DEV_SETTINGS.interpolateEnemyPositions)
+                    // {
+                    //     // do interpolation
+                    //     const buffer = state.players[p.name]!.positionBuffer
+                    //     buffer.push([now, p])
+                    //     state.players[p.name]!.data.controls = p.controls
+                    // }
+                    // else 
                     {
                         state.players[p.name]!.data = p
                     }
@@ -115,34 +118,40 @@
         })()
     })
     
+    let canSendIdleInput = true
     function processInputs(deltaTime : number, now : number) {
 
-        state.playerControls.deltaTime = deltaTime
+        state.myPlayer.controls.deltaTime = deltaTime
         
         // TODO: make babel plugin to remove if conditions for production mode
         if (!CONSTANTS.DEV_MODE || DEV_SETTINGS.enableClientSidePrediction)
         {
-            CONSTANTS.MOVE_PLAYER(state.players[username]!.data, state.playerControls, deltaTime)
+            CONSTANTS.MOVE_PLAYER(state.players[username]!.data, state.myPlayer.controls, deltaTime)
         }
 
-        if (state.playerProperties.isPressingTrigger &&
-            CONSTANTS.CAN_SHOOT(now, state.playerProperties.LAST_SHOT))
+        if (state.myPlayer.isPressingTrigger &&
+            CONSTANTS.CAN_SHOOT(now, state.myPlayer.lastTimeShooting))
         {
-            state.playerProperties.LAST_SHOT = now
+            state.myPlayer.lastTimeShooting = now
             
-            const bullet = new ClientPredictedBullet(state.players[username]!.data, state.playerControls)
-            state.playerBullets.push(bullet)
-            state.playerControls.requestedBullet = bullet.data
+            const bullet = new ClientPredictedBullet(state.players[username]!.data, state.myPlayer.controls)
+            state.myPlayer.bullets.push(bullet)
+            state.myPlayer.controls.requestedBullet = bullet.data
         }
 
         const userIsNotIdle =
-            state.playerControls.x !== 0 ||
-            state.playerControls.y !== 0 ||
-            state.playerProperties.isPressingTrigger
+            state.myPlayer.controls.x !== 0 ||
+            state.myPlayer.controls.y !== 0 ||
+            state.myPlayer.isPressingTrigger
 
+        if (userIsNotIdle || canSendIdleInput)
+        {
+            sendInputsToServer(state.myPlayer.controls)
+            canSendIdleInput = false
+        }
         if (userIsNotIdle)
         {
-            sendInputsToServer(state.playerControls)
+            canSendIdleInput = true
         }
     }
 
@@ -157,15 +166,15 @@
     }
 
     function moveJoystick(x : number, y : number) {
-        state.playerControls.x = x
-        state.playerControls.y = y
+        state.myPlayer.controls.x = x
+        state.myPlayer.controls.y = y
     }
 
     function moveRightPad(angle : number, active : boolean) {
         // Assign state.players[username].angle for a minor
         // convenience when shooting client predicted bullets:
-        state.playerControls.angle = state.players[username]!.data.angle = angle
-        state.playerProperties.isPressingTrigger = active
+        state.myPlayer.controls.angle = state.players[username]!.data.angle = angle
+        state.myPlayer.isPressingTrigger = active
     }
 
     const devMode = () => CONSTANTS.DEV_MODE // It's not defined outside of script tags 🤷

@@ -183,6 +183,7 @@
           ],
           "format": "svg",
         },
+        { "icon": "bullet", "extensions": ["shared"], "format": "svg" },
         { "icon": "gun", "extensions": ["server"], "format": "svg" },
         {
           "icon": "docker",
@@ -659,4 +660,9 @@
       ],
       "vsicons.customIconFolderPath": ".vscode\\x",
       "vsicons.projectDetection.autoReload": true,
+      "workbench.colorCustomizations": {
+        "activityBar.background": "#123232",
+        "titleBar.activeBackground": "#1A4646",
+        "titleBar.activeForeground": "#F6FCFC"
+      },
 }

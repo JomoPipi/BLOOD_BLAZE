@@ -30,36 +30,59 @@ export class GameRenderer {
             
             if (name !== this.username && DEV_SETTINGS.interpolateEnemyPositions)
             {
-                const props = ['x','y','angle'] as const
+                // "standard" interpolation
+                // const props = ['x','y','angle'] as const
+                // const buffer = p.positionBuffer
+                // const oneGameTickAway = now - CONSTANTS.GAME_TICK
 
-                const buffer = p.positionBuffer
-                const oneGameTickAway = now - CONSTANTS.GAME_TICK
+                // // Drop older positions.
+                // while (buffer.length >= 2 && buffer[1]![0] <= oneGameTickAway)
+                // {
+                //     buffer.shift()
+                // }
 
-                // Drop older positions.
-                while (buffer.length >= 2 && buffer[1]![0] <= oneGameTickAway)
-                {
-                    buffer.shift()
-                }
+                // if (buffer.length >= 2 && buffer[0]![0] <= oneGameTickAway && oneGameTickAway <= buffer[1]![0])
+                // {
+                //     for (const prop of props)
+                //     {
+                //         const x0 = buffer[0]![1][prop]
+                //         const x1 = buffer[1]![1][prop]
+                //         const t0 = buffer[0]![0]
+                //         const t1 = buffer[1]![0]
 
-                if (buffer.length >= 2 && buffer[0]![0] <= oneGameTickAway && oneGameTickAway <= buffer[1]![0])
-                {
-                    const d_ = CONSTANTS.PLAYER_SPEED * CONSTANTS.GAME_TICK //NETWORK_LATENCY.value * 2
-                    const dx = buffer[1]![1].controls.x * d_
-                    const dy = buffer[1]![1].controls.y * d_
-                    for (const prop of props)
-                    {
-                        const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
-                        const x0 = buffer[1]![1][prop] //+ predictionDelta
-                        const x1 = buffer[1]![1][prop] + predictionDelta
-                        const t0 = buffer[0]![0]
-                        const t1 = buffer[1]![0]
+                //         p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
+                //     }
+                // }
 
-                        p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
-                    }
-                }
+                this.drawPlayer(p.data, now)
             }
+            // else if (name !== this.username && DEV_SETTINGS.interpolateEnemyPositions)
+            // {
+            //     const data = { ...p.data }
+            //     const dt = now - this.state.lastGameTickMessageTime
 
-            this.drawPlayer(p.data, now)
+            //     const props = ['x','y','angle'] as const
+
+            //     const d_ = CONSTANTS.PLAYER_SPEED * dt
+            //     const dx = data.controls.x * d_
+            //     const dy = data.controls.y * d_
+
+            //     for (const prop of props)
+            //     {
+            //         // extrapolation
+            //         const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
+
+            //         data[prop] += predictionDelta
+
+            //         // p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
+            //     }
+
+            //     this.drawPlayer(data, now)
+            // }
+            else
+            {
+                this.drawPlayer(p.data, now)
+            }
         }
         
         if (DEV_SETTINGS.showServerPlayer && DEV_SETTINGS.serverplayer.name)
@@ -98,7 +121,7 @@ export class GameRenderer {
         {
             this.ctx.fillStyle = '#c0c'
             const { deletedBullets } = this.state.lastGameTickMessage
-            this.state.playerBullets = this.state.playerBullets.filter(bullet => {
+            this.state.myPlayer.bullets = this.state.myPlayer.bullets.filter(bullet => {
                 if (deletedBullets[bullet.data.id]) return false
                 const age = now - bullet.timeCreated
                 const b = bullet.data
@@ -126,17 +149,14 @@ export class GameRenderer {
             const wait = 50 + Math.random() * 200
             throttled(traumatize, wait, now)
         }
-        const [dx, dy] = true // p.name === this.username 
-            ? [0, 0]
-            : [p.controls.x,  p.controls.y].map(x => x * 400 * CONSTANTS.PLAYER_SPEED * this.canvas.width)
-
-        this.circle(x + dx!, y + dy!, PLAYER_RADIUS)
+        
+        this.circle(x, y, PLAYER_RADIUS)
         
         const [X, Y] = 
             [ x + PLAYER_RADIUS * Math.cos(p.angle)
             , y + PLAYER_RADIUS * Math.sin(p.angle)
             ]
-        this.circle(X + dx!, Y + dy!, playerGunSize)
+        this.circle(X, Y, playerGunSize)
         this.ctx.fillStyle = '#40f'
         this.ctx.fillText(p.name, x - 17, y - 17)
     }
