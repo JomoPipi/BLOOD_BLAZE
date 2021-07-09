@@ -35,6 +35,12 @@ export class GameRenderer {
                 // const buffer = p.interpolationBuffer
                 // const oneGameTickAway = now - CONSTANTS.GAME_TICK
 
+                // // const dt = now - this.state.lastGameTickMessageTime// + p.data.latency
+
+                // // const d_ = CONSTANTS.PLAYER_SPEED * dt
+                // // const dx = p.data.controls.x * d_
+                // // const dy = p.data.controls.y * d_
+
                 // // Drop older positions.
                 // while (buffer.length >= 2 && buffer[1]![0] <= oneGameTickAway)
                 // {
@@ -45,6 +51,8 @@ export class GameRenderer {
                 // {
                 //     for (const prop of props)
                 //     {
+                //         // const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
+                        
                 //         const x0 = buffer[0]![1][prop]
                 //         const x1 = buffer[1]![1][prop]
                 //         const t0 = buffer[0]![0]
@@ -59,7 +67,7 @@ export class GameRenderer {
 
 
                 const data = { ...p.data }
-                const dt = now - this.state.lastGameTickMessageTime
+                const dt = now - this.state.lastGameTickMessageTime + p.data.latency
 
                 const props = ['x','y','angle'] as const
 

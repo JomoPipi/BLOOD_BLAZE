@@ -9,7 +9,7 @@ const CONSTANTS = (() => {
     const BULLET_COOLDOWN = 80 // 200
     const BULLET_SPEED = 0.0006 / 2
     
-    const FPS = 4 // 60
+    const FPS = 20 // 60
     const GAME_TICK = 1000 / FPS
 
     const CONST = 
@@ -62,7 +62,8 @@ const CONSTANTS = (() => {
             , name
             , lastTimeGettingShot: -1
             , lastProcessedInput: -1
-            , controls : { x : 0, y : 0 }
+            , controls: { x : 0, y : 0 }
+            , latency: 0
             })
     }
 

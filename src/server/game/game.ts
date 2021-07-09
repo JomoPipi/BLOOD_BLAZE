@@ -63,7 +63,7 @@ export class Game  {
     }
 
     setPlayerLag(username : string, lag : number) {
-        this.getPlayerByName[username]!.lag = lag
+        this.getPlayerByName[username]!.data.latency = lag
     }
 
     moveObjects(timeDelta : number, now : number) {
@@ -75,7 +75,7 @@ export class Game  {
             const by = bullet.data.y
             const dt = bullet.hasMovedSinceCreation
                 ? timeDelta
-                : now - bullet.timeCreated + (this.getPlayerByName[bullet.shooter]?.lag || 0)
+                : now - bullet.timeCreated + (this.getPlayerByName[bullet.shooter]?.data.latency || 0)
 
             bullet.hasMovedSinceCreation = true
             
