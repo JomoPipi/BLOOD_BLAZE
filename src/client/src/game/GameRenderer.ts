@@ -1,10 +1,8 @@
 
 import { DEV_SETTINGS } from "./DEV_SETTINGS"
 import type { ClientState } from './ClientState'
-import { NETWORK_LATENCY } from "./NETWORK_LATENCY"
 
 const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth
-
 export class GameRenderer {
 
     private readonly canvas
@@ -25,14 +23,16 @@ export class GameRenderer {
     
 
         for (const name in this.state.players)
-        {
+        {   
+            if (name === this.username) continue
             const p = this.state.players[name]!
             
-            if (name !== this.username && DEV_SETTINGS.interpolateEnemyPositions)
+            if (DEV_SETTINGS.interpolateEnemyPositions)
             {
-                // "standard" interpolation
+                // // "standard" interpolation/
+                // ///////////////////////////////////////////////////////////////
                 // const props = ['x','y','angle'] as const
-                // const buffer = p.positionBuffer
+                // const buffer = p.interpolationBuffer
                 // const oneGameTickAway = now - CONSTANTS.GAME_TICK
 
                 // // Drop older positions.
@@ -54,40 +54,45 @@ export class GameRenderer {
                 //     }
                 // }
 
-                this.drawPlayer(p.data, now)
+                // this.drawPlayer(p.data, now)
+                // //////////////////////////////////////////////////////////////////////////
+
+
+                const data = { ...p.data }
+                const dt = now - this.state.lastGameTickMessageTime
+
+                const props = ['x','y','angle'] as const
+
+                const d_ = CONSTANTS.PLAYER_SPEED * dt
+                const dx = data.controls.x * d_
+                const dy = data.controls.y * d_
+
+                for (const prop of props)
+                {
+                    // extrapolation
+                    const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
+
+                    data[prop] += predictionDelta
+
+                    // p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
+                }
+
+                this.drawPlayer(data, now)
             }
-            // else if (name !== this.username && DEV_SETTINGS.interpolateEnemyPositions)
-            // {
-            //     const data = { ...p.data }
-            //     const dt = now - this.state.lastGameTickMessageTime
-
-            //     const props = ['x','y','angle'] as const
-
-            //     const d_ = CONSTANTS.PLAYER_SPEED * dt
-            //     const dx = data.controls.x * d_
-            //     const dy = data.controls.y * d_
-
-            //     for (const prop of props)
-            //     {
-            //         // extrapolation
-            //         const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
-
-            //         data[prop] += predictionDelta
-
-            //         // p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
-            //     }
-
-            //     this.drawPlayer(data, now)
-            // }
             else
             {
                 this.drawPlayer(p.data, now)
             }
         }
-        
-        if (DEV_SETTINGS.showServerPlayer && DEV_SETTINGS.serverplayer.name)
+
+        if (DEV_SETTINGS.showPredictedPlayer)
         {
-            this.drawPlayer(DEV_SETTINGS.serverplayer, now, 'purple')
+            this.drawPlayer(this.state.myPlayer.predictedPosition, now)
+        }
+
+        if (DEV_SETTINGS.showServerPlayer)
+        {
+            this.drawPlayer(this.state.players[this.username]!.data, now, 'purple')
         }
     
         if (DEV_SETTINGS.showServerBullet)
@@ -132,7 +137,6 @@ export class GameRenderer {
                 this.circle(x, y, 2)
                 return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
             })
-    
         }
     }
 

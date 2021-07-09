@@ -1,7 +1,7 @@
 
 export class Player {
     data : SocketPlayer
-    positionBuffer : [number, SocketPlayer][] = []
+    interpolationBuffer : [number, SocketPlayer][] = []
 
     constructor(data : SocketPlayer) {
         this.data = data

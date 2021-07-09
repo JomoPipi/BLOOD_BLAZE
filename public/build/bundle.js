@@ -1044,25 +1044,12 @@ var app = (function () {
     }
 
     const DEV_SETTINGS = { enableClientSidePrediction: true,
+        showPredictedPlayer: true,
         showServerPlayer: false,
-        serverplayer: {},
         showServerBullet: false,
         showClientBullet: true,
         showClientPredictedBullet: true,
-        interpolateEnemyPositions: true };
-
-    const NETWORK_LATENCY = { value: 0,
-        beginRetrieving(socket) {
-            const go = () => {
-                const start = Date.now();
-                socket.volatile.emit("ping", () => {
-                    this.value = Date.now() - start;
-                    socket.volatile.emit("networkLatency", this.value);
-                });
-            };
-            setInterval(go, 5000);
-            go();
-        }
+        interpolateEnemyPositions: true
     };
 
     const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth;
@@ -1080,11 +1067,14 @@ var app = (function () {
         render(now) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             for (const name in this.state.players) {
+                if (name === this.username)
+                    continue;
                 const p = this.state.players[name];
-                if (name !== this.username && DEV_SETTINGS.interpolateEnemyPositions) {
-                    // "standard" interpolation
+                if (DEV_SETTINGS.interpolateEnemyPositions) {
+                    // // "standard" interpolation/
+                    // ///////////////////////////////////////////////////////////////
                     // const props = ['x','y','angle'] as const
-                    // const buffer = p.positionBuffer
+                    // const buffer = p.interpolationBuffer
                     // const oneGameTickAway = now - CONSTANTS.GAME_TICK
                     // // Drop older positions.
                     // while (buffer.length >= 2 && buffer[1]![0] <= oneGameTickAway)
@@ -1102,31 +1092,31 @@ var app = (function () {
                     //         p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
                     //     }
                     // }
-                    this.drawPlayer(p.data, now);
+                    // this.drawPlayer(p.data, now)
+                    // //////////////////////////////////////////////////////////////////////////
+                    const data = { ...p.data };
+                    const dt = now - this.state.lastGameTickMessageTime;
+                    const props = ['x', 'y', 'angle'];
+                    const d_ = CONSTANTS.PLAYER_SPEED * dt;
+                    const dx = data.controls.x * d_;
+                    const dy = data.controls.y * d_;
+                    for (const prop of props) {
+                        // extrapolation
+                        const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0;
+                        data[prop] += predictionDelta;
+                        // p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
+                    }
+                    this.drawPlayer(data, now);
                 }
-                // else if (name !== this.username && DEV_SETTINGS.interpolateEnemyPositions)
-                // {
-                //     const data = { ...p.data }
-                //     const dt = now - this.state.lastGameTickMessageTime
-                //     const props = ['x','y','angle'] as const
-                //     const d_ = CONSTANTS.PLAYER_SPEED * dt
-                //     const dx = data.controls.x * d_
-                //     const dy = data.controls.y * d_
-                //     for (const prop of props)
-                //     {
-                //         // extrapolation
-                //         const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
-                //         data[prop] += predictionDelta
-                //         // p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
-                //     }
-                //     this.drawPlayer(data, now)
-                // }
                 else {
                     this.drawPlayer(p.data, now);
                 }
             }
-            if (DEV_SETTINGS.showServerPlayer && DEV_SETTINGS.serverplayer.name) {
-                this.drawPlayer(DEV_SETTINGS.serverplayer, now, 'purple');
+            if (DEV_SETTINGS.showPredictedPlayer) {
+                this.drawPlayer(this.state.myPlayer.predictedPosition, now);
+            }
+            if (DEV_SETTINGS.showServerPlayer) {
+                this.drawPlayer(this.state.players[this.username].data, now, 'purple');
             }
             if (DEV_SETTINGS.showServerBullet) {
                 this.ctx.fillStyle = '#099';
@@ -1153,7 +1143,7 @@ var app = (function () {
             if (DEV_SETTINGS.showClientPredictedBullet) {
                 this.ctx.fillStyle = '#c0c';
                 const { deletedBullets } = this.state.lastGameTickMessage;
-                this.state.playerBullets = this.state.playerBullets.filter(bullet => {
+                this.state.myPlayer.bullets = this.state.myPlayer.bullets.filter(bullet => {
                     if (deletedBullets[bullet.data.id])
                         return false;
                     const age = now - bullet.timeCreated;
@@ -1201,27 +1191,34 @@ var app = (function () {
     }
 
     class Player {
-        positionBuffer = [];
         data;
+        interpolationBuffer = [];
         constructor(data) {
             this.data = data;
         }
     }
 
-    const defaultClientState = username => ({ pendingInputs: [],
-        playerControls: { x: 0,
+    class MyPlayer {
+        predictedPosition;
+        // lastServerTickData : SocketPlayer
+        controls = { x: 0,
             y: 0,
             angle: 0,
             messageNumber: 0,
             deltaTime: 0
-        },
-        playerProperties: { LAST_SHOT: -1,
-            isPressingTrigger: false
-        },
+        };
+        lastTimeShooting = -1;
+        isPressingTrigger = false;
+        bullets = [];
+        constructor(data) {
+            this.predictedPosition = data;
+        }
+    }
+    const defaultClientState = username => ({ pendingInputs: [],
+        myPlayer: new MyPlayer(CONSTANTS.CREATE_PLAYER(username)),
         bulletReceptionTimes: new WeakMap(),
         players: { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) },
         bullets: [],
-        playerBullets: [],
         lastGameTickMessage: { players: [],
             bullets: [],
             newBullets: [],
@@ -1229,6 +1226,20 @@ var app = (function () {
         },
         lastGameTickMessageTime: Date.now()
     });
+
+    const NETWORK_LATENCY = { value: 0,
+        beginRetrieving(socket) {
+            const go = () => {
+                const start = Date.now();
+                socket.volatile.emit("ping", () => {
+                    this.value = Date.now() - start;
+                    socket.volatile.emit("networkLatency", this.value);
+                });
+            };
+            setInterval(go, 5000);
+            go();
+        }
+    };
 
     /* src\game\GameClient.svelte generated by Svelte v3.38.2 */
 
@@ -1243,7 +1254,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (146:4) {#if devMode()}
+    // (136:4) {#if devMode()}
     function create_if_block$1(ctx) {
     	let button0;
     	let t1;
@@ -1275,11 +1286,11 @@ var app = (function () {
     			}
 
     			attr_dev(button0, "class", "settings-button svelte-15f4wix");
-    			add_location(button0, file$1, 146, 8, 6225);
-    			add_location(button1, file$1, 150, 12, 6408);
+    			add_location(button0, file$1, 136, 8, 5835);
+    			add_location(button1, file$1, 140, 12, 6018);
     			attr_dev(div, "class", "settings-page svelte-15f4wix");
     			toggle_class(div, "show", /*settingsPage*/ ctx[4].isOpen);
-    			add_location(div, file$1, 149, 8, 6334);
+    			add_location(div, file$1, 139, 8, 5944);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -1364,14 +1375,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(146:4) {#if devMode()}",
+    		source: "(136:4) {#if devMode()}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (155:12) {#each devSwitches() as option}
+    // (145:12) {#each devSwitches() as option}
     function create_each_block(ctx) {
     	let label;
     	let input;
@@ -1396,11 +1407,11 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = space();
     			attr_dev(input, "type", "checkbox");
-    			add_location(input, file$1, 156, 20, 6586);
+    			add_location(input, file$1, 146, 20, 6196);
     			attr_dev(h4, "class", "svelte-15f4wix");
-    			add_location(h4, file$1, 157, 20, 6665);
+    			add_location(h4, file$1, 147, 20, 6275);
     			attr_dev(label, "class", "svelte-15f4wix");
-    			add_location(label, file$1, 155, 16, 6557);
+    			add_location(label, file$1, 145, 16, 6167);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, label, anchor);
@@ -1434,7 +1445,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(155:12) {#each devSwitches() as option}",
+    		source: "(145:12) {#each devSwitches() as option}",
     		ctx
     	});
 
@@ -1485,13 +1496,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-15f4wix");
-    			add_location(center, file$1, 140, 0, 6010);
+    			add_location(center, file$1, 130, 0, 5620);
     			attr_dev(div0, "class", "scoreboard svelte-15f4wix");
-    			add_location(div0, file$1, 141, 0, 6039);
+    			add_location(div0, file$1, 131, 0, 5649);
     			attr_dev(canvas_1, "class", "svelte-15f4wix");
-    			add_location(canvas_1, file$1, 142, 0, 6094);
+    			add_location(canvas_1, file$1, 132, 0, 5704);
     			attr_dev(div1, "class", "input-container svelte-15f4wix");
-    			add_location(div1, file$1, 143, 0, 6124);
+    			add_location(div1, file$1, 133, 0, 5734);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1596,14 +1607,14 @@ var app = (function () {
     				}
 
     				const player = state.players[p.name];
+    				player.data = p;
 
     				if (p.name === username) {
-    					Object.assign(player.data, p);
-    					Object.assign(DEV_SETTINGS.serverplayer, p);
+    					state.myPlayer.predictedPosition = Object.assign({}, p);
+    					state.myPlayer.predictedPosition.angle = state.myPlayer.controls.angle; // We don't want the server's angle.
     					if (CONSTANTS.DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue;
-    					let j = 0;
 
-    					while (j < state.pendingInputs.length) {
+    					for (let j = 0; j < state.pendingInputs.length; ) {
     						const input = state.pendingInputs[j];
 
     						if (input.messageNumber <= p.lastProcessedInput) {
@@ -1612,25 +1623,13 @@ var app = (function () {
     							state.pendingInputs.splice(j, 1);
     						} else {
     							// Not processed by the server yet. Re-apply it.
-    							CONSTANTS.MOVE_PLAYER(player.data, input, input.deltaTime);
+    							CONSTANTS.MOVE_PLAYER(state.myPlayer.predictedPosition, input, input.deltaTime);
 
     							j++;
     						}
     					}
-
-    					player.data.angle = state.playerControls.angle; // We don't want the server's angle.
     				} else {
-    					// if (DEV_SETTINGS.interpolateEnemyPositions)
-    					// {
-    					//     // do interpolation
-    					//     const buffer = state.players[p.name]!.positionBuffer
-    					//     buffer.push([now, p])
-    					//     state.players[p.name]!.data.controls = p.controls
-    					// }
-    					// else 
-    					{
-    						state.players[p.name].data = p;
-    					}
+    					player.interpolationBuffer.push([now, p]);
     				}
     			}
     		});
@@ -1653,24 +1652,24 @@ var app = (function () {
     	let canSendIdleInput = true;
 
     	function processInputs(deltaTime, now) {
-    		state.playerControls.deltaTime = deltaTime;
+    		state.myPlayer.controls.deltaTime = deltaTime;
+    		CONSTANTS.MOVE_PLAYER(state.myPlayer.predictedPosition, state.myPlayer.controls, deltaTime);
 
-    		// TODO: make babel plugin to remove if conditions for production mode
-    		if (!CONSTANTS.DEV_MODE || DEV_SETTINGS.enableClientSidePrediction) {
-    			CONSTANTS.MOVE_PLAYER(state.players[username].data, state.playerControls, deltaTime);
+    		if (state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, state.myPlayer.lastTimeShooting)) {
+    			state.myPlayer.lastTimeShooting = now;
+    			const bullet = new ClientPredictedBullet(state.myPlayer.predictedPosition, state.myPlayer.controls);
+
+    			if (DEV_SETTINGS.enableClientSidePrediction) {
+    				state.myPlayer.bullets.push(bullet);
+    			}
+
+    			state.myPlayer.controls.requestedBullet = bullet.data;
     		}
 
-    		if (state.playerProperties.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, state.playerProperties.LAST_SHOT)) {
-    			state.playerProperties.LAST_SHOT = now;
-    			const bullet = new ClientPredictedBullet(state.players[username].data, state.playerControls);
-    			state.playerBullets.push(bullet);
-    			state.playerControls.requestedBullet = bullet.data;
-    		}
-
-    		const userIsNotIdle = state.playerControls.x !== 0 || state.playerControls.y !== 0 || state.playerProperties.isPressingTrigger;
+    		const userIsNotIdle = state.myPlayer.controls.x !== 0 || state.myPlayer.controls.y !== 0 || state.myPlayer.isPressingTrigger;
 
     		if (userIsNotIdle || canSendIdleInput) {
-    			sendInputsToServer(state.playerControls);
+    			sendInputsToServer(state.myPlayer.controls);
     			canSendIdleInput = false;
     		}
 
@@ -1689,16 +1688,16 @@ var app = (function () {
     	}
 
     	function moveJoystick(x, y) {
-    		state.playerControls.x = x;
-    		state.playerControls.y = y;
+    		state.myPlayer.controls.x = x;
+    		state.myPlayer.controls.y = y;
     	}
 
     	function moveRightPad(angle, active) {
     		// Assign state.players[username].angle for a minor
     		// convenience when shooting client predicted bullets:
-    		state.playerControls.angle = state.players[username].data.angle = angle;
+    		state.myPlayer.controls.angle = state.players[username].data.angle = state.myPlayer.predictedPosition.angle = angle;
 
-    		state.playerProperties.isPressingTrigger = active;
+    		state.myPlayer.isPressingTrigger = active;
     	}
 
     	const devMode = () => CONSTANTS.DEV_MODE; // It's not defined outside of script tags 🤷

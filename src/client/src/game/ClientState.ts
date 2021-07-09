@@ -3,7 +3,7 @@ import type { ClientPredictedBullet } from './ClientPredictedBullet'
 import { Player } from './Player'
 
 class MyPlayer {
-    data : SocketPlayer
+    predictedPosition : SocketPlayer
     // lastServerTickData : SocketPlayer
     controls : PlayerControlsMessage =
         { x: 0
@@ -17,7 +17,7 @@ class MyPlayer {
     bullets : ClientPredictedBullet[] = []
 
     constructor(data : SocketPlayer) {
-        this.data = data
+        this.predictedPosition = data
     }
 }
 

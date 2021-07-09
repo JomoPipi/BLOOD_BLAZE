@@ -52,14 +52,15 @@
                 }
 
                 const player = state.players[p.name]!
+                player.data = p
                 if (p.name === username)
                 {
-                    Object.assign(player.data, p)
-                    Object.assign(DEV_SETTINGS.serverplayer, p)
+                    state.myPlayer.predictedPosition = { ...p }
+                    state.myPlayer.predictedPosition.angle = state.myPlayer.controls.angle // We don't want the server's angle.
 
                     if (CONSTANTS.DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue
-                    let j = 0
-                    while (j < state.pendingInputs.length)
+
+                    for (let j = 0; j < state.pendingInputs.length;)
                     {
                         const input = state.pendingInputs[j]!
                         
@@ -72,25 +73,14 @@
                         else
                         {
                             // Not processed by the server yet. Re-apply it.
-                            CONSTANTS.MOVE_PLAYER(player.data, input, input.deltaTime)
+                            CONSTANTS.MOVE_PLAYER(state.myPlayer.predictedPosition, input, input.deltaTime)
                             j++
                         }
                     }
-                    player.data.angle = state.myPlayer.controls.angle // We don't want the server's angle.
                 }
                 else
-                {
-                    // if (DEV_SETTINGS.interpolateEnemyPositions)
-                    // {
-                    //     // do interpolation
-                    //     const buffer = state.players[p.name]!.positionBuffer
-                    //     buffer.push([now, p])
-                    //     state.players[p.name]!.data.controls = p.controls
-                    // }
-                    // else 
-                    {
-                        state.players[p.name]!.data = p
-                    }
+                {   
+                    player.interpolationBuffer.push([now, p])
                 }
             }
         })
@@ -123,19 +113,17 @@
 
         state.myPlayer.controls.deltaTime = deltaTime
         
-        // TODO: make babel plugin to remove if conditions for production mode
-        if (!CONSTANTS.DEV_MODE || DEV_SETTINGS.enableClientSidePrediction)
-        {
-            CONSTANTS.MOVE_PLAYER(state.players[username]!.data, state.myPlayer.controls, deltaTime)
-        }
+        CONSTANTS.MOVE_PLAYER(state.myPlayer.predictedPosition, state.myPlayer.controls, deltaTime)
 
-        if (state.myPlayer.isPressingTrigger &&
-            CONSTANTS.CAN_SHOOT(now, state.myPlayer.lastTimeShooting))
+        if (state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, state.myPlayer.lastTimeShooting))
         {
             state.myPlayer.lastTimeShooting = now
             
-            const bullet = new ClientPredictedBullet(state.players[username]!.data, state.myPlayer.controls)
-            state.myPlayer.bullets.push(bullet)
+            const bullet = new ClientPredictedBullet(state.myPlayer.predictedPosition, state.myPlayer.controls)
+            if (DEV_SETTINGS.enableClientSidePrediction)
+            {
+                state.myPlayer.bullets.push(bullet)
+            }
             state.myPlayer.controls.requestedBullet = bullet.data
         }
 
@@ -173,7 +161,11 @@
     function moveRightPad(angle : number, active : boolean) {
         // Assign state.players[username].angle for a minor
         // convenience when shooting client predicted bullets:
-        state.myPlayer.controls.angle = state.players[username]!.data.angle = angle
+        state.myPlayer.controls.angle = 
+        state.players[username]!.data.angle =
+        state.myPlayer.predictedPosition.angle = 
+            angle
+
         state.myPlayer.isPressingTrigger = active
     }
 
