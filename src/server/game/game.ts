@@ -28,12 +28,12 @@ export class Game  {
         io.emit('removedPlayer', name)
     }
     
-    updatePlayerInputs(username : string, client : PlayerControlsMessage) {
+    updatePlayerInputs(username : string, clientControls : PlayerControlsMessage) {
         const now = Date.now()
         const p = this.getPlayerByName[username]!
         
-        const dx = client.x
-        const dy = client.y
+        const dx = clientControls.x
+        const dy = clientControls.y
         /*
         -- restrict movement to a circle of radius 1:
         if sqrt(mx**2 + my**2) > 1 then
@@ -50,16 +50,20 @@ export class Game  {
             ? [dx * k, dy * k]
             : [dx, dy]
 
-        p.data.angle = client.angle
-        p.data.lastProcessedInput = client.messageNumber
-        p.data.controls = { x: client.x, y: client.y }
+        p.data.angle = clientControls.angle
+        p.data.lastProcessedInput = clientControls.messageNumber
+        p.data.controls = { x, y }
 
-        if (client.requestedBullet && CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting))
-        { // TODO: && isValidBullet(p, client.requestedBullet)))
-            this.addBullet(p, client.requestedBullet)
+        if (clientControls.requestedBullet && CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting))
+        { 
+            // TODO: && isValidBullet(p, clientControls.requestedBullet)))
+            this.addBullet(p, clientControls.requestedBullet)
         }
 
-        CONSTANTS.MOVE_PLAYER(p.data, { x, y }, client.deltaTime)
+        // Use the "clamped" coordinates:
+        clientControls.x = x
+        clientControls.y = y 
+        CONSTANTS.MOVE_PLAYER(p.data, clientControls)
     }
 
     setPlayerLag(username : string, lag : number) {

@@ -8,11 +8,13 @@
     import { DEV_SETTINGS } from './DEV_SETTINGS'
     import { GameRenderer } from "./GameRenderer";
     import { defaultClientState } from './ClientState'
-    import { Player } from "./Player";
     import { NETWORK_LATENCY } from "./NETWORK_LATENCY";
+    import { processGameTick } from "./processGameTick";
 
     export let socket : ClientSocket
     export let username : string
+
+    NETWORK_LATENCY.beginRetrieving(socket)
 
     let canvas : HTMLCanvasElement
     let ctx : CanvasRenderingContext2D
@@ -25,77 +27,22 @@
         canvas.height = window.innerWidth
         canvas.width = window.innerWidth
 
-        NETWORK_LATENCY.beginRetrieving(socket)
+        socket.on('removedPlayer', name => { delete state.players[name] })
 
-        socket.on('removedPlayer', name => {
-            delete state.players[name]
-        })
+        socket.on('gameTick', msg => { processGameTick(msg, state) })
 
-        socket.on('gameTick', msg => {
-
-            const now = Date.now()
-
-            state.lastGameTickMessage = msg
-            state.lastGameTickMessageTime = now
-
-            state.bullets.push(...msg.newBullets)
-            for (const b of msg.newBullets)
-            {
-                state.bulletReceptionTimes.set(b, now)
-            }
-
-            for (const p of msg.players)
-            {
-                // Create the player if it doesn't exist:
-                state.players[p.name] ||= new Player(p)
-
-                const player = state.players[p.name]!
-                
-                player.data = p
-
-                if (p.name === username)
-                {
-                    state.myPlayer.predictedPosition = { ...p }
-                    state.myPlayer.predictedPosition.angle = state.myPlayer.controls.angle // We don't want the server's angle.
-
-                    if (CONSTANTS.DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue
-
-                    for (let j = 0; j < state.pendingInputs.length;)
-                    {
-                        const input = state.pendingInputs[j]!
-                        
-                        if (input.messageNumber <= p.lastProcessedInput)
-                        {
-                            // Already processed. Its effect is already taken into account into the world update
-                            // we just got, so we can drop it.
-                            state.pendingInputs.splice(j, 1)
-                        }
-                        else
-                        {
-                            // Not processed by the server yet. Re-apply it.
-                            CONSTANTS.MOVE_PLAYER(state.myPlayer.predictedPosition, input, input.deltaTime)
-                            j++
-                        }
-                    }
-                }
-                else
-                {   
-                    player.interpolationBuffer.push([now, p])
-                }
-            }
-        })
-
-        let lastUpdate = 0
         const renderer = new GameRenderer(canvas, username, state)
-        ;(function updateLoop() {
-            requestAnimationFrame(updateLoop)
+        ;(function updateLoop(lastUpdate? : number) {
 
             const now = Date.now() 
             const lastTime = lastUpdate || now
             const deltaTime = now - lastTime
-            lastUpdate = now
+            
+            requestAnimationFrame(() => updateLoop(now))
 
             processInputs(deltaTime, now)
+
+            renderer.render(now)
 
             scoreboard.innerHTML = Object.values(state.players)
                 .sort((p1, p2) => p2.data.score - p1.data.score)
@@ -103,8 +50,6 @@
                 .join('<br>') 
                 + `<br> pending requests: ${state.pendingInputs.length}`
                 + `<br> network latency: ${NETWORK_LATENCY.value}`
-
-            renderer.render(now)
         })()
     })
     
@@ -113,7 +58,7 @@
 
         state.myPlayer.controls.deltaTime = deltaTime
         
-        CONSTANTS.MOVE_PLAYER(state.myPlayer.predictedPosition, state.myPlayer.controls, deltaTime)
+        CONSTANTS.MOVE_PLAYER(state.myPlayer.predictedPosition, state.myPlayer.controls)
 
         if (state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, state.myPlayer.lastTimeShooting))
         {
@@ -172,6 +117,7 @@
     const devMode = () => CONSTANTS.DEV_MODE // It's not defined outside of script tags 🤷
 </script>
 
+
 <center>{username}</center>
 <div class="scoreboard" bind:this={scoreboard}></div>
 <canvas bind:this={canvas}/>
@@ -180,6 +126,7 @@
     {#if devMode()} <DevSwitches/> {/if}
     <DirectionPad callback={moveRightPad}/>
 </div>
+
 
 <style lang="scss">
     canvas {

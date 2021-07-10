@@ -3,6 +3,8 @@ export const NETWORK_LATENCY =
     { value: 0
     , 
         beginRetrieving(socket : ClientSocket) {
+            if (this.isRetrieving) throw 'Please only call this function once.'
+            this.isRetrieving = true
             const go = () => {
                 const start = Date.now()
 
@@ -14,4 +16,5 @@ export const NETWORK_LATENCY =
             setInterval(go, 5000)
             go()
         }
+    , isRetrieving: false
     }

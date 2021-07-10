@@ -48,9 +48,9 @@ const CONSTANTS = (() => {
         p.y = p.y + p.speedY * timeDelta
     }
 
-    function MOVE_PLAYER(p : Point, joystick : Point, timeDelta : number) {
-        p.x = clamp(0, p.x + joystick.x * timeDelta * PLAYER_SPEED, 1)
-        p.y = clamp(0, p.y + joystick.y * timeDelta * PLAYER_SPEED, 1)
+    function MOVE_PLAYER(p : Point, controls : PlayerControlsMessage) {
+        p.x = clamp(0, p.x + controls.x * controls.deltaTime * PLAYER_SPEED, 1)
+        p.y = clamp(0, p.y + controls.y * controls.deltaTime * PLAYER_SPEED, 1)
     }
 
     function CREATE_PLAYER(name : string) : SocketPlayer { 
