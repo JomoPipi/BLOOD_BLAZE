@@ -11,6 +11,8 @@
     import { NETWORK_LATENCY } from "./NETWORK_LATENCY";
     import { processGameTick } from "./processGameTick";
 
+	// import '../bots/A.ts'
+
     export let socket : ClientSocket
     export let username : string
 
@@ -24,8 +26,7 @@
 
     onMount(() => {
         ctx = canvas.getContext('2d')!
-        canvas.height = window.innerWidth
-        canvas.width = window.innerWidth
+        canvas.height = canvas.width = window.innerWidth
 
         socket.on('removedPlayer', name => { delete state.players[name] })
 

@@ -27,12 +27,12 @@ io.on('connection', socket => {
 
     let username = ''
 
-    console.log('a user connected');
+    console.log('a user connected')
 
     socket.on("ping", cb => cb())
 
     socket.on('disconnect', () => {
-        console.log('a user disconnected');
+        console.log('a user disconnected')
         if (username) game.removePlayer(username, io)
     })
 
