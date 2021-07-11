@@ -10,8 +10,7 @@
     import { defaultClientState } from './ClientState'
     import { NETWORK_LATENCY } from "./NETWORK_LATENCY";
     import { processGameTick } from "./processGameTick";
-
-	// import '../bots/A.ts'
+	import '../bots/A'
 
     export let socket : ClientSocket
     export let username : string

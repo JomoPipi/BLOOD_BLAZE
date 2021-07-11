@@ -1,6 +1,7 @@
 
 import { DEV_SETTINGS } from "./DEV_SETTINGS"
 import type { ClientState } from './ClientState'
+import { getInterpolatedData } from "./lag_comp/getInterpolatedData"
 
 const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth
 export class GameRenderer {
@@ -21,81 +22,26 @@ export class GameRenderer {
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     
+        // showWhatOtherClientsPredict
 
         for (const name in this.state.players)
         {   
             if (name === this.username) continue
             const p = this.state.players[name]!
             
-            if (DEV_SETTINGS.interpolateEnemyPositions)
+            if (DEV_SETTINGS.showInterpolatedEnemyPositions)
             {
-                // // "standard" interpolation/
-                // ///////////////////////////////////////////////////////////////
-                // const props = ['x','y','angle'] as const
-                // const buffer = p.interpolationBuffer
-                // const oneGameTickAway = now - CONSTANTS.GAME_TICK
 
-                // // const dt = now - this.state.lastGameTickMessageTime// + p.data.latency
-
-                // // const d_ = CONSTANTS.PLAYER_SPEED * dt
-                // // const dx = p.data.controls.x * d_
-                // // const dy = p.data.controls.y * d_
-
-                // // Drop older positions.
-                // while (buffer.length >= 2 && buffer[1]![0] <= oneGameTickAway)
-                // {
-                //     buffer.shift()
-                // }
-
-                // if (buffer.length >= 2 && buffer[0]![0] <= oneGameTickAway && oneGameTickAway <= buffer[1]![0])
-                // {
-                //     for (const prop of props)
-                //     {
-                //         // const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
-                        
-                //         const x0 = buffer[0]![1][prop]
-                //         const x1 = buffer[1]![1][prop]
-                //         const t0 = buffer[0]![0]
-                //         const t1 = buffer[1]![0]
-
-                //         p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
-                //     }
-                // }
-
-                // this.drawPlayer(p.data, now)
-                // //////////////////////////////////////////////////////////////////////////
-
-
-                const data = { ...p.data }
-                const dt = now - this.state.lastGameTickMessageTime + p.data.latency
-
-                const props = ['x','y','angle'] as const
-
-                const d_ = CONSTANTS.PLAYER_SPEED * dt
-                const dx = data.controls.x * d_
-                const dy = data.controls.y * d_
-
-                for (const prop of props)
-                {
-                    // extrapolation
-                    const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
-
-                    data[prop] += predictionDelta
-
-                    // p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
-                }
-
+                const deltaTime = now - this.state.lastGameTickMessageTime + p.data.latency
+            
+                const data = getInterpolatedData(p.data, deltaTime)
                 this.drawPlayer(data, now)
             }
-            else
-            {
-                this.drawPlayer(p.data, now)
-            }
-        }
 
-        if (DEV_SETTINGS.showPredictedPlayer)
-        {
-            this.drawPlayer(this.state.myPlayer.predictedPosition, now)
+            if (DEV_SETTINGS.showUninterpolatedEnemyPositions)
+            {
+                this.drawPlayer(p.data, now, 'red')
+            }
         }
 
         if (DEV_SETTINGS.showServerPlayer)
@@ -112,6 +58,19 @@ export class GameRenderer {
                 this.circle(x * this.canvas.width, y * this.canvas.height, 2)
             }
         }
+
+        if (DEV_SETTINGS.showPredictedPlayer)
+        {
+            this.drawPlayer(this.state.myPlayer.predictedPosition, now)
+        }
+        
+        if (DEV_SETTINGS.showWhatOtherClientsPredict)
+        {
+            const p = this.state.players[this.username]!
+            const deltaTime = now - this.state.lastGameTickMessageTime + p.data.latency
+            const data = getInterpolatedData(p.data, deltaTime)
+            this.drawPlayer(data, now, 'cyan')
+        }
     
         if (DEV_SETTINGS.showClientBullet)
         {
@@ -119,6 +78,10 @@ export class GameRenderer {
             const { deletedBullets } = this.state.lastGameTickMessage
             this.state.bullets = this.state.bullets.filter(b => {
                 if (deletedBullets[b.id]) return false
+                else
+                {
+                    debug.log('Bullet did not get deleted!!',Math.random())
+                }
                 const age = now - (this.state.bulletReceptionTimes.get(b) || 0) // - NETWORK_LATENCY
                 const bx = b.x + b.speedX * age
                 const by = b.y + b.speedY * age
@@ -154,7 +117,9 @@ export class GameRenderer {
         const bloodCooldown = 256
         const R = now - p.lastTimeGettingShot
         const isGettingShot = R <= bloodCooldown
-        this.ctx.fillStyle = isGettingShot ? `rgb(${bloodCooldown - R},0,0)` : color
+        this.ctx.fillStyle =
+        this.ctx.strokeStyle =
+        isGettingShot ? `rgb(${bloodCooldown - R},0,0)` : color
         
         if (p.name === this.username && isGettingShot)
         {
@@ -162,7 +127,7 @@ export class GameRenderer {
             throttled(traumatize, wait, now)
         }
         
-        this.circle(x, y, PLAYER_RADIUS)
+        this.circle(x, y, PLAYER_RADIUS, true)
         
         const [X, Y] = 
             [ x + PLAYER_RADIUS * Math.cos(p.angle)
@@ -173,10 +138,10 @@ export class GameRenderer {
         this.ctx.fillText(p.name, x - 17, y - 17)
     }
 
-    circle(x : number, y : number, r : number) {
+    circle(x : number, y : number, r : number, stroke? : boolean) {
         this.ctx.beginPath()
         this.ctx.arc(x, y, r, 0, 7)
-        this.ctx.fill()
+        this.ctx[stroke ? 'stroke': 'fill']()
         this.ctx.closePath()
     }
 }

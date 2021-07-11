@@ -73,6 +73,7 @@ export class Game  {
     moveObjects(timeDelta : number, now : number) {
         
         const epsilon = 1e-3
+
         this.players.sort((p1, p2) => p1.data.x - p2.data.x)
         this.bullets = this.bullets.sort((a,b) => a.data.x - b.data.x).filter(bullet => {
             const bx = bullet.data.x
@@ -108,9 +109,11 @@ export class Game  {
                 1. The player is in the line of fire.
                 2. The bullet is within a frame of the closest point from the player to the line of fire.
                 */
-                const collides = distance(p.x, p.y, x, y) <= CONSTANTS.PLAYER_RADIUS                       
-                    && distance(bx, by, x, y) <= CONSTANTS.BULLET_SPEED * dt       
-                    && distance(newbx, newby, x, y) <= CONSTANTS.BULLET_SPEED * dt
+               const maxBulletSpeed = CONSTANTS.BULLET_SPEED + CONSTANTS.PLAYER_SPEED
+               // more robust: bullet.absoluteSpeed = sqrt (speedX ** 2 + speedY ** 2)
+                const collides = distance(p.x, p.y, x, y) <= CONSTANTS.PLAYER_RADIUS                 
+                    && distance(bx, by, x, y) <= maxBulletSpeed * dt       
+                    && distance(newbx, newby, x, y) <= maxBulletSpeed * dt
                     
                 return collides
             }

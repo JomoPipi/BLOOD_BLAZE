@@ -6,6 +6,7 @@ export const DEV_SETTINGS =
     , showServerBullet: false
     , showClientBullet: true
     , showClientPredictedBullet: true
-    , interpolateEnemyPositions: true
-    , useBotA: false
+    , showInterpolatedEnemyPositions: true
+    , showUninterpolatedEnemyPositions: true
+    , showWhatOtherClientsPredict: true
     } as const
