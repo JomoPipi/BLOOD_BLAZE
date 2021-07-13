@@ -110,3 +110,11 @@ type GameTickMessage = {
 //   timeFired : number
 //   id : number
 // }[]
+
+type Rectangle = {
+  x : number
+  y : number
+  w : number
+  h : number
+}
+
