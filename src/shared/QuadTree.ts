@@ -82,9 +82,9 @@ class QuadTree implements Rectangle {
             QuadTree.ctx.lineWidth = 3
             QuadTree.ctx.clearRect(0,0, W, W)
         }
-        QuadTree.ctx.beginPath()
-        QuadTree.ctx.strokeRect(this.x * W, this.y * W, this.w * W, this.h * W)
-        QuadTree.ctx.closePath()
+        // QuadTree.ctx.beginPath()
+        // QuadTree.ctx.strokeRect(this.x * W, this.y * W, this.w * W, this.h * W)
+        // QuadTree.ctx.closePath()
         if (this.quadrant)
         {
             for (const d of dirs)
