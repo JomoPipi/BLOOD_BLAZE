@@ -24,6 +24,7 @@ const CONSTANTS = (() => {
         , CREATE_BULLET
         , MOVE_BULLET
         , MOVE_PLAYER
+        , BULLET_HITS_PLAYER
         , CREATE_PLAYER
         } as const
 
@@ -51,6 +52,10 @@ const CONSTANTS = (() => {
     function MOVE_PLAYER(p : Point, controls : PlayerControlsMessage) {
         p.x = clamp(0, p.x + controls.x * controls.deltaTime * PLAYER_SPEED, 1)
         p.y = clamp(0, p.y + controls.y * controls.deltaTime * PLAYER_SPEED, 1)
+    }
+
+    function BULLET_HITS_PLAYER(p : SocketBullet, b : SocketBullet) {
+        
     }
 
     function CREATE_PLAYER(name : string) : SocketPlayer { 

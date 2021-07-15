@@ -2,6 +2,7 @@
 import { Bullet } from "./bullet.js"
 import { Player } from "./player.js"
 
+const epsilon = 1e-3
 export class Game  {
     private players : Player[] = []
     private getPlayerByName : Record<string, Player> = {}
@@ -72,7 +73,6 @@ export class Game  {
 
     moveObjects(timeDelta : number, now : number) {
         
-        const epsilon = 1e-3
 
         this.players.sort((p1, p2) => p1.data.x - p2.data.x)
         this.bullets = this.bullets.sort((a,b) => a.data.x - b.data.x).filter(bullet => {
@@ -89,34 +89,7 @@ export class Game  {
             const newbx = bullet.data.x
             const newby = bullet.data.y
 
-            // m and b define the equation of the line y = m * x + b.
-            // that represents the path of the bullet:
-            const m = (by - newby) / (bx - newbx || epsilon)
-            const b = by - m * bx
-            const m$ = -1 / (m || epsilon)
-
-            const collidesWith = (p : SocketPlayer) => {
-                // the slope (m$) and y-intercept of the line
-                // perpendicular to y = m * x + b,
-                // passing through the player:
-                const b$ = p.y - m$ * p.x
-
-                // The point of intersection:
-                const x = (b$ - b) / (m - m$)
-                const y = m * x + b
-
-                /* The bullet hits the player if:
-                1. The player is in the line of fire.
-                2. The bullet is within a frame of the closest point from the player to the line of fire.
-                */
-               const maxBulletSpeed = CONSTANTS.BULLET_SPEED + CONSTANTS.PLAYER_SPEED
-               // more robust: bullet.absoluteSpeed = sqrt (speedX ** 2 + speedY ** 2)
-                const collides = distance(p.x, p.y, x, y) <= CONSTANTS.PLAYER_RADIUS                 
-                    && distance(bx, by, x, y) <= maxBulletSpeed * dt       
-                    && distance(newbx, newby, x, y) <= maxBulletSpeed * dt
-                    
-                return collides
-            }
+            const collidesWith = makeCollisionFunc(bx, by, newbx, newby, dt)            
 
             for (const player of this.players)
             {
@@ -161,4 +134,38 @@ export class Game  {
     }
 
     private playerExists = (name : string) => this.getPlayerByName[name]
+}
+
+function makeCollisionFunc(bx : number, by : number, newbx : number, newby : number, dt : number) {
+
+    // m and b define the equation of the line y = m * x + b.
+    // that represents the path of the bullet:
+    const m = (by - newby) / (bx - newbx || epsilon)
+    const b = by - m * bx
+    const m$ = -1 / (m || epsilon)
+
+    const collidesWith = (p : SocketPlayer) => {
+        // the slope (m$) and y-intercept of the line
+        // perpendicular to y = m * x + b,
+        // passing through the player:
+        const b$ = p.y - m$ * p.x
+
+        // The point of intersection:
+        const x = (b$ - b) / (m - m$)
+        const y = m * x + b
+
+        /* The bullet hits the player if:
+        1. The player is in the line of fire.
+        2. The bullet is within a frame of the closest point from the player to the line of fire.
+            */
+        const maxBulletSpeed = CONSTANTS.BULLET_SPEED + CONSTANTS.PLAYER_SPEED
+        // more robust: bullet.absoluteSpeed = sqrt (speedX ** 2 + speedY ** 2)
+        const collides = distance(p.x, p.y, x, y) <= CONSTANTS.PLAYER_RADIUS                 
+            && distance(bx, by, x, y) <= maxBulletSpeed * dt       
+            && distance(newbx, newby, x, y) <= maxBulletSpeed * dt
+            
+        return collides
+    }
+
+    return collidesWith
 }

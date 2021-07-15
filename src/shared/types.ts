@@ -2,6 +2,7 @@
 type Point = { x : number, y : number }
 type Rotating = { angle : number }
 type RotatingPoint = Point & Rotating
+type Circle = Point & { r : number }
 
 type ServerToClientSocketEvents = keyof ServerToClientMessageTypes
 type ServerToClientMessageTypes = {
