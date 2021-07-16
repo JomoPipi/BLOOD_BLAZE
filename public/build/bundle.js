@@ -1364,7 +1364,6 @@ var app = (function () {
     }
 
     const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth;
-    let _x = 1;
     class GameRenderer {
         canvas;
         ctx;
@@ -1430,9 +1429,6 @@ var app = (function () {
                     .sort((a, b) => a.id - b.id)
                     .filter(b => {
                     if (deletedBullets[b.id]) {
-                        console.log('_x, b.id =', _x, b.id);
-                        _x++;
-                        debug.log(`bullet ${b.id} got deleted`);
                         return false;
                     }
                     else {

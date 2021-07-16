@@ -9,7 +9,7 @@ const CONSTANTS = (() => {
     const BULLET_COOLDOWN = 80 // 200
     const BULLET_SPEED = 0.0006 / 2
     
-    const FPS = 200 // 60
+    const FPS = 20 // 60
     const GAME_TICK = 1000 / FPS
 
     const CONST = 

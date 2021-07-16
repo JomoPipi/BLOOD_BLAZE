@@ -4,7 +4,6 @@ import type { ClientState } from './ClientState'
 import { getInterpolatedData } from "./lag_comp/getInterpolatedData"
 
 const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth
-let _x = 1
 export class GameRenderer {
 
     private readonly canvas
@@ -96,9 +95,6 @@ export class GameRenderer {
             .filter(b => {
                 if (deletedBullets[b.id])
                 {
-                    console.log('_x, b.id =', _x, b.id)
-                    _x++
-                    debug.log(`bullet ${b.id} got deleted`)
                     return false
                 }
                 else

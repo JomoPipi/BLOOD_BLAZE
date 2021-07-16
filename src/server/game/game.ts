@@ -145,7 +145,7 @@ export class Game  {
         {
             const points = bulletQT.getPointsInCircle(
                 { ...player.data
-                , r: maxBulletSpeed * timeDelta
+                , r: CONSTANTS.PLAYER_RADIUS + maxBulletSpeed * timeDelta
                 })
             for (const bullet of points)
             {
@@ -202,14 +202,9 @@ function makeCollisionFunc(bx : number, by : number, newbx : number, newby : num
     const m = (by - newby) / (bx - newbx || epsilon)
     const b = by - m * bx
     const m$ = -1 / (m || epsilon)
+    const bulletDist = distance(bx, by, newbx, newby)
 
-    let xx = 0
     const collidesWith = (p : SocketPlayer) => {
-        for (let i = 0; i < 1e7; i++) 
-        { 
-            xx++ 
-            if (xx % 123456789 === 0) console.log('xx =',xx)
-        }
         // the slope (m$) and y-intercept of the line
         // perpendicular to y = m * x + b,
         // passing through the player:
@@ -226,9 +221,11 @@ function makeCollisionFunc(bx : number, by : number, newbx : number, newby : num
 
         // more robust: bullet.absoluteSpeed = sqrt (speedX ** 2 + speedY ** 2)
         const collides = distance(p.x, p.y, x, y) <= CONSTANTS.PLAYER_RADIUS                 
-            && distance(bx, by, x, y) <= maxBulletSpeed * dt       
-            && distance(newbx, newby, x, y) <= maxBulletSpeed * dt
+            && distance(bx, by, x, y) <= bulletDist // delete this line maybe?
+            && distance(newbx, newby, x, y) <= bulletDist
             
+        if (collides) console.log(`Distance(p.x, p.y, x, y):`,distance(p.x, p.y, x, y))
+
         return collides
     }
 
