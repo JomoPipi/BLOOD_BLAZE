@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url'
 import { Server } from "../../node_modules/socket.io/dist/index.js" // "socket.io"
 import '../shared/constants.js'
 import '../shared/helpers.js'
+import '../shared/QuadTree.js'
 import { Game } from './game/game.js'
 
 // Understanding just 1% of something brings you closer to understanding 100% of it.
@@ -64,6 +65,7 @@ let lastGameLoop = Date.now()
 ;(function gameLoop() {
     const now = Date.now()
     const timeDelta = now - lastGameLoop
+    // console.log(timeDelta)
     lastGameLoop = now
     
     game.moveObjects(timeDelta, now)

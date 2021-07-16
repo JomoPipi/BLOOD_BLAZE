@@ -24,10 +24,10 @@ export class GameRenderer {
     
         // showWhatOtherClientsPredict
 
-        const qt = new QuadTree<SocketBullet>(0, 0, 1, 1, 4)
-        this.state.bullets.forEach(bullet => { qt.insert(bullet) })
+        // const qt = new QuadTree<SocketBullet>(0, 0, 1, 1, 4)
+        // this.state.bullets.forEach(bullet => { qt.insert(bullet) })
 
-        const toDelete : Record<number, true> = {}
+        // const toDelete : Record<number, true> = {}
 
         for (const name in this.state.players)
         {   
@@ -41,15 +41,15 @@ export class GameRenderer {
                 const data = getInterpolatedData(p.data, deltaTime)
                 this.drawPlayer(data, now)
 
-                const pts = qt.getPointsInCircle({ ...data, r: CONSTANTS.PLAYER_SPEED + CONSTANTS.BULLET_SPEED })
-                for (const p of pts)
-                {
-                    if (CONSTANTS.BULLET_HITS_PLAYER(p, data))
-                    {
-                        toDelete[p.id] = true
-                        fag
-                    }
-                }
+                // const pts = qt.getPointsInCircle({ ...data, r: CONSTANTS.PLAYER_SPEED + CONSTANTS.BULLET_SPEED })
+                // for (const p of pts)
+                // {
+                //     if (CONSTANTS.BULLET_HITS_PLAYER(p, data))
+                //     {
+                //         toDelete[p.id] = true
+                //         fag
+                //     }
+                // }
             }
 
             if (DEV_SETTINGS.showUninterpolatedEnemyPositions)

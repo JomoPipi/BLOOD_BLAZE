@@ -108,51 +108,51 @@ class QuadTree<T extends Point = Point> implements Rectangle {
         return (dx * dx + dy * dy <= circle.r * circle.r)    
     }
 
-    private static canvas = document.createElement("canvas")
-    private static ctx = QuadTree.canvas.getContext("2d")!
-    draw(isInner? : true) {
-        const W =  window.innerWidth
-        if (!isInner)
-        {
-            document.body.appendChild(QuadTree.canvas)
-            QuadTree.canvas.width = W
-            QuadTree.canvas.height = W
-            QuadTree.canvas.style.position = 'absolute'
-            QuadTree.canvas.style.top = '0'
-            QuadTree.canvas.style.left = '0'
-            QuadTree.canvas.style.background = 'yellow'
-            QuadTree.canvas.style.width = '100%'
+    // private static canvas = document.createElement("canvas")
+    // private static ctx = QuadTree.canvas.getContext("2d")!
+    // draw(isInner? : true) {
+    //     const W =  window.innerWidth
+    //     if (!isInner)
+    //     {
+    //         document.body.appendChild(QuadTree.canvas)
+    //         QuadTree.canvas.width = W
+    //         QuadTree.canvas.height = W
+    //         QuadTree.canvas.style.position = 'absolute'
+    //         QuadTree.canvas.style.top = '0'
+    //         QuadTree.canvas.style.left = '0'
+    //         QuadTree.canvas.style.background = 'yellow'
+    //         QuadTree.canvas.style.width = '100%'
     
-            QuadTree.ctx.fillStyle = "white"
-            QuadTree.ctx.strokeStyle = "black"
-            QuadTree.ctx.lineWidth = 3
-            QuadTree.ctx.clearRect(0,0, W, W)
-        }
-        // QuadTree.ctx.beginPath()
-        // QuadTree.ctx.strokeRect(this.x * W, this.y * W, this.w * W, this.h * W)
-        // QuadTree.ctx.closePath()
-        if (this.quadrant)
-        {
-            for (const d of dirs)
-            {
-                this.quadrant[d].draw(true)
-            }
-        }
-        else
-        {
-            QuadTree.ctx.strokeStyle = "green"
-            for (const p of this.points)
-            {
-                if ((p as any).poop) QuadTree.ctx.strokeStyle = "red"
-                QuadTree.ctx.beginPath()
-                QuadTree.ctx.arc(p.x * W, p.y * W, 3, 0, 7)
-                QuadTree.ctx.closePath()
-                QuadTree.ctx.stroke()
-            }
-        }
-        QuadTree.ctx.strokeStyle = "black"
-        QuadTree.ctx.strokeRect(this.x * W, this.y * W, this.w * W, this.h * W)
-    }
+    //         QuadTree.ctx.fillStyle = "white"
+    //         QuadTree.ctx.strokeStyle = "black"
+    //         QuadTree.ctx.lineWidth = 3
+    //         QuadTree.ctx.clearRect(0,0, W, W)
+    //     }
+    //     // QuadTree.ctx.beginPath()
+    //     // QuadTree.ctx.strokeRect(this.x * W, this.y * W, this.w * W, this.h * W)
+    //     // QuadTree.ctx.closePath()
+    //     if (this.quadrant)
+    //     {
+    //         for (const d of dirs)
+    //         {
+    //             this.quadrant[d].draw(true)
+    //         }
+    //     }
+    //     else
+    //     {
+    //         QuadTree.ctx.strokeStyle = "green"
+    //         for (const p of this.points)
+    //         {
+    //             if ((p as any).poop) QuadTree.ctx.strokeStyle = "red"
+    //             QuadTree.ctx.beginPath()
+    //             QuadTree.ctx.arc(p.x * W, p.y * W, 3, 0, 7)
+    //             QuadTree.ctx.closePath()
+    //             QuadTree.ctx.stroke()
+    //         }
+    //     }
+    //     QuadTree.ctx.strokeStyle = "black"
+    //     QuadTree.ctx.strokeRect(this.x * W, this.y * W, this.w * W, this.h * W)
+    // }
 }
 
 Object.assign(globalThis, { QuadTree })
