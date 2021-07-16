@@ -27,11 +27,18 @@
         ctx = canvas.getContext('2d')!
         canvas.height = canvas.width = window.innerWidth
 
+        const renderer = new GameRenderer(canvas, username, state)
+
         socket.on('removedPlayer', name => { delete state.players[name] })
 
-        socket.on('gameTick', msg => { processGameTick(msg, state) })
+        socket.on('gameTick', msg => { 
+            processGameTick(msg, state)
 
-        const renderer = new GameRenderer(canvas, username, state)
+            // We need to render immediately to make sure
+            // the renderer doesn't miss any game ticks
+            renderer.render(Date.now()) 
+        })
+
         ;(function updateLoop(lastUpdate? : number) {
 
             const now = Date.now() 

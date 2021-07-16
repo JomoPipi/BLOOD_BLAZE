@@ -4,6 +4,7 @@ import type { ClientState } from './ClientState'
 import { getInterpolatedData } from "./lag_comp/getInterpolatedData"
 
 const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth
+let _x = 1
 export class GameRenderer {
 
     private readonly canvas
@@ -85,16 +86,24 @@ export class GameRenderer {
             const data = getInterpolatedData(p.data, deltaTime)
             this.drawPlayer(data, now, 'cyan')
         }
-    
+        
         if (DEV_SETTINGS.showClientBullet)
         {
             this.ctx.fillStyle = '#770' 
             const { deletedBullets } = this.state.lastGameTickMessage
-            this.state.bullets = this.state.bullets.filter(b => {
-                if (deletedBullets[b.id]) return false
+            this.state.bullets = this.state.bullets
+            .sort((a, b) => a.id - b.id)
+            .filter(b => {
+                if (deletedBullets[b.id])
+                {
+                    console.log('_x, b.id =', _x, b.id)
+                    _x++
+                    debug.log(`bullet ${b.id} got deleted`)
+                    return false
+                }
                 else
                 {
-                    debug.log('Bullet did not get deleted!!',Math.random())
+                    debug.log('Bullet did not get deleted!!', b.id)
                 }
                 const age = now - (this.state.bulletReceptionTimes.get(b) || 0) // - NETWORK_LATENCY
                 const bx = b.x + b.speedX * age
