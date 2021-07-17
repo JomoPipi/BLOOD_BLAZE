@@ -41,7 +41,7 @@
         }
 
         function touchmove(e : TouchEvent) {
-            const sensitivity = 0.5
+            const sensitivity = 0.75
             const dx = (e.targetTouches[0]!.clientX - startX) * sensitivity
             const dy = (e.targetTouches[0]!.clientY - startY) * sensitivity
 

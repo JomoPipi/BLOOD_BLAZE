@@ -823,9 +823,9 @@ var app = (function () {
     			div = element("div");
     			canvas_1 = element("canvas");
     			attr_dev(canvas_1, "class", "svelte-18l9nl");
-    			add_location(canvas_1, file$3, 88, 4, 2663);
+    			add_location(canvas_1, file$3, 88, 4, 2664);
     			attr_dev(div, "class", "svelte-18l9nl");
-    			add_location(div, file$3, 87, 0, 2630);
+    			add_location(div, file$3, 87, 0, 2631);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -893,7 +893,7 @@ var app = (function () {
     		}
 
     		function touchmove(e) {
-    			const sensitivity = 0.5;
+    			const sensitivity = 0.75;
     			const dx = (e.targetTouches[0].clientX - startX) * sensitivity;
     			const dy = (e.targetTouches[0].clientY - startY) * sensitivity;
 
@@ -1381,12 +1381,13 @@ var app = (function () {
             // const qt = new QuadTree<SocketBullet>(0, 0, 1, 1, 4)
             // this.state.bullets.forEach(bullet => { qt.insert(bullet) })
             // const toDelete : Record<number, true> = {}
+            const msgDelta = now - this.state.lastGameTickMessageTime;
             for (const name in this.state.players) {
                 if (name === this.username)
                     continue;
                 const p = this.state.players[name];
                 if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
-                    const deltaTime = now - this.state.lastGameTickMessageTime + p.data.latency;
+                    const deltaTime = msgDelta + p.data.latency;
                     const data = getInterpolatedData(p.data, deltaTime);
                     this.drawPlayer(data, now);
                     // const pts = qt.getPointsInCircle({ ...data, r: CONSTANTS.PLAYER_SPEED + CONSTANTS.BULLET_SPEED })
@@ -1418,7 +1419,7 @@ var app = (function () {
             }
             if (DEV_SETTINGS.showWhatOtherClientsPredict) {
                 const p = this.state.players[this.username];
-                const deltaTime = now - this.state.lastGameTickMessageTime + p.data.latency;
+                const deltaTime = msgDelta + p.data.latency;
                 const data = getInterpolatedData(p.data, deltaTime);
                 this.drawPlayer(data, now, 'cyan');
             }
@@ -1457,9 +1458,22 @@ var app = (function () {
                     const by = b.y + b.speedY * age;
                     const x = bx * this.canvas.width;
                     const y = by * this.canvas.height;
-                    props.display.x += (x - props.display.x) * 0.25;
-                    props.display.y += (y - props.display.y) * 0.25;
-                    this.circle(props.display.x, props.display.y, 2);
+                    // const dx = x - props.display.x
+                    // const dy = y - props.display.y
+                    // const lag = this.state.players[b.shooter]?.data.latency || 0
+                    const secondsToMerge = 0.5;
+                    const mergeRate = Math.min(now - props.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge;
+                    // console.log('msgDelta, mergeRate =',now - props.receptionTime, mergeRate)
+                    // props.display.x += dx * mergeRate
+                    // props.display.y += dy * mergeRate
+                    // this.circle(props.display.x, props.display.y, 2)
+                    const x1 = props.display.x + age * b.speedX * this.canvas.width;
+                    const y1 = props.display.y + age * b.speedY * this.canvas.height;
+                    const dx = x - x1;
+                    const dy = y - y1;
+                    const X = x1 + dx * mergeRate;
+                    const Y = y1 + dy * mergeRate;
+                    this.circle(X, Y, 2);
                     return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
                 });
             }
@@ -1592,6 +1606,8 @@ var app = (function () {
             // These are the coodinates of the player's gun
             // We have these x,y so we can show the bullet coming out of the player's gun
             const p = state.players[b.shooter].data;
+            if (!p)
+                break;
             if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
                 const deltaTime = now - state.lastGameTickMessageTime + p.latency;
                 const data = getInterpolatedData(p, deltaTime);

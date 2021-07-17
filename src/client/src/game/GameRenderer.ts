@@ -29,6 +29,7 @@ export class GameRenderer {
 
         // const toDelete : Record<number, true> = {}
 
+        const msgDelta = now - this.state.lastGameTickMessageTime
         for (const name in this.state.players)
         {   
             if (name === this.username) continue
@@ -36,7 +37,7 @@ export class GameRenderer {
             
             if (DEV_SETTINGS.showInterpolatedEnemyPositions)
             {
-                const deltaTime = now - this.state.lastGameTickMessageTime + p.data.latency
+                const deltaTime = msgDelta + p.data.latency
             
                 const data = getInterpolatedData(p.data, deltaTime)
                 this.drawPlayer(data, now)
@@ -81,7 +82,7 @@ export class GameRenderer {
         if (DEV_SETTINGS.showWhatOtherClientsPredict)
         {
             const p = this.state.players[this.username]!
-            const deltaTime = now - this.state.lastGameTickMessageTime + p.data.latency
+            const deltaTime = msgDelta + p.data.latency
             const data = getInterpolatedData(p.data, deltaTime)
             this.drawPlayer(data, now, 'cyan')
         }
@@ -130,11 +131,25 @@ export class GameRenderer {
                 const by = b.y + b.speedY * age
                 const x = bx * this.canvas.width
                 const y = by * this.canvas.height
+                // const dx = x - props.display.x
+                // const dy = y - props.display.y
 
-                props.display.x += (x - props.display.x) * 0.25
-                props.display.y += (y - props.display.y) * 0.25
+                // const lag = this.state.players[b.shooter]?.data.latency || 0
+                const secondsToMerge = 0.5
+                const mergeRate = Math.min(now - props.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge
+                // console.log('msgDelta, mergeRate =',now - props.receptionTime, mergeRate)
+                // props.display.x += dx * mergeRate
+                // props.display.y += dy * mergeRate
+                // this.circle(props.display.x, props.display.y, 2)
 
-                this.circle(props.display.x, props.display.y, 2)
+                const x1 = props.display.x + age * b.speedX * this.canvas.width
+                const y1 = props.display.y + age * b.speedY * this.canvas.height
+                const dx = x - x1
+                const dy = y - y1
+
+                const X = x1 + dx * mergeRate
+                const Y = y1 + dy * mergeRate
+                this.circle(X, Y, 2)
                 
                 return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
             })

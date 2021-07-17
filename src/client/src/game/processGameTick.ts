@@ -34,6 +34,7 @@ export function processGameTick(msg : GameTickMessage, state : ClientState) {
         // These are the coodinates of the player's gun
         // We have these x,y so we can show the bullet coming out of the player's gun
         const p = state.players[b.shooter]!.data
+        if (!p) break
         if (DEV_SETTINGS.showInterpolatedEnemyPositions)
         {
             const deltaTime = now - state.lastGameTickMessageTime + p.latency
