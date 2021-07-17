@@ -99,8 +99,7 @@ export class GameRenderer {
                 {
                     debug.log('Bullet did not get deleted!!', b.id)
                 }
-                const lag = this.state.players[b.shooter]!.data.latency * (DEV_SETTINGS.tryAddingLag ? 1 : 0)
-                const age = now - (this.state.bulletReceptionTimes.get(b) || 0) - lag
+                const age = now - (this.state.bulletReceptionTimes.get(b) || 0)
                 const bx = b.x + b.speedX * age
                 const by = b.y + b.speedY * age
                 const x = bx * this.canvas.width
