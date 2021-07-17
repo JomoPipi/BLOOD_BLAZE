@@ -83,7 +83,10 @@ type SocketBullet = {
   y : number
   speedX : number
   speedY : number
+  // pureSpeedX : number
+  // pureSpeedY : number
   id : number
+  shooter : string
 }
 
 type GameTickMessage = {

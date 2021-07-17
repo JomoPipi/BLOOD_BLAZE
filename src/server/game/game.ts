@@ -221,7 +221,7 @@ function makeCollisionFunc(bx : number, by : number, newbx : number, newby : num
 
         // more robust: bullet.absoluteSpeed = sqrt (speedX ** 2 + speedY ** 2)
         const collides = distance(p.x, p.y, x, y) <= CONSTANTS.PLAYER_RADIUS                 
-            && distance(bx, by, x, y) <= bulletDist // delete this line maybe?
+            && distance(bx, by, x, y) <= bulletDist
             && distance(newbx, newby, x, y) <= bulletDist
             
         if (collides) console.log(`Distance(p.x, p.y, x, y):`,distance(p.x, p.y, x, y))

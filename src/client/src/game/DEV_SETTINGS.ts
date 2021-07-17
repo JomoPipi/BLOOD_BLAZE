@@ -9,4 +9,5 @@ export const DEV_SETTINGS =
     , showInterpolatedEnemyPositions: true
     , showUninterpolatedEnemyPositions: true
     , showWhatOtherClientsPredict: true
+    , tryAddingLag: true
     } as const

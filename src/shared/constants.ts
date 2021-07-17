@@ -35,12 +35,12 @@ const CONSTANTS = (() => {
         return now - lastTimeShot > BULLET_COOLDOWN
     }
 
-    function CREATE_BULLET(p : RotatingPoint, joystick : Point, id : number) : SocketBullet {
-        const speedX = BULLET_SPEED * Math.cos(p.angle) + joystick.x * PLAYER_SPEED
-        const speedY = BULLET_SPEED * Math.sin(p.angle) + joystick.y * PLAYER_SPEED
+    function CREATE_BULLET(p : SocketPlayer, joystick : Point, id : number) : SocketBullet {
+        const speedX = BULLET_SPEED * Math.cos(p.angle) // + joystick.x * PLAYER_SPEED
+        const speedY = BULLET_SPEED * Math.sin(p.angle) // + joystick.y * PLAYER_SPEED
         const x = p.x + PLAYER_RADIUS * Math.cos(p.angle) //- joystick.x * PLAYER_SPEED * latency
         const y = p.y + PLAYER_RADIUS * Math.sin(p.angle) //- joystick.y * PLAYER_SPEED * latency
-        const bullet = { x, y, speedX, speedY, id }
+        const bullet = { x, y, speedX, speedY, id, shooter: p.name }
         return bullet
     }
 
