@@ -25,7 +25,7 @@ class MyPlayer {
 export type ClientState = {
     pendingInputs : PlayerControlsMessage[]
     myPlayer : MyPlayer
-    bulletReceptionTimes : WeakMap<SocketBullet, number>
+    bulletProps : WeakMap<SocketBullet, { receptionTime : number, display : Point }>
     players : Record<string, Player>
     bullets : SocketBullet[]
     lastGameTickMessage : GameTickMessage
@@ -35,7 +35,7 @@ export type ClientState = {
 export const defaultClientState : (username : string) => ClientState = username => (
     { pendingInputs: []
     , myPlayer: new MyPlayer(CONSTANTS.CREATE_PLAYER(username))
-    , bulletReceptionTimes: new WeakMap()
+    , bulletProps: new WeakMap()
     , players: { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) }
     , bullets: []
     , lastGameTickMessage: 

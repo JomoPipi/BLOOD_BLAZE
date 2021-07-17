@@ -99,13 +99,43 @@ export class GameRenderer {
                 {
                     debug.log('Bullet did not get deleted!!', b.id)
                 }
-                const age = now - (this.state.bulletReceptionTimes.get(b) || 0)
+                const age = now - (this.state.bulletProps.get(b)?.receptionTime || 0)
                 const bx = b.x + b.speedX * age
                 const by = b.y + b.speedY * age
                 const x = bx * this.canvas.width
                 const y = by * this.canvas.height
                 
                 this.circle(x, y, 2)
+                return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
+            })
+        }
+
+        if (DEV_SETTINGS.showIdealClientBullet)
+        {
+            this.ctx.fillStyle = '#00f' 
+            const { deletedBullets } = this.state.lastGameTickMessage
+            this.state.bullets = this.state.bullets.filter(b => {
+                if (deletedBullets[b.id])
+                {
+                    return false
+                }
+                else
+                {
+                    debug.log('Bullet did not get deleted!!', b.id)
+                }
+
+                const props = this.state.bulletProps.get(b)!
+                const age = now - props.receptionTime
+                const bx = b.x + b.speedX * age
+                const by = b.y + b.speedY * age
+                const x = bx * this.canvas.width
+                const y = by * this.canvas.height
+
+                props.display.x += (x - props.display.x) * 0.25
+                props.display.y += (y - props.display.y) * 0.25
+
+                this.circle(props.display.x, props.display.y, 2)
+                
                 return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
             })
         }

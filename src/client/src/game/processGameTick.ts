@@ -1,6 +1,8 @@
 
+import { stat } from "fs";
 import type { ClientState } from "./ClientState"
 import { DEV_SETTINGS } from "./DEV_SETTINGS"
+import { getInterpolatedData } from "./lag_comp/getInterpolatedData";
 import { Player } from "./Player"
 
 // const qt = new QuadTree(0, 0, 1, 1, 4)
@@ -29,7 +31,28 @@ export function processGameTick(msg : GameTickMessage, state : ClientState) {
 
     for (const b of msg.newBullets)
     {
-        state.bulletReceptionTimes.set(b, now)
+        // These are the coodinates of the player's gun
+        // We have these x,y so we can show the bullet coming out of the player's gun
+        const p = state.players[b.shooter]!.data
+        if (DEV_SETTINGS.showInterpolatedEnemyPositions)
+        {
+            const deltaTime = now - state.lastGameTickMessageTime + p.latency
+            const data = getInterpolatedData(p, deltaTime)
+            const display = 
+                { x: (data.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth
+                , y: (data.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth
+                }
+            const props = { receptionTime: now, display }
+            state.bulletProps.set(b, props)
+        }
+        else
+        {
+            const x = (p.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth
+            const y = (p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth
+            const props = { receptionTime: now, display: { x, y } }
+            state.bulletProps.set(b, props)
+        }
+    
     }
 
     for (const p of msg.players)

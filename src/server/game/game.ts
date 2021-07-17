@@ -127,7 +127,7 @@ export class Game  {
             const newbx = bullet.data.x
             const newby = bullet.data.y
 
-            if (0 <= newbx && newbx <= 1 && 0 <= newby && newby <= 1)
+            if (0 <= bx && bx <= 1 && 0 <= by && by <= 1)
             {
                 collisionArgs[bullet.data.id] = [bx, by, newbx, newby, dt, bullet.shooter]
                 bulletQT.insert(bullet.data)

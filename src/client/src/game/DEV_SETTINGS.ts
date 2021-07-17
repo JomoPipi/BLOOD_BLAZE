@@ -5,6 +5,7 @@ export const DEV_SETTINGS =
     , showServerPlayer: false
     , showServerBullet: false
     , showClientBullet: true
+    , showIdealClientBullet: true
     , showClientPredictedBullet: true
     , showInterpolatedEnemyPositions: true
     , showUninterpolatedEnemyPositions: true

@@ -1039,6 +1039,7 @@ var app = (function () {
         showServerPlayer: false,
         showServerBullet: false,
         showClientBullet: true,
+        showIdealClientBullet: true,
         showClientPredictedBullet: true,
         showInterpolatedEnemyPositions: true,
         showUninterpolatedEnemyPositions: true,
@@ -1431,12 +1432,34 @@ var app = (function () {
                     else {
                         debug.log('Bullet did not get deleted!!', b.id);
                     }
-                    const age = now - (this.state.bulletReceptionTimes.get(b) || 0);
+                    const age = now - (this.state.bulletProps.get(b)?.receptionTime || 0);
                     const bx = b.x + b.speedX * age;
                     const by = b.y + b.speedY * age;
                     const x = bx * this.canvas.width;
                     const y = by * this.canvas.height;
                     this.circle(x, y, 2);
+                    return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
+                });
+            }
+            if (DEV_SETTINGS.showIdealClientBullet) {
+                this.ctx.fillStyle = '#00f';
+                const { deletedBullets } = this.state.lastGameTickMessage;
+                this.state.bullets = this.state.bullets.filter(b => {
+                    if (deletedBullets[b.id]) {
+                        return false;
+                    }
+                    else {
+                        debug.log('Bullet did not get deleted!!', b.id);
+                    }
+                    const props = this.state.bulletProps.get(b);
+                    const age = now - props.receptionTime;
+                    const bx = b.x + b.speedX * age;
+                    const by = b.y + b.speedY * age;
+                    const x = bx * this.canvas.width;
+                    const y = by * this.canvas.height;
+                    props.display.x += (x - props.display.x) * 0.25;
+                    props.display.y += (y - props.display.y) * 0.25;
+                    this.circle(props.display.x, props.display.y, 2);
                     return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
                 });
             }
@@ -1519,7 +1542,7 @@ var app = (function () {
     }
     const defaultClientState = username => ({ pendingInputs: [],
         myPlayer: new MyPlayer(CONSTANTS.CREATE_PLAYER(username)),
-        bulletReceptionTimes: new WeakMap(),
+        bulletProps: new WeakMap(),
         players: { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) },
         bullets: [],
         lastGameTickMessage: { players: [],
@@ -1566,7 +1589,24 @@ var app = (function () {
         // qt.getPointsInCircle({ x: 0.5, y: 0.5, r: 0.1 }).forEach(p => (p as any).poop = true)
         // qt.draw()
         for (const b of msg.newBullets) {
-            state.bulletReceptionTimes.set(b, now);
+            // These are the coodinates of the player's gun
+            // We have these x,y so we can show the bullet coming out of the player's gun
+            const p = state.players[b.shooter].data;
+            if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
+                const deltaTime = now - state.lastGameTickMessageTime + p.latency;
+                const data = getInterpolatedData(p, deltaTime);
+                const display = { x: (data.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth,
+                    y: (data.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth
+                };
+                const props = { receptionTime: now, display };
+                state.bulletProps.set(b, props);
+            }
+            else {
+                const x = (p.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth;
+                const y = (p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth;
+                const props = { receptionTime: now, display: { x, y } };
+                state.bulletProps.set(b, props);
+            }
         }
         for (const p of msg.players) {
             // Create the player if it doesn't exist:
