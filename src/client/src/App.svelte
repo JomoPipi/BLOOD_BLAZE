@@ -1,8 +1,8 @@
 
 <script lang="ts">
 	export let blaze : string
-	import Nomination from './game/Nomination.svelte'
-	import GameClient from './game/GameClient.svelte'
+	import Nomination from './game/views/Nomination.svelte'
+	import GameClient from './game/views/GameClient.svelte'
 
 	const socket = io()
 	

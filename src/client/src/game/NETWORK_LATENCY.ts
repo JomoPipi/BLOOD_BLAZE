@@ -9,7 +9,7 @@ export const NETWORK_LATENCY =
                 const start = Date.now()
 
                 socket.volatile.emit("ping", () => {
-                    this.value = Date.now() - start
+                    this.value = Date.now() - start // Math.min(Date.now() - start, 400)
                     socket.volatile.emit("networkLatency", this.value)
                 })
             }

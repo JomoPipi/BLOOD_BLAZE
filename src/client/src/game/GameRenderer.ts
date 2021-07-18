@@ -40,16 +40,6 @@ export class GameRenderer {
             
                 const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
                 this.drawPlayer(data, now)
-
-                // const pts = qt.getPointsInCircle({ ...data, r: CONSTANTS.PLAYER_SPEED + CONSTANTS.BULLET_SPEED })
-                // for (const p of pts)
-                // {
-                //     if (CONSTANTS.BULLET_HITS_PLAYER(p, data))
-                //     {
-                //         toDelete[p.id] = true
-                //         fag
-                //     }
-                // }
             }
 
             if (DEV_SETTINGS.showUninterpolatedEnemyPositions)

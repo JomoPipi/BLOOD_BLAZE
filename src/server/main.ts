@@ -56,20 +56,15 @@ io.on('connection', socket => {
         })
         
         socket.on("networkLatency", lag => {
-            game.setPlayerLag(username, lag)
+            game.setPlayerLag(username, lag) // Math.min(lag, 400)
         })
     })
 })
 
 let lastGameLoop = Date.now()
-// let td = 0
-// const logTD = () => console.log('timeDelta =', td)
 ;(function gameLoop() {
     const now = Date.now()
     const timeDelta = now - lastGameLoop
-    // td = timeDelta
-    // throttled(logTD, 1000)
-    // console.log(timeDelta)
     lastGameLoop = now
     
     game.moveObjects(timeDelta, now)

@@ -8,6 +8,6 @@ export const DEV_SETTINGS =
     , showIdealClientBullet: true
     , showClientPredictedBullet: true
     , showInterpolatedEnemyPositions: true
-    , showUninterpolatedEnemyPositions: true
-    , showWhatOtherClientsPredict: true
+    , showUninterpolatedEnemyPositions: false
+    , showWhatOtherClientsPredict: false
     } as const

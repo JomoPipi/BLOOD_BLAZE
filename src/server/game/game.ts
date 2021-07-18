@@ -84,7 +84,7 @@ export class Game  {
 
             bullet.hasMovedSinceCreation = true
             
-            CONSTANTS.MOVE_BULLET(bullet.data, dt)
+            bullet.move(dt)
             
             const newbx = bullet.data.x
             const newby = bullet.data.y
@@ -122,7 +122,7 @@ export class Game  {
 
             bullet.hasMovedSinceCreation = true
             
-            CONSTANTS.MOVE_BULLET(bullet.data, dt)
+            bullet.move(dt)
             
             const newbx = bullet.data.x
             const newby = bullet.data.y

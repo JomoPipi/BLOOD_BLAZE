@@ -1,24 +1,25 @@
 
 import type { ClientPredictedBullet } from './ClientPredictedBullet'
-import type { Player } from './Player'
+import { Player } from './Player'
 
 class MyPlayer {
     name : string
     predictedPosition : SocketPlayer
-    controls : PlayerControlsMessage =
-        { x: 0
-        , y: 0
-        , angle: 0
-        , messageNumber: 0
-        , deltaTime: 0
-        }
+    controls : PlayerControlsMessage
     lastTimeShooting = -1
     isPressingTrigger = false
     bullets : ClientPredictedBullet[] = []
 
     constructor(data : SocketPlayer) {
-        this.predictedPosition = data
         this.name = data.name
+        this.predictedPosition = data
+        this.controls = 
+            { x: 0
+            , y: 0
+            , angle: 0
+            , messageNumber: 0
+            , deltaTime: 0
+            }
     }
 }
 
@@ -32,7 +33,7 @@ export class ClientState {
     lastGameTickMessage : GameTickMessage
 
     constructor(username : string) {
-        this.players = {}
+        this.players = { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) }
         this.myPlayer = new MyPlayer(CONSTANTS.CREATE_PLAYER(username))
         this.lastGameTickMessageTime = Date.now()
         this.lastGameTickMessage = 

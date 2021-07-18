@@ -1,7 +1,7 @@
 
 <script lang="ts">
 
-    import { DEV_SETTINGS } from "./DEV_SETTINGS"
+    import { DEV_SETTINGS } from "../DEV_SETTINGS"
 
     type DEV_SETTINGS = typeof DEV_SETTINGS
     type DEV_SWITCHES = keyof PickByValue<boolean, DEV_SETTINGS>
