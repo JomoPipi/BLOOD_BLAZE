@@ -1321,48 +1321,6 @@ var app = (function () {
         }
     }
 
-    function getInterpolatedData(data, deltaTime) {
-        // Don't mutate data
-        data = JSON.parse(JSON.stringify(data));
-        // // "standard" interpolation/
-        // ///////////////////////////////////////////////////////////////
-        // const props = ['x','y','angle'] as const
-        // const buffer = p.interpolationBuffer
-        // const oneGameTickAway = now - CONSTANTS.GAME_TICK
-        // // const dt = now - this.state.lastGameTickMessageTime// + p.data.latency
-        // // const d_ = CONSTANTS.PLAYER_SPEED * dt
-        // // const dx = p.data.controls.x * d_
-        // // const dy = p.data.controls.y * d_
-        // // Drop older positions.
-        // while (buffer.length >= 2 && buffer[1]![0] <= oneGameTickAway)
-        // {
-        //     buffer.shift()
-        // }
-        // if (buffer.length >= 2 && buffer[0]![0] <= oneGameTickAway && oneGameTickAway <= buffer[1]![0])
-        // {
-        //     for (const prop of props)
-        //     {
-        //         // const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
-        //         const x0 = buffer[0]![1][prop]
-        //         const x1 = buffer[1]![1][prop]
-        //         const t0 = buffer[0]![0]
-        //         const t1 = buffer[1]![0]
-        //         p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
-        //     }
-        // }
-        // this.drawPlayer(p.data, now)
-        // //////////////////////////////////////////////////////////////////////////
-        const props = ['x', 'y', 'angle'];
-        const dx = data.controls.x * CONSTANTS.PLAYER_SPEED * deltaTime;
-        const dy = data.controls.y * CONSTANTS.PLAYER_SPEED * deltaTime;
-        for (const prop of props) {
-            // extrapolation
-            const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0;
-            data[prop] += predictionDelta;
-        }
-        return data;
-    }
-
     const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth;
     class GameRenderer {
         canvas;
@@ -1388,7 +1346,7 @@ var app = (function () {
                 const p = this.state.players[name];
                 if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
                     const deltaTime = msgDelta + p.data.latency;
-                    const data = getInterpolatedData(p.data, deltaTime);
+                    const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime);
                     this.drawPlayer(data, now);
                     // const pts = qt.getPointsInCircle({ ...data, r: CONSTANTS.PLAYER_SPEED + CONSTANTS.BULLET_SPEED })
                     // for (const p of pts)
@@ -1420,7 +1378,7 @@ var app = (function () {
             if (DEV_SETTINGS.showWhatOtherClientsPredict) {
                 const p = this.state.players[this.username];
                 const deltaTime = msgDelta + p.data.latency;
-                const data = getInterpolatedData(p.data, deltaTime);
+                const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime);
                 this.drawPlayer(data, now, 'cyan');
             }
             if (DEV_SETTINGS.showClientBullet) {
@@ -1529,14 +1487,6 @@ var app = (function () {
         b.toggle('bleed2', !a.toggle('shake2'));
     }
 
-    class Player {
-        data;
-        interpolationBuffer = [];
-        constructor(data) {
-            this.data = data;
-        }
-    }
-
     class MyPlayer {
         name;
         predictedPosition;
@@ -1554,18 +1504,26 @@ var app = (function () {
             this.name = data.name;
         }
     }
-    const defaultClientState = username => ({ pendingInputs: [],
-        myPlayer: new MyPlayer(CONSTANTS.CREATE_PLAYER(username)),
-        bulletProps: new WeakMap(),
-        players: { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) },
-        bullets: [],
-        lastGameTickMessage: { players: [],
-            bullets: [],
-            newBullets: [],
-            deletedBullets: []
-        },
-        lastGameTickMessageTime: Date.now()
-    });
+    class ClientState {
+        pendingInputs = [];
+        bulletProps = new WeakMap();
+        bullets = [];
+        players;
+        myPlayer;
+        lastGameTickMessageTime;
+        lastGameTickMessage;
+        constructor(username) {
+            this.players = {};
+            this.myPlayer = new MyPlayer(CONSTANTS.CREATE_PLAYER(username));
+            this.lastGameTickMessageTime = Date.now();
+            this.lastGameTickMessage =
+                { players: [],
+                    bullets: [],
+                    newBullets: [],
+                    deletedBullets: []
+                };
+        }
+    }
 
     const NETWORK_LATENCY = { value: 0,
         beginRetrieving(socket) {
@@ -1584,13 +1542,16 @@ var app = (function () {
         },
         isRetrieving: false };
 
+    class Player {
+        data;
+        interpolationBuffer = [];
+        constructor(data) {
+            this.data = data;
+        }
+    }
+
     // const qt = new QuadTree(0, 0, 1, 1, 4)
     // ;(window as any).qt = qt
-    // {
-    //     const points = JSON.parse("[{\"x\":0.304488702672263,\"y\":0.5667733830996076,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.5370834832979561},{\"x\":0.30708191355444187,\"y\":0.5675252190661251,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.7595413080741868},{\"x\":0.3137090080311211,\"y\":0.5694465776472252,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.8017363264981126},{\"x\":0.3163022189133,\"y\":0.5701984136137427,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.41575436260005794},{\"x\":0.30535310629965595,\"y\":0.5670239950884468,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.34779798700735975},{\"x\":0.3096751244366207,\"y\":0.5682770550326425,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.20949590438159338},{\"x\":0.31601408437083567,\"y\":0.5701148762841296,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.1779609221672389},{\"x\":0.30506497175719166,\"y\":0.5669404577588337,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.4909428826196913},{\"x\":0.3096751244366207,\"y\":0.5682770550326425,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.04253508568359554},{\"x\":0.31428527711604975,\"y\":0.5696136523064513,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.7561023492828505},{\"x\":0.30420056812979873,\"y\":0.5666898457699946,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.857930557963059},{\"x\":0.30621750992704894,\"y\":0.5672746070772859,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.9175420232418814},{\"x\":0.31313273894619253,\"y\":0.5692795029879991,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.38518211731002583},{\"x\":0.31601408437083567,\"y\":0.5701148762841296,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.012208026448626619},{\"x\":0.3056412408421203,\"y\":0.5671075324180598,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.8000284499765986},{\"x\":0.30909885535169207,\"y\":0.5681099803734164,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.219840685849356},{\"x\":0.31601408437083567,\"y\":0.5701148762841296,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.001201812007341152},{\"x\":0.3059293753845846,\"y\":0.5671910697476729,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.30719187168853357},{\"x\":0.3134208734886568,\"y\":0.5693630403176121,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.8517595003402194},{\"x\":0.31601408437083567,\"y\":0.5701148762841296,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.707413416470891},{\"x\":0.30535310629965595,\"y\":0.5670239950884468,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.9461806630225544},{\"x\":0.3093869898941564,\"y\":0.5681935177030294,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.4618193613863688},{\"x\":0.3163022189133,\"y\":0.5701984136137427,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.11596083198674911},{\"x\":0.30535310629965595,\"y\":0.5670239950884468,\"speedX\":0.000288134542464316,\"speedY\":0.0000835373296130494,\"id\":0.44848671499689696}]")
-    //     points.forEach(p => qt.insert(p))
-    //     qt.draw()
-    // }
     function processGameTick(msg, state) {
         const now = Date.now();
         window.state = state;
@@ -1610,7 +1571,7 @@ var app = (function () {
                 break;
             if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
                 const deltaTime = now - state.lastGameTickMessageTime + p.latency;
-                const data = getInterpolatedData(p, deltaTime);
+                const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p, deltaTime);
                 const display = { x: (data.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth,
                     y: (data.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth
                 };
@@ -1762,13 +1723,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-cooxpp");
-    			add_location(center, file$1, 92, 0, 3806);
+    			add_location(center, file$1, 92, 0, 3796);
     			attr_dev(div0, "class", "scoreboard svelte-cooxpp");
-    			add_location(div0, file$1, 93, 0, 3835);
+    			add_location(div0, file$1, 93, 0, 3825);
     			attr_dev(canvas_1, "class", "svelte-cooxpp");
-    			add_location(canvas_1, file$1, 94, 0, 3890);
+    			add_location(canvas_1, file$1, 94, 0, 3880);
     			attr_dev(div1, "class", "input-container svelte-cooxpp");
-    			add_location(div1, file$1, 95, 0, 3920);
+    			add_location(div1, file$1, 95, 0, 3910);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1843,7 +1804,7 @@ var app = (function () {
     	let canvas;
     	let ctx;
     	let scoreboard;
-    	const state = defaultClientState(username);
+    	const state = new ClientState(username);
 
     	onMount(() => {
     		ctx = canvas.getContext("2d");
@@ -1958,7 +1919,7 @@ var app = (function () {
     		ClientPredictedBullet,
     		DEV_SETTINGS,
     		GameRenderer,
-    		defaultClientState,
+    		ClientState,
     		NETWORK_LATENCY,
     		processGameTick,
     		socket,

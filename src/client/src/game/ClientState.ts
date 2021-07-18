@@ -1,6 +1,6 @@
 
 import type { ClientPredictedBullet } from './ClientPredictedBullet'
-import { Player } from './Player'
+import type { Player } from './Player'
 
 class MyPlayer {
     name : string
@@ -22,27 +22,24 @@ class MyPlayer {
     }
 }
 
-export type ClientState = {
-    pendingInputs : PlayerControlsMessage[]
-    myPlayer : MyPlayer
-    bulletProps : WeakMap<SocketBullet, { receptionTime : number, display : Point }>
+export class ClientState {
+    pendingInputs : PlayerControlsMessage[] = []
+    bulletProps = new WeakMap<SocketBullet, { receptionTime : number, display : Point }>()
+    bullets : SocketBullet[] = []
     players : Record<string, Player>
-    bullets : SocketBullet[]
-    lastGameTickMessage : GameTickMessage
+    myPlayer : MyPlayer
     lastGameTickMessageTime : number
-}
+    lastGameTickMessage : GameTickMessage
 
-export const defaultClientState : (username : string) => ClientState = username => (
-    { pendingInputs: []
-    , myPlayer: new MyPlayer(CONSTANTS.CREATE_PLAYER(username))
-    , bulletProps: new WeakMap()
-    , players: { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) }
-    , bullets: []
-    , lastGameTickMessage: 
-        { players: []
-        , bullets: []
-        , newBullets: []
-        , deletedBullets: []
-        }
-    , lastGameTickMessageTime : Date.now()
-    })
+    constructor(username : string) {
+        this.players = {}
+        this.myPlayer = new MyPlayer(CONSTANTS.CREATE_PLAYER(username))
+        this.lastGameTickMessageTime = Date.now()
+        this.lastGameTickMessage = 
+            { players: []
+            , bullets: []
+            , newBullets: []
+            , deletedBullets: []
+            }
+    }
+}

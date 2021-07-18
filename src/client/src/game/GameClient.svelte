@@ -7,7 +7,7 @@
     import { ClientPredictedBullet } from "./ClientPredictedBullet";
     import { DEV_SETTINGS } from './DEV_SETTINGS'
     import { GameRenderer } from "./GameRenderer";
-    import { defaultClientState } from './ClientState'
+    import { ClientState } from './ClientState'
     import { NETWORK_LATENCY } from "./NETWORK_LATENCY";
     import { processGameTick } from "./processGameTick";
 	import '../bots/A'
@@ -21,7 +21,7 @@
     let ctx : CanvasRenderingContext2D
     let scoreboard : HTMLDivElement
     
-    const state = defaultClientState(username)
+    const state = new ClientState(username)
 
     onMount(() => {
         ctx = canvas.getContext('2d')!
