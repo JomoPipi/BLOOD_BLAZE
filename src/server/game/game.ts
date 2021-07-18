@@ -151,7 +151,8 @@ export class Game  {
             {
                 const [bx, by, newbx, newby, dt, shooter] = collisionArgs[bullet.id]!
                 const collidesWith = makeCollisionFunc(bx, by, newbx, newby, dt)
-                if (shooter !== player.data.name && collidesWith(player.data))
+                const extrapolated = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(player.data, dt)
+                if (shooter !== player.data.name && collidesWith(extrapolated))
                 {
                     player.data.lastTimeGettingShot = now
                     this.deletedBullets[bullet.id] = true
@@ -224,8 +225,6 @@ function makeCollisionFunc(bx : number, by : number, newbx : number, newby : num
             && distance(bx, by, x, y) <= bulletDist
             && distance(newbx, newby, x, y) <= bulletDist
             
-        if (collides) console.log(`Distance(p.x, p.y, x, y):`,distance(p.x, p.y, x, y))
-
         return collides
     }
 

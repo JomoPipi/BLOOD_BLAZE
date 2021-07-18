@@ -1,7 +1,6 @@
 
 import { DEV_SETTINGS } from "./DEV_SETTINGS"
 import type { ClientState } from './ClientState'
-import { getInterpolatedData } from "./lag_comp/getInterpolatedData"
 
 const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth
 export class GameRenderer {
@@ -39,7 +38,7 @@ export class GameRenderer {
             {
                 const deltaTime = msgDelta + p.data.latency
             
-                const data = getInterpolatedData(p.data, deltaTime)
+                const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
                 this.drawPlayer(data, now)
 
                 // const pts = qt.getPointsInCircle({ ...data, r: CONSTANTS.PLAYER_SPEED + CONSTANTS.BULLET_SPEED })
@@ -83,7 +82,7 @@ export class GameRenderer {
         {
             const p = this.state.players[this.username]!
             const deltaTime = msgDelta + p.data.latency
-            const data = getInterpolatedData(p.data, deltaTime)
+            const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
             this.drawPlayer(data, now, 'cyan')
         }
         
