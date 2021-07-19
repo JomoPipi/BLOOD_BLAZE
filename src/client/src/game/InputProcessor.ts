@@ -4,9 +4,9 @@ import type { ClientState } from "./ClientState"
 import { DEV_SETTINGS } from "./DEV_SETTINGS"
 
 export class InputProcessor {
-    state : ClientState
-    socket : ClientSocket
-    canSendIdleInput = true
+    private state : ClientState
+    private readonly socket : ClientSocket
+    private canSendIdleInput = true
 
     constructor (state : ClientState, socket : ClientSocket) {
         this.state = state

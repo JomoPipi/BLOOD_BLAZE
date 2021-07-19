@@ -7,7 +7,7 @@ import { Server } from "../../node_modules/socket.io/dist/index.js" // "socket.i
 import '../shared/constants.js'
 import '../shared/helpers.js'
 import '../shared/QuadTree.js'
-import { Game } from './game/game.js'
+import { Game } from './game/Game.js'
 
 // Understanding just 1% of something brings you closer to understanding 100% of it.
 
@@ -52,7 +52,7 @@ io.on('connection', socket => {
         username = name
 
         socket.on('controlsInput', data => {
-            game.updatePlayerInputs(username, data)
+            game.applyUpdatedPlayerInputs(username, data)
         })
         
         socket.on("networkLatency", lag => {

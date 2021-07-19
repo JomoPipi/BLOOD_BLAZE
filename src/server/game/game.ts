@@ -1,6 +1,6 @@
 
-import { Bullet } from "./bullet.js"
-import { Player } from "./player.js"
+import { Bullet } from "./Bullet.js"
+import { Player } from "./Player.js"
 
 const epsilon = 1e-3
 const maxBulletSpeed = CONSTANTS.BULLET_SPEED + CONSTANTS.PLAYER_SPEED
@@ -31,7 +31,7 @@ export class Game  {
         io.emit('removedPlayer', name)
     }
     
-    updatePlayerInputs(username : string, clientControls : PlayerControlsMessage) {
+    applyUpdatedPlayerInputs(username : string, clientControls : PlayerControlsMessage) {
         const now = Date.now()
         const p = this.getPlayerByName[username]!
         
@@ -140,13 +140,10 @@ export class Game  {
         })
 
         const toDelete : Record<number, true> = {}
-        
+        const radius = CONSTANTS.PLAYER_RADIUS + maxBulletSpeed * timeDelta
         for (const player of this.players)
         {
-            const points = bulletQT.getPointsInCircle(
-                { ...player.data
-                , r: CONSTANTS.PLAYER_RADIUS + maxBulletSpeed * timeDelta
-                })
+            const points = bulletQT.getPointsInCircle({ ...player.data, r: radius })
             for (const bullet of points)
             {
                 const [bx, by, newbx, newby, dt, shooter] = collisionArgs[bullet.id]!

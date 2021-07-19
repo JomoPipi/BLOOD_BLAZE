@@ -20,13 +20,6 @@ export class GameRenderer {
     render(now : number) {
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    
-        // showWhatOtherClientsPredict
-
-        // const qt = new QuadTree<SocketBullet>(0, 0, 1, 1, 4)
-        // this.state.bullets.forEach(bullet => { qt.insert(bullet) })
-
-        // const toDelete : Record<number, true> = {}
 
         const msgDelta = now - this.state.lastGameTickMessageTime
         for (const name in this.state.players)
@@ -57,9 +50,9 @@ export class GameRenderer {
         {
             this.ctx.fillStyle = '#099'
             const { bullets } = this.state.lastGameTickMessage
-            for (const { x, y } of bullets)
+            for (const b of bullets)
             {
-                this.circle(x * this.canvas.width, y * this.canvas.height, 2)
+                this.circle(b.x * this.canvas.width, b.y * this.canvas.height, 2)
             }
         }
 

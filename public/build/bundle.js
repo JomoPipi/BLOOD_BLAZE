@@ -1326,10 +1326,6 @@ var app = (function () {
         }
         render(now) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            // showWhatOtherClientsPredict
-            // const qt = new QuadTree<SocketBullet>(0, 0, 1, 1, 4)
-            // this.state.bullets.forEach(bullet => { qt.insert(bullet) })
-            // const toDelete : Record<number, true> = {}
             const msgDelta = now - this.state.lastGameTickMessageTime;
             for (const name in this.state.players) {
                 if (name === this.username)
@@ -1350,8 +1346,8 @@ var app = (function () {
             if (DEV_SETTINGS.showServerBullet) {
                 this.ctx.fillStyle = '#099';
                 const { bullets } = this.state.lastGameTickMessage;
-                for (const { x, y } of bullets) {
-                    this.circle(x * this.canvas.width, y * this.canvas.height, 2);
+                for (const b of bullets) {
+                    this.circle(b.x * this.canvas.width, b.y * this.canvas.height, 2);
                 }
             }
             if (DEV_SETTINGS.showPredictedPlayer) {

@@ -5,10 +5,12 @@ const DIR = [[0,0],[0,1],[1,0],[1,1]] as const
 type Direction = typeof dirs[number]
 
 class QuadTree<T extends Point = Point> implements Rectangle { 
-    x; y; w; h; levelCapacity;
-    centerX; centerY;
-    points : T[] = []
-    quadrant? : Record<0|1|2|3, QuadTree>
+    x; y; w; h;
+    private levelCapacity
+    private centerX
+    private centerY
+    private points : T[] = []
+    private quadrant? : Record<0|1|2|3, QuadTree>
 
     constructor(
         x : number, 
@@ -105,7 +107,7 @@ class QuadTree<T extends Point = Point> implements Rectangle {
         if (dx > circle.r || dy > circle.r) return false
         if (dx <= 0 || dy <= 0) return true
 
-        return (dx * dx + dy * dy <= circle.r * circle.r)    
+        return dx * dx + dy * dy <= circle.r * circle.r
     }
 
     // private static canvas = document.createElement("canvas")
