@@ -3,12 +3,14 @@ type Point = { x : number, y : number }
 type Rotating = { angle : number }
 type RotatingPoint = Point & Rotating
 type Circle = Point & { r : number }
+type LineSegment = [Point,Point]
 
 type ServerToClientSocketEvents = keyof ServerToClientMessageTypes
 type ServerToClientMessageTypes = {
   nomination : [boolean, string]
   gameTick : GameTickMessage
   removedPlayer : string
+  mapdata : LineSegment[]
   // newBullets : NewBulletsForClientsMessage
 }
 

@@ -27,6 +27,7 @@ export class ClientState {
     pendingInputs : PlayerControlsMessage[] = []
     bulletProps = new WeakMap<SocketBullet, { receptionTime : number, display : Point }>()
     bullets : SocketBullet[] = []
+    structures : LineSegment[] = []
     players : Record<string, Player>
     myPlayer : MyPlayer
     lastGameTickMessageTime : number

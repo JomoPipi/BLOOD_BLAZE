@@ -23,6 +23,7 @@ console.log('FPS =', CONSTANTS.FPS)
 console.log('GAME_TICK =',CONSTANTS.GAME_TICK)
 
 const game = new Game()
+game.structures.generateRandomMap()
 
 io.on('connection', socket => {
 
@@ -46,6 +47,8 @@ io.on('connection', socket => {
         if (!accepted) return
 
         socket.removeAllListeners('nomination')
+
+        socket.emit('mapdata', game.structures.segments)
 
         console.log('accepted new user:', name)
 

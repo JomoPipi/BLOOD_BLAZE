@@ -9,6 +9,7 @@ export class GameRenderer {
     private readonly ctx
     private readonly username
     private readonly state
+    private segments : LineSegment[] = []
 
     constructor(canvas : HTMLCanvasElement, username : string, state : ClientState) {
         this.canvas = canvas
@@ -16,10 +17,20 @@ export class GameRenderer {
         this.username = username
         this.state = state
     }
+
+    updateSegments(segments : LineSegment[]) {
+        console.log('segments!!!!')
+        this.segments = segments
+    }
     
     render(now : number) {
 
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+        const W = this.canvas.width
+        const H = this.canvas.height
+
+        this.ctx.clearRect(0, 0, W, H)
+
+        this.drawWalls(W, H)
 
         const msgDelta = now - this.state.lastGameTickMessageTime
         for (const name in this.state.players)
@@ -52,7 +63,7 @@ export class GameRenderer {
             const { bullets } = this.state.lastGameTickMessage
             for (const b of bullets)
             {
-                this.circle(b.x * this.canvas.width, b.y * this.canvas.height, 2)
+                this.circle(b.x * W, b.y * H, 2)
             }
         }
 
@@ -85,8 +96,8 @@ export class GameRenderer {
                 const age = now - (this.state.bulletProps.get(b)?.receptionTime || 0)
                 const bx = b.x + b.speedX * age
                 const by = b.y + b.speedY * age
-                const x = bx * this.canvas.width
-                const y = by * this.canvas.height
+                const x = bx * W
+                const y = by * H
                 
                 this.circle(x, y, 2)
                 return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
@@ -111,8 +122,8 @@ export class GameRenderer {
                 const age = now - props.receptionTime
                 const bx = b.x + b.speedX * age
                 const by = b.y + b.speedY * age
-                const x = bx * this.canvas.width
-                const y = by * this.canvas.height
+                const x = bx * W
+                const y = by * H
                 // const dx = x - props.display.x
                 // const dy = y - props.display.y
 
@@ -124,8 +135,8 @@ export class GameRenderer {
                 // props.display.y += dy * mergeRate
                 // this.circle(props.display.x, props.display.y, 2)
 
-                const x1 = props.display.x + age * b.speedX * this.canvas.width
-                const y1 = props.display.y + age * b.speedY * this.canvas.height
+                const x1 = props.display.x + age * b.speedX * W
+                const y1 = props.display.y + age * b.speedY * H
                 const dx = x - x1
                 const dy = y - y1
 
@@ -147,8 +158,8 @@ export class GameRenderer {
                 const b = bullet.data
                 const bx = b.x + b.speedX * age
                 const by = b.y + b.speedY * age
-                const x = bx * this.canvas.width
-                const y = by * this.canvas.height
+                const x = bx * W
+                const y = by * H
                 this.circle(x, y, 2)
                 return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
             })
@@ -158,12 +169,12 @@ export class GameRenderer {
     drawPlayer(p : SocketPlayer, now : number, color = '#333') {
         const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height]
         const playerGunSize = 2
-        const bloodCooldown = 256
-        const R = now - p.lastTimeGettingShot
+        const bloodCooldown = 255
+        const R = (now - p.lastTimeGettingShot)
         const isGettingShot = R <= bloodCooldown
         this.ctx.fillStyle =
         this.ctx.strokeStyle =
-        isGettingShot ? `rgb(${bloodCooldown - R},0,0)` : color
+        isGettingShot ? `rgb(255,${R},${R})` : color
         
         if (p.name === this.username && isGettingShot)
         {
@@ -171,7 +182,7 @@ export class GameRenderer {
             throttled(traumatize, wait, now)
         }
         
-        this.circle(x, y, PLAYER_RADIUS, true)
+        this.circle(x, y, PLAYER_RADIUS, !isGettingShot)
         
         const [X, Y] = 
             [ x + PLAYER_RADIUS * Math.cos(p.angle)
@@ -182,10 +193,29 @@ export class GameRenderer {
         this.ctx.fillText(p.name, x - 17, y - 17)
     }
 
+    drawWalls(w : number, h : number) {
+        // console.log('drawing walls?',this.segments.length)
+        this.ctx.strokeStyle = 'black'
+        if (this.segments.length)
+            console.log('x =', this.segments[0]![0]?.x)
+        for (const [p1, p2] of this.segments)
+        {
+            this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h)
+        }
+    }
+
     circle(x : number, y : number, r : number, stroke? : boolean) {
         this.ctx.beginPath()
         this.ctx.arc(x, y, r, 0, 7)
         this.ctx[stroke ? 'stroke': 'fill']()
+        this.ctx.closePath()
+    }
+
+    line(x1 : number, y1 : number, x2 : number, y2 : number) {
+        this.ctx.beginPath()
+        this.ctx.moveTo(x1, y1)
+        this.ctx.lineTo(x2, y2)
+        this.ctx.stroke()
         this.ctx.closePath()
     }
 }

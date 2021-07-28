@@ -1,6 +1,7 @@
 
 import { Bullet } from "./Bullet.js"
 import { Player } from "./Player.js"
+import { Structure } from "./Structure.js"
 
 const epsilon = 1e-3
 const maxBulletSpeed = CONSTANTS.BULLET_SPEED + CONSTANTS.PLAYER_SPEED
@@ -11,6 +12,7 @@ export class Game  {
     private bullets : Bullet[] = []
     private newBullets : Bullet[] = []
     private deletedBullets : Record<number, true> = {}
+    structures = new Structure()
 
     addPlayer(name : string) {
         if (this.playerExists(name)) return false
