@@ -1461,7 +1461,6 @@ var app = (function () {
             this.state = state;
         }
         updateSegments(segments) {
-            console.log('segments!!!!');
             this.segments = segments;
         }
         render(now) {
@@ -1595,10 +1594,7 @@ var app = (function () {
             this.ctx.fillText(p.name, x - 17, y - 17);
         }
         drawWalls(w, h) {
-            // console.log('drawing walls?',this.segments.length)
-            this.ctx.strokeStyle = 'black';
-            if (this.segments.length)
-                console.log('x =', this.segments[0][0]?.x);
+            this.ctx.strokeStyle = 'blue';
             for (const [p1, p2] of this.segments) {
                 this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h);
             }
@@ -1696,10 +1692,7 @@ var app = (function () {
         isRunning = true;
         elements.canvas.height = elements.canvas.width = window.innerWidth;
         const renderer = new GameRenderer(elements.canvas, username, state);
-        console.log('at least we here');
         socket.on('mapdata', segments => {
-            console.log(' yyoyo');
-            console.log('segments =', segments);
             renderer.updateSegments(segments);
         });
         socket.on('removedPlayer', name => {

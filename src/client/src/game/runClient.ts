@@ -20,11 +20,7 @@ export function runClient(elements : ClientElements, username : string, state : 
 
     const renderer = new GameRenderer(elements.canvas, username, state)
 
-    console.log('at least we here')
     socket.on('mapdata', segments => {
-        console.log(' yyoyo')
-        console.log('segments =',segments)
-
         renderer.updateSegments(segments)
     })
 

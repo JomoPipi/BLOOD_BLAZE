@@ -19,7 +19,6 @@ export class GameRenderer {
     }
 
     updateSegments(segments : LineSegment[]) {
-        console.log('segments!!!!')
         this.segments = segments
     }
     
@@ -194,10 +193,7 @@ export class GameRenderer {
     }
 
     drawWalls(w : number, h : number) {
-        // console.log('drawing walls?',this.segments.length)
-        this.ctx.strokeStyle = 'black'
-        if (this.segments.length)
-            console.log('x =', this.segments[0]![0]?.x)
+        this.ctx.strokeStyle = 'blue'
         for (const [p1, p2] of this.segments)
         {
             this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h)

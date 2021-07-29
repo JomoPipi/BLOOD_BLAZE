@@ -131,6 +131,11 @@ export class Game  {
 
             if (0 <= bx && bx <= 1 && 0 <= by && by <= 1)
             {
+                if (this.structures.collidesWithBullet(bx, by, newbx, newby))
+                {
+                    this.deletedBullets[bullet.data.id] = true
+                    return false
+                }
                 collisionArgs[bullet.data.id] = [bx, by, newbx, newby, dt, bullet.shooter]
                 bulletQT.insert(bullet.data)
                 return true
