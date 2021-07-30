@@ -14,13 +14,15 @@ export class Structure {
             intersection(wall, [{ x: oldX, y: oldY }, { x, y }]))
     }
 
-    collideWithPlayer(oldX : number, oldY : number, x : number, y : number) {
-
+    collidesWithPlayer(oldX : number, oldY : number, x : number, y : number) {
+        throw 'TODO'
     }
 
     generateRandomMap(nWalls : number) {
-        const minLength = 0.02
-        const maxLength = 0.5
+        // const minLength = 0.02
+        // const maxLength = 0.5
+        const minLength = 0.1
+        const maxLength = 0.8
         const randomPoint = () => ({ x: Math.random(), y: Math.random() })
         const walls = [...Array(nWalls)].map(_ => {
             const length = minLength + Math.random() *  (maxLength - minLength)
@@ -154,57 +156,7 @@ export class Structure {
                 }
             }
             return true;
-            function intersection(_l1 : LineSegment, _l2 : LineSegment) {
-                for (const p1 of _l1) {
-                    for (const p2 of _l2) {
-                        if (p1.x === p2.x && p1.y === p2.y && approximatelyInRange(p1.x, p1.y)) {
-                            return [p1.x, p1.y];
-                        }
-                    }
-                }
-                const [l1, l2] = (_l2[0].x < _l1[0].x || (_l1[0].x == _l2[0].x && _l2[0].y < _l1[0].y))
-                    // "sort" the two points to combat floating-point error.
-                    // We want the same output for the same inputs regardless of their order.
-                    // The line segments are already sorted in the beginning, so we can just use the first point.
-                    ? [_l1, _l2]
-                    : [_l2, _l1];
-                const dx1 = l1[1].x - l1[0].x;
-                const dx2 = l2[1].x - l2[0].x;
-                if (dx1 === 0 && dx2 === 0)
-                    return null;
-                const m1 = (l1[1].y - l1[0].y) / dx1;
-                const m2 = (l2[1].y - l2[0].y) / dx2;
-                if (m1 === m2)
-                    return null;
-                const b1 = l1[0].y - m1 * l1[0].x;
-                const b2 = l2[0].y - m2 * l2[0].x;
-                const x = dx1 === 0
-                    ? l1[0].x
-                    : dx2 === 0
-                        ? l2[0].x
-                        : (b2 - b1) / (m1 - m2);
             
-                const y1 = m1 * x + b1
-                const y2 = m2 * x + b2
-                // Prioritize integers.
-                const y = dx1 === 0
-                    ? y2
-                    : dx2 === 0
-                    ? y1
-                    : y1 % 1 === 0
-                    ? y1
-                    : y2
-                return approximatelyInRange(x, y)
-                    && Math.min(l1[0].x, l1[1].x) - EPSILON <= x && x <= Math.max(l1[0].x, l1[1].x) + EPSILON
-                    && Math.min(l2[0].x, l2[1].x) - EPSILON <= x && x <= Math.max(l2[0].x, l2[1].x) + EPSILON
-                    && Math.min(l1[0].y, l1[1].y) - EPSILON <= y && y <= Math.max(l1[0].y, l1[1].y) + EPSILON
-                    && Math.min(l2[0].y, l2[1].y) - EPSILON <= y && y <= Math.max(l2[0].y, l2[1].y) + EPSILON
-                    ? [x, y]
-                    : null;
-            }
-            function approximatelyInRange(x : number, y : number) {
-                return -EPSILON < x && x < width + EPSILON && -EPSILON < y && y < height + EPSILON;
-            }
             function inExclusiveRange(x : number, y : number) {
                 return 0 < x && x < width && 0 < y && y < height;
             }

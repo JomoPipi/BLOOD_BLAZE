@@ -23,7 +23,7 @@ console.log('FPS =', CONSTANTS.FPS)
 console.log('GAME_TICK =',CONSTANTS.GAME_TICK)
 
 const game = new Game()
-game.structures.generateRandomMap(10)
+game.structures.generateRandomMap(7)
 
 io.on('connection', socket => {
 

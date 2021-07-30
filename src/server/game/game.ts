@@ -91,7 +91,7 @@ export class Game  {
             const newbx = bullet.data.x
             const newby = bullet.data.y
 
-            const collidesWith = makeCollisionFunc(bx, by, newbx, newby, dt)            
+            const collidesWith = makeCollisionFunc(bx, by, newbx, newby)            
 
             for (const player of this.players)
             {
@@ -154,7 +154,7 @@ export class Game  {
             for (const bullet of points)
             {
                 const [bx, by, newbx, newby, dt, shooter] = collisionArgs[bullet.id]!
-                const collidesWith = makeCollisionFunc(bx, by, newbx, newby, dt)
+                const collidesWith = makeCollisionFunc(bx, by, newbx, newby)
                 const extrapolated = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(player.data, dt)
                 if (shooter !== player.data.name && collidesWith(extrapolated))
                 {
@@ -200,7 +200,7 @@ export class Game  {
     private playerExists = (name : string) => this.getPlayerByName[name]
 }
 
-function makeCollisionFunc(bx : number, by : number, newbx : number, newby : number, dt : number) {
+function makeCollisionFunc(bx : number, by : number, newbx : number, newby : number) {
 
     // m and b define the equation of the line y = m * x + b.
     // that represents the path of the bullet:
@@ -225,6 +225,7 @@ function makeCollisionFunc(bx : number, by : number, newbx : number, newby : num
             */
 
         // more robust: bullet.absoluteSpeed = sqrt (speedX ** 2 + speedY ** 2)
+        // then we can use dx * bullet.absoluteSpeed
         const collides = distance(p.x, p.y, x, y) <= CONSTANTS.PLAYER_RADIUS                 
             && distance(bx, by, x, y) <= bulletDist
             && distance(newbx, newby, x, y) <= bulletDist
