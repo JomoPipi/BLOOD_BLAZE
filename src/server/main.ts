@@ -55,7 +55,7 @@ io.on('connection', socket => {
         username = name
 
         socket.on('controlsInput', data => {
-            game.applyUpdatedPlayerInputs(username, data)
+            game.applyPlayerInputs(username, data)
         })
         
         socket.on("networkLatency", lag => {

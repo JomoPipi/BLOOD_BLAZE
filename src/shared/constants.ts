@@ -21,7 +21,7 @@ const CONSTANTS = (() => {
         , FPS
         , GAME_TICK
         , CAN_SHOOT
-        , MOVE_PLAYER
+        , GET_NEXT_PLAYER_POSITION
         , CREATE_PLAYER
         , EXTRAPOLATE_PLAYER_POSITION
         } as const
@@ -33,9 +33,11 @@ const CONSTANTS = (() => {
         return now - lastTimeShot > BULLET_COOLDOWN
     }
 
-    function MOVE_PLAYER(p : Point, controls : PlayerControlsMessage) {
-        p.x = clamp(0, p.x + controls.x * controls.deltaTime * PLAYER_SPEED, 1)
-        p.y = clamp(0, p.y + controls.y * controls.deltaTime * PLAYER_SPEED, 1)
+    function GET_NEXT_PLAYER_POSITION(p : Point, controls : PlayerControlsMessage) : [number, number] {
+        return [
+            clamp(0, p.x + controls.x * controls.deltaTime * PLAYER_SPEED, 1),
+            clamp(0, p.y + controls.y * controls.deltaTime * PLAYER_SPEED, 1)
+            ]
     }
 
     function CREATE_PLAYER(name : string) : SocketPlayer { 

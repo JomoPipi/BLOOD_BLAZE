@@ -33,7 +33,7 @@ export class Game  {
         io.emit('removedPlayer', name)
     }
     
-    applyUpdatedPlayerInputs(username : string, clientControls : PlayerControlsMessage) {
+    applyPlayerInputs(username : string, clientControls : PlayerControlsMessage) {
         const now = Date.now()
         const p = this.getPlayerByName[username]!
         
@@ -51,13 +51,13 @@ export class Game  {
         */
         const a = dx**2 + dy**2
         const k = Math.sqrt(1 / a)
-        const [x, y] = a > 1
+        const [controllerX, controllerY] = a > 1
             ? [dx * k, dy * k]
             : [dx, dy]
 
         p.data.angle = clientControls.angle
         p.data.lastProcessedInput = clientControls.messageNumber
-        p.data.controls = { x, y }
+        p.data.controls = { x: controllerX, y: controllerY }
 
         if (clientControls.requestedBullet && CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting))
         { 
@@ -66,9 +66,14 @@ export class Game  {
         }
 
         // Use the "clamped" coordinates:
-        clientControls.x = x
-        clientControls.y = y 
-        CONSTANTS.MOVE_PLAYER(p.data, clientControls)
+        clientControls.x = controllerX
+        clientControls.y = controllerY
+        const oldX = p.data.x
+        const oldY = p.data.y
+        const [_x, _y] = CONSTANTS.GET_NEXT_PLAYER_POSITION(p.data, clientControls)
+        const [nextX, nextY] = this.structures.getCollidedPlayerPosition(oldX, oldY, _x, _y)
+        p.data.x = nextX
+        p.data.y = nextY
     }
 
     setPlayerLag(username : string, lag : number) {

@@ -14,8 +14,12 @@ export class Structure {
             intersection(wall, [{ x: oldX, y: oldY }, { x, y }]))
     }
 
-    collidesWithPlayer(oldX : number, oldY : number, x : number, y : number) {
-        throw 'TODO'
+    getCollidedPlayerPosition(oldX : number, oldY : number, x : number, y : number) : [number, number] {
+        return this.segments.reduce(pushCollision, [x, y])
+
+        function pushCollision(coord : [number, number], segment : LineSegment) {
+            return coord
+        }
     }
 
     generateRandomMap(nWalls : number) {

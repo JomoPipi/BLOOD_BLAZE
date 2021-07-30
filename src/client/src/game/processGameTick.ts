@@ -59,8 +59,8 @@ export function processGameTick(msg : GameTickMessage, state : ClientState) {
 
         if (p.name === state.myPlayer.name)
         {
-            state.myPlayer.predictedPosition = { ...p }
-            state.myPlayer.predictedPosition.angle = state.myPlayer.controls.angle // We don't want the server's angle.
+            const q = state.myPlayer.predictedPosition = { ...p }
+            q.angle = state.myPlayer.controls.angle // We don't want the server's angle.
 
             if (CONSTANTS.DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction) continue
 
@@ -77,7 +77,9 @@ export function processGameTick(msg : GameTickMessage, state : ClientState) {
                 else
                 {
                     // Not processed by the server yet. Re-apply it.
-                    CONSTANTS.MOVE_PLAYER(state.myPlayer.predictedPosition, input)
+                    const [x, y] = CONSTANTS.GET_NEXT_PLAYER_POSITION(q, input)
+                    q.x = x
+                    q.y = y
                     j++
                 }
             }
