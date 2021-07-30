@@ -70,8 +70,11 @@ export class Game  {
         clientControls.y = controllerY
         const oldX = p.data.x
         const oldY = p.data.y
-        const [_x, _y] = CONSTANTS.GET_NEXT_PLAYER_POSITION(p.data, clientControls)
-        const [nextX, nextY] = this.structures.getCollidedPlayerPosition(oldX, oldY, _x, _y)
+        CONSTANTS.MOVE_PLAYER(p.data, clientControls)
+        const tempX = p.data.x
+        const tempY = p.data.y
+        // If there is no collision then temp position equals next position
+        const [nextX, nextY] = this.structures.getCollidedPlayerPosition(oldX, oldY, tempX, tempY)
         p.data.x = nextX
         p.data.y = nextY
     }

@@ -17,7 +17,28 @@ export class Structure {
     getCollidedPlayerPosition(oldX : number, oldY : number, x : number, y : number) : [number, number] {
         return this.segments.reduce(pushCollision, [x, y])
 
-        function pushCollision(coord : [number, number], segment : LineSegment) {
+        function pushCollision(coord : [number, number], segment : LineSegment) : [number, number] {
+            // Return a coordinate that is at least a player's radius away from the line segment.
+            // The line segment is a "wall" pushing back on the player.
+            const [{ x: sx1, y: sy1 }, { x: sx2, y: sy2 }] = segment
+            const [x, y] = coord
+            if (sx1 === sx2)
+            { // Handle the case of the vertical line:
+                const pr = CONSTANTS.PLAYER_RADIUS
+                const collides = Math.min(sy1, sy2) <= y + pr && y <= Math.max(sy1, sy2) + pr
+                    && Math.min(oldX, x - pr) < sx1 && sx1 < Math.max(oldX, x + pr)
+
+                if (collides)
+                {
+                    return [0.5, 0.5]
+                }
+                else
+                {
+                    return coord
+                }
+            }
+            const sm = (sy2 - sy1) / (sx2 - sx1)
+            const smʹ = -1 / sm
             return coord
         }
     }

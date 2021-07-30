@@ -18,7 +18,7 @@ export class InputProcessor {
         this.state.myPlayer.controls.deltaTime = deltaTime
         
         CONSTANTS.MOVE_PLAYER(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls)
-
+        
         if (this.state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting))
         {
             this.state.myPlayer.lastTimeShooting = now
