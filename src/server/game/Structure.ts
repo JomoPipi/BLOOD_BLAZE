@@ -22,24 +22,59 @@ export class Structure {
             // The line segment is a "wall" pushing back on the player.
             const [{ x: sx1, y: sy1 }, { x: sx2, y: sy2 }] = segment
             const [x, y] = coord
+            const pr = CONSTANTS.PLAYER_RADIUS
+
             if (sx1 === sx2)
             { // Handle the case of the vertical line:
-                const pr = CONSTANTS.PLAYER_RADIUS
                 const collides = Math.min(sy1, sy2) <= y + pr && y <= Math.max(sy1, sy2) + pr
                     && Math.min(oldX, x - pr) < sx1 && sx1 < Math.max(oldX, x + pr)
 
-                if (collides)
-                {
-                    return [sx1 + (oldX > x ? pr : -pr), y]
-                }
-                else
-                {
-                    return coord
-                }
+                return collides
+                    ? [sx1 + (oldX > x ? pr : -pr), y]
+                    : coord
             }
+            else if (sy1 === sy2)
+            { // Handle the case of the horizontal line:
+                const collides = Math.min(sx1, sx2) <= x + pr && x <= Math.max(sx1, sx2) + pr
+                    && Math.min(oldY, y - pr) < sy1 && sy1 < Math.max(oldY, y + pr)
+
+                return collides
+                    ? [x, sy1 + (oldY > y ? pr : -pr)]
+                    : coord
+            }
+
             const sm = (sy2 - sy1) / (sx2 - sx1)
+            const b = sy1 - sm * sx1
+            // line perpendicular to the wall, passing through the coord:
             const smʹ = -1 / sm
-            return coord
+            const bʹ = y - smʹ * x
+            // intersection of perpendicular line to the wall - the closest point from (x,y) to the wall:
+            const x0 = (b - bʹ) / (smʹ - sm)
+            const y0 = smʹ * x + bʹ
+
+            const d = distance(x, y, x0, y0)
+            if (d >= pr) return coord
+            const xe = Math.sign(x0 - oldX)
+            const ye = Math.sign(y0 - oldY)
+            const angle = Math.atan2(y0 - y, x0 - x)
+            const radius_dx = Math.cos(angle) * pr
+            const radius_dy = Math.sin(angle) * pr
+            if (!( Math.min(sx1,sx2) - radius_dx * xe <= x0 && x0 <= Math.max(sx1,sx2) + radius_dx * xe
+                && Math.min(sy1,sy2) - radius_dy * ye <= y0 && y0 <= Math.max(sy1,sy2) + radius_dy * ye
+                ))
+            {
+                return coord
+            }
+            const otherAngle = Math.atan2(sy2 - sy1, sx2 - sx1)
+            console.log('angle =',angle)
+            console.log('otherAngle =',otherAngle)
+            console.log()
+            // The angle needed to shift the point away from the wall:
+            // const shiftDistance = pr - d
+            return [
+                x0 - radius_dx, 
+                y0 - radius_dy
+            ]
         }
     }
 
@@ -52,7 +87,8 @@ export class Structure {
         const walls = [...Array(nWalls)].map(_ => {
             const length = minLength + Math.random() *  (maxLength - minLength)
             const p1 = randomPoint()
-            const rndAngle = [...Array(4)].map((_,i) => i * Math.PI / 4)[Math.random() * 4 | 0]!
+            const slopeCount = 9
+            const rndAngle = [...Array(slopeCount)].map((_,i) => i * Math.PI / slopeCount)[Math.random() * slopeCount | 0]!
             const p2 = { x: (p1.x + Math.cos(rndAngle) * length), y: (p1.y + Math.sin(rndAngle) * length) }
             const p = [p1, p2] as LineSegment
             return p

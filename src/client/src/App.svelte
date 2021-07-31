@@ -4,7 +4,8 @@
 	import Nomination from './game/views/Nomination.svelte'
 	import GameClient from './game/views/GameClient.svelte'
 
-	const socket = io()
+	// @ts-ignore
+	const socket = io({transports: ['websocket'], upgrade: false})
 	
 	let username = ''
 	function proceed(name : string) {
