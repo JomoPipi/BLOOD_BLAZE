@@ -194,6 +194,7 @@ export class GameRenderer {
 
     drawWalls(w : number, h : number) {
         this.ctx.strokeStyle = 'blue'
+        // console.log('drawing walls',this.segments.length)
         for (const [p1, p2] of this.segments)
         {
             this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h)

@@ -23,7 +23,9 @@ console.log('FPS =', CONSTANTS.FPS)
 console.log('GAME_TICK =',CONSTANTS.GAME_TICK)
 
 const game = new Game()
-game.structures.generateRandomMap(7)
+game.structures.generateRandomMap(8)
+
+console.log('we here')
 
 io.on('connection', socket => {
 
@@ -34,19 +36,20 @@ io.on('connection', socket => {
     socket.on("ping", cb => cb())
 
     socket.on('disconnect', () => {
+        
         console.log('a user disconnected')
         if (username) game.removePlayer(username, io)
     })
 
     socket.on('nomination', name => {
-
         const accepted = game.addPlayer(name)
 
         socket.emit('nomination', [accepted, name])
 
-        if (!accepted) return
+        if (!accepted) return;
 
         socket.removeAllListeners('nomination')
+        console.log('ayo big dawg', game.structures.segments.length)
 
         socket.emit('mapdata', game.structures.segments)
 
@@ -54,13 +57,9 @@ io.on('connection', socket => {
 
         username = name
 
-        socket.on('controlsInput', data => {
-            game.applyPlayerInputs(username, data)
-        })
+        socket.on('controlsInput', game.applyPlayerInputs(username))
         
-        socket.on("networkLatency", lag => {
-            game.setPlayerLag(username, lag) // Math.min(lag, 400)
-        })
+        socket.on("networkLatency", game.setPlayerLag(username))
     })
 })
 

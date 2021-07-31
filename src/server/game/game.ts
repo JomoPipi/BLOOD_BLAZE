@@ -33,54 +33,58 @@ export class Game  {
         io.emit('removedPlayer', name)
     }
     
-    applyPlayerInputs(username : string, clientControls : PlayerControlsMessage) {
-        const now = Date.now()
-        const p = this.getPlayerByName[username]!
-        
-        const dx = clientControls.x
-        const dy = clientControls.y
-        /*
-        -- restrict movement to a circle of radius 1:
-        if sqrt(mx**2 + my**2) > 1 then
-            we need k such that 
-            1 = sqrt((mx*k)**2 + (my*k)**2)
-            1 = (mx*k)**2 + (my*k)**2
-            1 = k**2 * (mx**2 + my**2)
-            1 / (mx**2 + my**2) = k**2
-            k = sqrt(1 / (mx**2 + my**2))
-        */
-        const a = dx**2 + dy**2
-        const k = Math.sqrt(1 / a)
-        const [controllerX, controllerY] = a > 1
-            ? [dx * k, dy * k]
-            : [dx, dy]
+    applyPlayerInputs(username : string) {
+        return (clientControls : PlayerControlsMessage) => {
+            const now = Date.now()
+            const p = this.getPlayerByName[username]!
+            
+            const dx = clientControls.x
+            const dy = clientControls.y
+            /*
+            -- restrict movement to a circle of radius 1:
+            if sqrt(mx**2 + my**2) > 1 then
+                we need k such that 
+                1 = sqrt((mx*k)**2 + (my*k)**2)
+                1 = (mx*k)**2 + (my*k)**2
+                1 = k**2 * (mx**2 + my**2)
+                1 / (mx**2 + my**2) = k**2
+                k = sqrt(1 / (mx**2 + my**2))
+            */
+            const a = dx**2 + dy**2
+            const k = Math.sqrt(1 / a)
+            const [controllerX, controllerY] = a > 1
+                ? [dx * k, dy * k]
+                : [dx, dy]
 
-        p.data.angle = clientControls.angle
-        p.data.lastProcessedInput = clientControls.messageNumber
-        p.data.controls = { x: controllerX, y: controllerY }
+            p.data.angle = clientControls.angle
+            p.data.lastProcessedInput = clientControls.messageNumber
+            p.data.controls = { x: controllerX, y: controllerY }
 
-        if (clientControls.requestedBullet && CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting))
-        { 
-            // TODO: && isValidBullet(p, clientControls.requestedBullet)))
-            this.addBullet(p, clientControls.requestedBullet)
+            if (clientControls.requestedBullet && CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting))
+            { 
+                // TODO: && isValidBullet(p, clientControls.requestedBullet)))
+                this.addBullet(p, clientControls.requestedBullet)
+            }
+
+            // Use the "clamped" coordinates:
+            clientControls.x = controllerX
+            clientControls.y = controllerY
+            const oldX = p.data.x
+            const oldY = p.data.y
+            CONSTANTS.MOVE_PLAYER(p.data, clientControls)
+            const tempX = p.data.x
+            const tempY = p.data.y
+            // If there is no collision then temp position equals next position
+            const [nextX, nextY] = this.structures.getCollidedPlayerPosition(oldX, oldY, tempX, tempY)
+            p.data.x = nextX
+            p.data.y = nextY
         }
-
-        // Use the "clamped" coordinates:
-        clientControls.x = controllerX
-        clientControls.y = controllerY
-        const oldX = p.data.x
-        const oldY = p.data.y
-        CONSTANTS.MOVE_PLAYER(p.data, clientControls)
-        const tempX = p.data.x
-        const tempY = p.data.y
-        // If there is no collision then temp position equals next position
-        const [nextX, nextY] = this.structures.getCollidedPlayerPosition(oldX, oldY, tempX, tempY)
-        p.data.x = nextX
-        p.data.y = nextY
     }
 
-    setPlayerLag(username : string, lag : number) {
-        this.getPlayerByName[username]!.data.latency = lag
+    setPlayerLag(username : string) {
+        return (lag : number) => {
+            this.getPlayerByName[username]!.data.latency = lag
+        }
     }
 
     naive_moveObjects(timeDelta : number, now : number) {

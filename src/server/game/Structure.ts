@@ -30,7 +30,7 @@ export class Structure {
 
                 if (collides)
                 {
-                    return [0.5, 0.5]
+                    return [sx1 + (oldX > x ? pr : -pr), y]
                 }
                 else
                 {
