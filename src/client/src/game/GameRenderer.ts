@@ -129,7 +129,6 @@ export class GameRenderer {
                 // const lag = this.state.players[b.shooter]?.data.latency || 0
                 const secondsToMerge = 0.5
                 const mergeRate = Math.min(now - props.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge
-                // console.log('msgDelta, mergeRate =',now - props.receptionTime, mergeRate)
                 // props.display.x += dx * mergeRate
                 // props.display.y += dy * mergeRate
                 // this.circle(props.display.x, props.display.y, 2)

@@ -6,7 +6,7 @@ import { Structure } from "./Structure.js"
 const epsilon = 1e-3
 const maxBulletSpeed = CONSTANTS.BULLET_SPEED + CONSTANTS.PLAYER_SPEED
 
-export class Game  {
+export class Game {
     private players : Player[] = []
     private getPlayerByName : Record<string, Player> = {}
     private bullets : Bullet[] = []
@@ -69,15 +69,21 @@ export class Game  {
             // Use the "clamped" coordinates:
             clientControls.x = controllerX
             clientControls.y = controllerY
-            const oldX = p.data.x
-            const oldY = p.data.y
+
+            // const oldX = p.data.x
+            // const oldY = p.data.y
+
             CONSTANTS.MOVE_PLAYER(p.data, clientControls)
-            const tempX = p.data.x
-            const tempY = p.data.y
+
+            // const tempX = p.data.x
+            // const tempY = p.data.y
             // If there is no collision then temp position equals next position
-            const [nextX, nextY] = this.structures.getCollidedPlayerPosition(oldX, oldY, tempX, tempY)
-            p.data.x = nextX
-            p.data.y = nextY
+
+            // Let the client do the following (cheaters can get reported):
+            // const [nextX, nextY] = this.structures.getCollidedPlayerPosition(oldX, oldY, tempX, tempY)
+
+            // p.data.x = nextX
+            // p.data.y = nextY
         }
     }
 

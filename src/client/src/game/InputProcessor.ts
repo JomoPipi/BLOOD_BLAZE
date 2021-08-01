@@ -17,8 +17,25 @@ export class InputProcessor {
 
         this.state.myPlayer.controls.deltaTime = deltaTime
         
+            // const [nextX, nextY] = this.structures.getCollidedPlayerPosition(oldX, oldY, tempX, tempY)
+        // CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION
+        const { x: oldX, y: oldY } = this.state.myPlayer.predictedPosition
         CONSTANTS.MOVE_PLAYER(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls)
-        
+        const { x: tempX, y: tempY } = this.state.myPlayer.predictedPosition
+        const [nextX, nextY] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(oldX, oldY, tempX, tempY, this.state.structures)
+
+        if (tempX !== nextX || tempY !== nextY)
+        {
+            // Player position after colliding with wall
+            this.state.myPlayer.predictedPosition.x = nextX
+            this.state.myPlayer.predictedPosition.y = nextY
+            // "Sanitized" controls after doing player-wall collisions (that the client sends the server):
+            const controlsX = (nextX - oldX) / (deltaTime * CONSTANTS.PLAYER_SPEED)
+            const controlsY = (nextY - oldY) / (deltaTime * CONSTANTS.PLAYER_SPEED)
+            this.state.myPlayer.controls.x = controlsX
+            this.state.myPlayer.controls.y = controlsY
+        }
+
         if (this.state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting))
         {
             this.state.myPlayer.lastTimeShooting = now

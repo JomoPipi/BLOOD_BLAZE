@@ -23,6 +23,7 @@ export function runClient(elements : ClientElements, username : string, state : 
     console.log('FUCK DOOD')
     socket.on('mapdata', segments => {
         console.log('got the mapdata')
+        state.structures = segments
         renderer.updateSegments(segments)
     })
 

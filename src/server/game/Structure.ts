@@ -14,85 +14,50 @@ export class Structure {
             intersection(wall, [{ x: oldX, y: oldY }, { x, y }]))
     }
 
-    getCollidedPlayerPosition(oldX : number, oldY : number, x : number, y : number) : [number, number] {
-        return this.segments.reduce(pushCollision, [x, y])
-
-        function pushCollision(coord : [number, number], segment : LineSegment) : [number, number] {
-            // Return a coordinate that is at least a player's radius away from the line segment.
-            // The line segment is a "wall" pushing back on the player.
-            const [{ x: sx1, y: sy1 }, { x: sx2, y: sy2 }] = segment
-            const [x, y] = coord
-            const pr = CONSTANTS.PLAYER_RADIUS
-
-            if (sx1 === sx2)
-            { // Handle the case of the vertical line:
-                const collides = Math.min(sy1, sy2) <= y + pr && y <= Math.max(sy1, sy2) + pr
-                    && Math.min(oldX, x - pr) < sx1 && sx1 < Math.max(oldX, x + pr)
-
-                return collides
-                    ? [sx1 + (oldX > x ? pr : -pr), y]
-                    : coord
-            }
-            else if (sy1 === sy2)
-            { // Handle the case of the horizontal line:
-                const collides = Math.min(sx1, sx2) <= x + pr && x <= Math.max(sx1, sx2) + pr
-                    && Math.min(oldY, y - pr) < sy1 && sy1 < Math.max(oldY, y + pr)
-
-                return collides
-                    ? [x, sy1 + (oldY > y ? pr : -pr)]
-                    : coord
-            }
-
-            const sm = (sy2 - sy1) / (sx2 - sx1)
-            const b = sy1 - sm * sx1
-            // line perpendicular to the wall, passing through the coord:
-            const smʹ = -1 / sm
-            const bʹ = y - smʹ * x
-            // intersection of perpendicular line to the wall - the closest point from (x,y) to the wall:
-            const x0 = (b - bʹ) / (smʹ - sm)
-            const y0 = smʹ * x + bʹ
-
-            const d = distance(x, y, x0, y0)
-            if (d >= pr) return coord
-            const xe = Math.sign(x0 - oldX)
-            const ye = Math.sign(y0 - oldY)
-            const angle = Math.atan2(y0 - y, x0 - x)
-            const radius_dx = Math.cos(angle) * pr
-            const radius_dy = Math.sin(angle) * pr
-            if (!( Math.min(sx1,sx2) - radius_dx * xe <= x0 && x0 <= Math.max(sx1,sx2) + radius_dx * xe
-                && Math.min(sy1,sy2) - radius_dy * ye <= y0 && y0 <= Math.max(sy1,sy2) + radius_dy * ye
-                ))
-            {
-                return coord
-            }
-            const otherAngle = Math.atan2(sy2 - sy1, sx2 - sx1)
-            console.log('angle =',angle)
-            console.log('otherAngle =',otherAngle)
-            console.log()
-            // The angle needed to shift the point away from the wall:
-            // const shiftDistance = pr - d
-            return [
-                x0 - radius_dx, 
-                y0 - radius_dy
-            ]
-        }
-    }
-
-    generateRandomMap(nWalls : number) {
-        // const minLength = 0.02
-        // const maxLength = 0.5
+    private generateWalls(n : number) {
         const minLength = 0.1
         const maxLength = 0.8
         const randomPoint = () => ({ x: Math.random(), y: Math.random() })
-        const walls = [...Array(nWalls)].map(_ => {
+        const walls = [...Array(n)].map(_ => {
             const length = minLength + Math.random() *  (maxLength - minLength)
             const p1 = randomPoint()
-            const slopeCount = 9
+            const slopeCount = 4
             const rndAngle = [...Array(slopeCount)].map((_,i) => i * Math.PI / slopeCount)[Math.random() * slopeCount | 0]!
             const p2 = { x: (p1.x + Math.cos(rndAngle) * length), y: (p1.y + Math.sin(rndAngle) * length) }
             const p = [p1, p2] as LineSegment
             return p
         })
+        return walls
+    }
+    
+    private generateBeautifulSymmetricWalls(n : number) {
+        const minLength = 0.1
+        const maxLength = 0.5
+        const randomPoint = () => ([ Math.random() * 0.5, Math.random() * 0.5 ]) 
+        const walls = [...Array(n)].map(_ => {
+            const length = minLength + Math.random() *  (maxLength - minLength)
+            const [x, y] = randomPoint() as [number, number]
+            const slopeCount = 5
+            const rndAngle = [...Array(slopeCount)].map((_,i) => i * Math.PI / slopeCount)[Math.random() * slopeCount | 0]!
+            const p2 = [x + Math.cos(rndAngle) * length, y + Math.sin(rndAngle) * length]
+            const s = [[x, y], p2] as [[number, number], [number, number]]
+            return s
+        })
+        // Reflect each line segment on all four quadrants:
+        .map(([[x1, y1],[x2, y2]]) => 
+            [ [{ x: x1, y: y1 }, { x: x2, y: y2 }]         // Identity
+            , [{ x: 1-x1, y: y1 }, { x: 1-x2, y: y2 }]     // Reflect horizontally
+            , [{ x: x1, y: 1-y1 }, { x: x2, y: 1-y2 }]     // Reflect vertically
+            , [{ x: 1-x1, y: 1-y1 }, { x: 1-x2, y: 1-y2 }] // Reflect horizontally and vertically
+            ]) as LineSegment[][]
+
+        return ([] as LineSegment[]).concat(...walls)
+    }
+
+    generateRandomMap(nWalls : number) {
+        // const minLength = 0.02
+        // const maxLength = 0.5
+        const walls = this.generateBeautifulSymmetricWalls(nWalls) // this.generateWalls(nWalls)
 
         if (!isTraversableEverywhere(1, 1, walls))
         {
@@ -129,7 +94,7 @@ export class Structure {
             ] as LineSegment[]
             // Check for "slicers" amongst the "unimportant" walls
             for (const w1 of otherWalls) {
-                const intersectingBoundaries = boundary.map(w2 => intersection(w1, w2)).filter(x => x);
+                const intersectingBoundaries = boundary.map(w2 => pseudoIntersection(w1, w2)).filter(x => x);
                 if (intersectingBoundaries.length > 2) {
                     return false;
                 }
@@ -156,7 +121,7 @@ export class Structure {
                         continue;
                     const w1 = allTheWalls[i] as LineSegment;
                     const w2 = allTheWalls[j] as LineSegment;
-                    const coord1 = intersection(w1, w2);
+                    const coord1 = pseudoIntersection(w1, w2);
                     if (!coord1)
                         continue;
                     const key = JSON.stringify(coord1.map(round));
@@ -241,6 +206,72 @@ export class Structure {
     }
 }
 
+
+// The "pseudo"-intersection function. Two lines are considered 
+// to intersect if a player cannot pass through.
+function pseudoIntersection(_l1 : LineSegment, _l2 : LineSegment) {
+    for (const p1 of _l1)
+    {
+        for (const p2 of _l2)
+        {
+            if (distance(p1.x, p1.y, p2.x, p2.y) <= CONSTANTS.PLAYER_RADIUS)
+            {
+                return [(p1.x + p2.x) / 2, (p1.y + p2.y) / 2]
+            }
+        }
+    }
+    const [l1, l2] = (_l2[0].x < _l1[0].x || (_l1[0].x == _l2[0].x && _l2[0].y < _l1[0].y))
+        // "sort" the two points to combat floating-point error.
+        // We want the same output for the same inputs regardless of their order.
+        // The line segments are already sorted in the beginning, so we can just use the first point.
+        ? [_l1, _l2]
+        : [_l2, _l1];
+    const dx1 = l1[1].x - l1[0].x;
+    const dx2 = l2[1].x - l2[0].x;
+    if (dx1 === 0 && dx2 === 0)
+        return null;
+    const m1 = (l1[1].y - l1[0].y) / dx1;
+    const m2 = (l2[1].y - l2[0].y) / dx2;
+    if (m1 === m2)
+        return null;
+    const b1 = l1[0].y - m1 * l1[0].x;
+    const b2 = l2[0].y - m2 * l2[0].x;
+    const x = dx1 === 0
+        ? l1[0].x
+        : dx2 === 0
+            ? l2[0].x
+            : (b2 - b1) / (m1 - m2);
+
+    const y1 = m1 * x + b1
+    const y2 = m2 * x + b2
+    // Prioritize integers.
+    const y = dx1 === 0
+        ? y2
+        : dx2 === 0
+        ? y1
+        : y1 % 1 === 0
+        ? y1
+        : y2
+
+    const EPSILON = 1e-9
+    const ALLOW = EPSILON + CONSTANTS.PLAYER_RADIUS * 2
+    return Math.min(l1[0].x, l1[1].x) - ALLOW <= x && x <= Math.max(l1[0].x, l1[1].x) + ALLOW
+        && Math.min(l2[0].x, l2[1].x) - ALLOW <= x && x <= Math.max(l2[0].x, l2[1].x) + ALLOW
+        && Math.min(l1[0].y, l1[1].y) - ALLOW <= y && y <= Math.max(l1[0].y, l1[1].y) + ALLOW
+        && Math.min(l2[0].y, l2[1].y) - ALLOW <= y && y <= Math.max(l2[0].y, l2[1].y) + ALLOW
+        ? [x, y]
+        : null
+}
+
+
+
+
+
+
+
+
+
+// The "true" intersection function:
 function intersection(_l1 : LineSegment, _l2 : LineSegment) {
     for (const p1 of _l1) {
         for (const p2 of _l2) {
