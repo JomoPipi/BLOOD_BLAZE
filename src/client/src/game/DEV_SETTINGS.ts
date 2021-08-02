@@ -10,4 +10,5 @@ export const DEV_SETTINGS =
     , showInterpolatedEnemyPositions: true
     , showUninterpolatedEnemyPositions: false
     , showWhatOtherClientsPredict: false
+    , showGameMetadeta: false
     } as const

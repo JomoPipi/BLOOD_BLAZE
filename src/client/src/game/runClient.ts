@@ -1,4 +1,5 @@
 import type { ClientState } from "./ClientState"
+import { DEV_SETTINGS } from "./DEV_SETTINGS"
 import { GameRenderer } from "./GameRenderer"
 import type { InputProcessor } from "./InputProcessor"
 import { NETWORK_LATENCY } from "./NETWORK_LATENCY"
@@ -51,11 +52,13 @@ export function runClient(elements : ClientElements, username : string, state : 
 
         renderer.render(now)
 
-        elements.scoreboard.innerHTML = Object.values(state.players)
-            .sort((p1, p2) => p2.data.score - p1.data.score)
-            .map(p => `<span style="color: orange">${p.data.name}:</span> ${p.data.score}`)
-            .join('<br>') 
-            + `<br> pending requests: ${state.pendingInputs.length}`
-            + `<br> network latency: ${NETWORK_LATENCY.value}`
+        elements.scoreboard.innerHTML = DEV_SETTINGS.showGameMetadeta 
+            ? Object.values(state.players)
+                .sort((p1, p2) => p2.data.score - p1.data.score)
+                .map(p => `<span style="color: orange">${p.data.name}:</span> ${p.data.score}`)
+                .join('<br>') 
+                + `<br> pending requests: ${state.pendingInputs.length}`
+                + `<br> network latency: ${NETWORK_LATENCY.value}`
+            : ''
     })()
 }

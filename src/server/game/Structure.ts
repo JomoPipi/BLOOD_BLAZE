@@ -37,7 +37,7 @@ export class Structure {
         const walls = [...Array(n)].map(_ => {
             const length = minLength + Math.random() *  (maxLength - minLength)
             const [x, y] = randomPoint() as [number, number]
-            const slopeCount = 5
+            const slopeCount = 4
             const rndAngle = [...Array(slopeCount)].map((_,i) => i * Math.PI / slopeCount)[Math.random() * slopeCount | 0]!
             const p2 = [x + Math.cos(rndAngle) * length, y + Math.sin(rndAngle) * length]
             const s = [[x, y], p2] as [[number, number], [number, number]]
@@ -214,7 +214,7 @@ function pseudoIntersection(_l1 : LineSegment, _l2 : LineSegment) {
     {
         for (const p2 of _l2)
         {
-            if (distance(p1.x, p1.y, p2.x, p2.y) <= CONSTANTS.PLAYER_RADIUS)
+            if (distance(p1.x, p1.y, p2.x, p2.y) <= CONSTANTS.PLAYER_RADIUS * 2)
             {
                 return [(p1.x + p2.x) / 2, (p1.y + p2.y) / 2]
             }
@@ -229,13 +229,27 @@ function pseudoIntersection(_l1 : LineSegment, _l2 : LineSegment) {
     const dx1 = l1[1].x - l1[0].x;
     const dx2 = l2[1].x - l2[0].x;
     if (dx1 === 0 && dx2 === 0)
-        return null;
+    {
+        return Math.abs(l1[0].x - l2[0].x) < CONSTANTS.PLAYER_RADIUS * 2
+            ? [(l1[0].x + l2[0].x) / 2, (l1[0].y + l1[1].y + l2[0].y + l2[1].y) / 4]
+            : null
+    }
     const m1 = (l1[1].y - l1[0].y) / dx1;
     const m2 = (l2[1].y - l2[0].y) / dx2;
-    if (m1 === m2)
-        return null;
-    const b1 = l1[0].y - m1 * l1[0].x;
     const b2 = l2[0].y - m2 * l2[0].x;
+    if (m1 === m2)
+    {
+        // const mʹ = -1 / m1
+        // const bʹ = l1[0].y - mʹ * l1[0].x
+        // const x2 = (b2 - bʹ) / (mʹ - m2)
+        // const y2 = mʹ * x2 + bʹ
+        // const distanceBetweenLines = distance(l1[0].x, l1[0].y, x2, y2)
+        // return distanceBetweenLines <= CONSTANTS.PLAYER_RADIUS * 2 // && 
+        //     ? [(l1[0].x + l1[1].x + l2[0].x + l2[1].x) / 4, (l1[0].y + l1[1].y + l2[0].y + l2[1].y) / 4]
+        //     : null
+        return null
+    }
+    const b1 = l1[0].y - m1 * l1[0].x;
     const x = dx1 === 0
         ? l1[0].x
         : dx2 === 0

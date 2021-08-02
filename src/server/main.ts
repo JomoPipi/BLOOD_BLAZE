@@ -23,7 +23,7 @@ console.log('FPS =', CONSTANTS.FPS)
 console.log('GAME_TICK =',CONSTANTS.GAME_TICK)
 
 const game = new Game()
-game.structures.generateRandomMap(9)
+game.structures.generateRandomMap(6)
 
 console.log('we here')
 
