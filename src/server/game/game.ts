@@ -50,15 +50,18 @@ export class Game {
                 1 / (mx**2 + my**2) = k**2
                 k = sqrt(1 / (mx**2 + my**2))
             */
-            const a = dx**2 + dy**2
-            const k = Math.sqrt(1 / a)
-            const [controllerX, controllerY] = a > 1
-                ? [dx * k, dy * k]
-                : [dx, dy]
+            // So clients can't cheat:
+            // if c2 > 1, then it means the controller is telling us to move the
+            // player past it's maximum speed. So we need to find k that limits
+            // sqrt (controlsX ** 2, controlsY ** 2) to be at most 1.
+            const c2 = dx**2 + dy**2
+            const k = Math.min(Math.sqrt(1 / c2), 1)
+            const controllerX = dx * k
+            const controllerY = dy * k
 
+            p.data.controls = { x: controllerX, y: controllerY }
             p.data.angle = clientControls.angle
             p.data.lastProcessedInput = clientControls.messageNumber
-            p.data.controls = { x: controllerX, y: controllerY }
 
             if (clientControls.requestedBullet && CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting))
             { 

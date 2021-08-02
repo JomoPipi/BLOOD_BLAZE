@@ -24,16 +24,28 @@ export class InputProcessor {
         const { x: tempX, y: tempY } = this.state.myPlayer.predictedPosition
         const [nextX, nextY] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(oldX, oldY, tempX, tempY, this.state.structures)
 
+        const { x: resetX, y: resetY } = this.state.myPlayer.controls
+        let shouldResetControls = false
         if (tempX !== nextX || tempY !== nextY)
         {
             // Player position after colliding with wall
             this.state.myPlayer.predictedPosition.x = nextX
             this.state.myPlayer.predictedPosition.y = nextY
             // "Sanitized" controls after doing player-wall collisions (that the client sends the server):
-            const controlsX = (nextX - oldX) / (deltaTime * CONSTANTS.PLAYER_SPEED)
-            const controlsY = (nextY - oldY) / (deltaTime * CONSTANTS.PLAYER_SPEED)
-            this.state.myPlayer.controls.x = controlsX
-            this.state.myPlayer.controls.y = controlsY
+            const controllerX = (nextX - oldX) / (deltaTime * CONSTANTS.PLAYER_SPEED)
+            const controllerY = (nextY - oldY) / (deltaTime * CONSTANTS.PLAYER_SPEED)
+            
+            // if c2 > 1, then it means the controller is telling us to move the
+            // player past it's maximum speed. So we need to find k that limits
+            // sqrt (controlsX ** 2, controlsY ** 2) to be at most 1.
+            const c2 = controllerX**2 + controllerY**2
+            const k = Math.min(Math.sqrt(1 / c2), 1)
+
+            this.state.myPlayer.controls.x = controllerX * k
+            this.state.myPlayer.controls.y = controllerY * k
+
+            // We should reset the controls because running directly into the "tip" of a line segment can cause unpredictable movement.
+            shouldResetControls = true
         }
 
         if (this.state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting))
@@ -57,6 +69,11 @@ export class InputProcessor {
         {
             this.sendInputsToServer(this.state.myPlayer.controls)
             this.canSendIdleInput = false
+            if (shouldResetControls)
+            {
+                this.state.myPlayer.controls.x = resetX
+                this.state.myPlayer.controls.y = resetY
+            }
         }
         if (userIsNotIdle)
         {
