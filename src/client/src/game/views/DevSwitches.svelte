@@ -3,12 +3,10 @@
 
     import { DEV_SETTINGS } from "../DEV_SETTINGS"
 
-    type DEV_SETTINGS = typeof DEV_SETTINGS
-    type DEV_SWITCHES = keyof PickByValue<boolean, DEV_SETTINGS>
+    type DEV_SWITCHES = keyof PickByValue<boolean, typeof DEV_SETTINGS>
 
-    const DEV_SWITCHES =
-        Object.keys(DEV_SETTINGS).filter(k => 
-            typeof DEV_SETTINGS[k as DEV_SWITCHES] === 'boolean'
+    const DEV_SWITCHES = Object.keys(DEV_SETTINGS).filter(k => 
+        typeof DEV_SETTINGS[k as DEV_SWITCHES] === 'boolean'
         ) as DEV_SWITCHES[]
 
     const settingsPage = { toggle() { settingsPage.isOpen ^= 1 }, isOpen: 0 }
@@ -21,6 +19,7 @@
 <button class="settings-button" on:click={settingsPage.toggle}> 
     ⚙️
 </button>
+
 <div class="settings-page" class:show={settingsPage.isOpen}>
     <button on:click={settingsPage.toggle}>
         back

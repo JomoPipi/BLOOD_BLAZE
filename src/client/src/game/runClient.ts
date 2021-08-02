@@ -21,7 +21,6 @@ export function runClient(elements : ClientElements, username : string, state : 
 
     const renderer = new GameRenderer(elements.canvas, username, state)
 
-    console.log('FUCK DOOD')
     socket.on('mapdata', segments => {
         console.log('got the mapdata')
         state.structures = segments

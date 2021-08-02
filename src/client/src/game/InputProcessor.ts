@@ -17,8 +17,6 @@ export class InputProcessor {
 
         this.state.myPlayer.controls.deltaTime = deltaTime
         
-            // const [nextX, nextY] = this.structures.getCollidedPlayerPosition(oldX, oldY, tempX, tempY)
-        // CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION
         const { x: oldX, y: oldY } = this.state.myPlayer.predictedPosition
         CONSTANTS.MOVE_PLAYER(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls)
         const { x: tempX, y: tempY } = this.state.myPlayer.predictedPosition

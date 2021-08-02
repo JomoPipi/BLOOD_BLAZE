@@ -13,7 +13,7 @@
 		username = name
 	}
 
-    const devMode = () => CONSTANTS.DEV_MODE // It's not defined outside of script tags 🤷
+    const devMode = CONSTANTS.DEV_MODE // It's not defined outside of script tags 🤷
 
 </script>
 
@@ -23,7 +23,7 @@
 {:else}
 	<GameClient {socket} {username}/>
 {/if}
-{#if devMode()}
+{#if devMode}
 	<div id="debug-window"></div>
 {/if}
 

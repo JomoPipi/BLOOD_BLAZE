@@ -1406,8 +1406,6 @@ var app = (function () {
         }
         processInputs(deltaTime, now) {
             this.state.myPlayer.controls.deltaTime = deltaTime;
-            // const [nextX, nextY] = this.structures.getCollidedPlayerPosition(oldX, oldY, tempX, tempY)
-            // CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION
             const { x: oldX, y: oldY } = this.state.myPlayer.predictedPosition;
             CONSTANTS.MOVE_PLAYER(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls);
             const { x: tempX, y: tempY } = this.state.myPlayer.predictedPosition;
@@ -1537,9 +1535,6 @@ var app = (function () {
                     if (deletedBullets[b.id]) {
                         return false;
                     }
-                    else {
-                        debug.log('Bullet did not get deleted!!', b.id);
-                    }
                     const age = now - (this.state.bulletProps.get(b)?.receptionTime || 0);
                     const bx = b.x + b.speedX * age;
                     const by = b.y + b.speedY * age;
@@ -1555,9 +1550,6 @@ var app = (function () {
                 this.state.bullets = this.state.bullets.filter(b => {
                     if (deletedBullets[b.id]) {
                         return false;
-                    }
-                    else {
-                        debug.log('Bullet did not get deleted!!', b.id);
                     }
                     const props = this.state.bulletProps.get(b);
                     const age = now - props.receptionTime;

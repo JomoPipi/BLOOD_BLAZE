@@ -88,10 +88,6 @@ export class GameRenderer {
                 {
                     return false
                 }
-                else
-                {
-                    debug.log('Bullet did not get deleted!!', b.id)
-                }
                 const age = now - (this.state.bulletProps.get(b)?.receptionTime || 0)
                 const bx = b.x + b.speedX * age
                 const by = b.y + b.speedY * age
@@ -112,11 +108,6 @@ export class GameRenderer {
                 {
                     return false
                 }
-                else
-                {
-                    debug.log('Bullet did not get deleted!!', b.id)
-                }
-
                 const props = this.state.bulletProps.get(b)!
                 const age = now - props.receptionTime
                 const bx = b.x + b.speedX * age

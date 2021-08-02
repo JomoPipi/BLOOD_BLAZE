@@ -25,9 +25,7 @@
 
 	function tryUsername(e : Event) {
 		e.preventDefault()
-		const input = 
-			(e.target as HTMLElement)
-			.children[0] as HTMLInputElement
+		const input = (e.target as HTMLElement).children[0] as HTMLInputElement
 
 		if (input.value)
 		{

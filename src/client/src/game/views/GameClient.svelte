@@ -23,7 +23,7 @@
 
     onMount(() => runClient({ inputs, canvas, scoreboard }, username, state, socket))
     
-    const devMode = () => CONSTANTS.DEV_MODE // It's not defined outside of script tags 🤷
+    const devMode = CONSTANTS.DEV_MODE
 </script>
 
 
@@ -32,7 +32,7 @@
 <canvas bind:this={canvas}/>
 <div class="input-container">
     <Joystick callback={inputs.moveJoystick.bind(inputs)}/>
-    {#if devMode()} <DevSwitches/> {/if}
+    {#if devMode} <DevSwitches/> {/if}
     <DirectionPad callback={inputs.adjustAim.bind(inputs)}/>
 </div>
 
