@@ -449,30 +449,30 @@ var app = (function () {
     			t8 = space();
     			bloodblaze = element("bloodblaze");
     			attr_dev(h1, "class", "svelte-1ggq3y7");
-    			add_location(h1, file$5, 35, 2, 922);
+    			add_location(h1, file$5, 34, 2, 912);
     			attr_dev(h2, "class", "svelte-1ggq3y7");
-    			add_location(h2, file$5, 36, 2, 950);
+    			add_location(h2, file$5, 35, 2, 940);
     			attr_dev(div0, "class", "title svelte-1ggq3y7");
-    			add_location(div0, file$5, 34, 1, 899);
+    			add_location(div0, file$5, 33, 1, 889);
     			attr_dev(input, "autocomplete", "off");
     			attr_dev(input, "placeholder", "Enter your name");
     			attr_dev(input, "pattern", "[A-Za-z0-9 _]*");
     			attr_dev(input, "class", "svelte-1ggq3y7");
-    			add_location(input, file$5, 41, 4, 1111);
+    			add_location(input, file$5, 40, 4, 1101);
     			attr_dev(button, "class", "svelte-1ggq3y7");
-    			add_location(button, file$5, 45, 4, 1244);
+    			add_location(button, file$5, 44, 4, 1234);
     			attr_dev(form, "type", "text");
     			attr_dev(form, "action", "");
-    			add_location(form, file$5, 40, 3, 1053);
-    			add_location(span0, file$5, 47, 2, 1281);
+    			add_location(form, file$5, 39, 3, 1043);
+    			add_location(span0, file$5, 46, 2, 1271);
     			attr_dev(span1, "class", "inner svelte-1ggq3y7");
-    			add_location(span1, file$5, 39, 2, 1028);
+    			add_location(span1, file$5, 38, 2, 1018);
     			attr_dev(div1, "class", "svelte-1ggq3y7");
-    			add_location(div1, file$5, 38, 1, 1019);
+    			add_location(div1, file$5, 37, 1, 1009);
     			attr_dev(bloodblaze, "class", "svelte-1ggq3y7");
-    			add_location(bloodblaze, file$5, 49, 1, 1300);
+    			add_location(bloodblaze, file$5, 48, 1, 1290);
     			attr_dev(main, "class", "svelte-1ggq3y7");
-    			add_location(main, file$5, 33, 0, 890);
+    			add_location(main, file$5, 32, 0, 880);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1041,6 +1041,7 @@ var app = (function () {
         showClientBullet: true,
         showIdealClientBullet: true,
         showClientPredictedBullet: true,
+        showExtrapolatedEnemyPositions: false,
         showInterpolatedEnemyPositions: true,
         showUninterpolatedEnemyPositions: false,
         showWhatOtherClientsPredict: false,
@@ -1060,7 +1061,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (17:4) {#each DEV_SWITCHES as option}
+    // (18:4) {#each DEV_SWITCHES as option}
     function create_each_block(ctx) {
     	let label;
     	let input;
@@ -1085,11 +1086,11 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = space();
     			attr_dev(input, "type", "checkbox");
-    			add_location(input, file$2, 18, 12, 608);
+    			add_location(input, file$2, 19, 12, 610);
     			attr_dev(h4, "class", "svelte-1p5603t");
-    			add_location(h4, file$2, 19, 12, 679);
+    			add_location(h4, file$2, 20, 12, 681);
     			attr_dev(label, "class", "svelte-1p5603t");
-    			add_location(label, file$2, 17, 8, 587);
+    			add_location(label, file$2, 18, 8, 589);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, label, anchor);
@@ -1123,7 +1124,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(17:4) {#each DEV_SWITCHES as option}",
+    		source: "(18:4) {#each DEV_SWITCHES as option}",
     		ctx
     	});
 
@@ -1162,10 +1163,10 @@ var app = (function () {
 
     			attr_dev(button0, "class", "settings-button svelte-1p5603t");
     			add_location(button0, file$2, 8, 0, 320);
-    			add_location(button1, file$2, 12, 4, 471);
+    			add_location(button1, file$2, 13, 4, 473);
     			attr_dev(div, "class", "settings-page svelte-1p5603t");
     			toggle_class(div, "show", /*settingsPage*/ ctx[1].isOpen);
-    			add_location(div, file$2, 11, 0, 405);
+    			add_location(div, file$2, 12, 0, 407);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1500,10 +1501,15 @@ var app = (function () {
                 if (name === this.username)
                     continue;
                 const p = this.state.players[name];
-                if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
-                    const deltaTime = msgDelta + p.data.latency;
+                if (DEV_SETTINGS.showExtrapolatedEnemyPositions) {
+                    // const smoothen = Math.min(1, msgDelta / p.data.latency)
+                    const deltaTime = msgDelta + p.data.latency; // * smoothen
                     const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime);
                     this.drawPlayer(data, now);
+                }
+                if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
+                    const data = CONSTANTS.INTERPOLATE_PLAYER_POSITION(p.data, now, p.interpolationBuffer);
+                    this.drawPlayer(data, now, 'blue');
                 }
                 if (DEV_SETTINGS.showUninterpolatedEnemyPositions) {
                     this.drawPlayer(p.data, now, 'red');
@@ -1660,7 +1666,7 @@ var app = (function () {
             const p = state.players[b.shooter].data;
             if (!p)
                 break;
-            if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
+            if (DEV_SETTINGS.showExtrapolatedEnemyPositions) {
                 const deltaTime = now - state.lastGameTickMessageTime + p.latency;
                 const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p, deltaTime);
                 const display = { x: (data.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth,
@@ -1700,7 +1706,7 @@ var app = (function () {
                     }
                 }
             }
-            else {
+            else if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
                 player.interpolationBuffer.push([now, p]);
             }
         }
@@ -1713,7 +1719,6 @@ var app = (function () {
         isRunning = true;
         elements.canvas.height = elements.canvas.width = window.innerWidth;
         const renderer = new GameRenderer(elements.canvas, username, state);
-        console.log('FUCK DOOD');
         socket.on('mapdata', segments => {
             console.log('got the mapdata');
             state.structures = segments;
@@ -1769,7 +1774,7 @@ var app = (function () {
     /* src\game\views\GameClient.svelte generated by Svelte v3.38.2 */
     const file$1 = "src\\game\\views\\GameClient.svelte";
 
-    // (28:4) {#if devMode()}
+    // (28:4) {#if devMode}
     function create_if_block$1(ctx) {
     	let devswitches;
     	let current;
@@ -1801,7 +1806,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(28:4) {#if devMode()}",
+    		source: "(28:4) {#if devMode}",
     		ctx
     	});
 
@@ -1819,7 +1824,6 @@ var app = (function () {
     	let div1;
     	let joystick;
     	let t4;
-    	let show_if = /*devMode*/ ctx[4]();
     	let t5;
     	let directionpad;
     	let current;
@@ -1831,7 +1835,7 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	let if_block = show_if && create_if_block$1(ctx);
+    	let if_block = /*devMode*/ ctx[4] && create_if_block$1(ctx);
 
     	directionpad = new DirectionPad({
     			props: {
@@ -1856,13 +1860,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-cooxpp");
-    			add_location(center, file$1, 22, 0, 847);
+    			add_location(center, file$1, 22, 0, 795);
     			attr_dev(div0, "class", "scoreboard svelte-cooxpp");
-    			add_location(div0, file$1, 23, 0, 876);
+    			add_location(div0, file$1, 23, 0, 824);
     			attr_dev(canvas_1, "class", "svelte-cooxpp");
-    			add_location(canvas_1, file$1, 24, 0, 931);
+    			add_location(canvas_1, file$1, 24, 0, 879);
     			attr_dev(div1, "class", "input-container svelte-cooxpp");
-    			add_location(div1, file$1, 25, 0, 961);
+    			add_location(div1, file$1, 25, 0, 909);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1939,7 +1943,7 @@ var app = (function () {
     	const state = new ClientState(username);
     	const inputs = new InputProcessor(state, socket);
     	onMount(() => runClient({ inputs, canvas, scoreboard }, username, state, socket));
-    	const devMode = () => CONSTANTS.DEV_MODE; // It's not defined outside of script tags 🤷
+    	const devMode = CONSTANTS.DEV_MODE;
     	const writable_props = ["socket", "username"];
 
     	Object.keys($$props).forEach(key => {
@@ -2155,7 +2159,7 @@ var app = (function () {
     	return block;
     }
 
-    // (21:0) {#if devMode()}
+    // (21:0) {#if devMode}
     function create_if_block(ctx) {
     	let div;
 
@@ -2164,7 +2168,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "id", "debug-window");
     			attr_dev(div, "class", "svelte-yuxzpj");
-    			add_location(div, file, 21, 1, 636);
+    			add_location(div, file, 21, 1, 628);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2178,7 +2182,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(21:0) {#if devMode()}",
+    		source: "(21:0) {#if devMode}",
     		ctx
     	});
 
@@ -2191,7 +2195,6 @@ var app = (function () {
     	let current_block_type_index;
     	let if_block0;
     	let t1;
-    	let show_if = /*devMode*/ ctx[4]();
     	let if_block1_anchor;
     	let current;
     	const if_block_creators = [create_if_block_1, create_else_block];
@@ -2204,7 +2207,7 @@ var app = (function () {
 
     	current_block_type_index = select_block_type(ctx);
     	if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-    	let if_block1 = show_if && create_if_block(ctx);
+    	let if_block1 = /*devMode*/ ctx[4] && create_if_block(ctx);
 
     	const block = {
     		c: function create() {
@@ -2216,7 +2219,7 @@ var app = (function () {
     			if_block1_anchor = empty();
     			attr_dev(div, "id", "bloodscreen");
     			attr_dev(div, "class", "svelte-yuxzpj");
-    			add_location(div, file, 14, 0, 464);
+    			add_location(div, file, 14, 0, 458);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2305,7 +2308,7 @@ var app = (function () {
     		$$invalidate(1, username = name);
     	}
 
-    	const devMode = () => CONSTANTS.DEV_MODE; // It's not defined outside of script tags 🤷
+    	const devMode = CONSTANTS.DEV_MODE; // It's not defined outside of script tags 🤷
     	const writable_props = ["blaze"];
 
     	Object.keys($$props).forEach(key => {

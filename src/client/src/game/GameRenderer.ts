@@ -37,12 +37,19 @@ export class GameRenderer {
             if (name === this.username) continue
             const p = this.state.players[name]!
             
-            if (DEV_SETTINGS.showInterpolatedEnemyPositions)
+            if (DEV_SETTINGS.showExtrapolatedEnemyPositions)
             {
-                const deltaTime = msgDelta + p.data.latency
+                // const smoothen = Math.min(1, msgDelta / p.data.latency)
+                const deltaTime = msgDelta + p.data.latency // * smoothen
             
                 const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
                 this.drawPlayer(data, now)
+            }
+
+            if (DEV_SETTINGS.showInterpolatedEnemyPositions)
+            {
+                const data = CONSTANTS.INTERPOLATE_PLAYER_POSITION(p.data, now, p.interpolationBuffer)
+                this.drawPlayer(data, now, 'blue')
             }
 
             if (DEV_SETTINGS.showUninterpolatedEnemyPositions)

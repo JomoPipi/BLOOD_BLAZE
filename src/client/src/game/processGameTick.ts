@@ -27,7 +27,7 @@ export function processGameTick(msg : GameTickMessage, state : ClientState) {
         // We have these x,y so we can show the bullet coming out of the player's gun
         const p = state.players[b.shooter]!.data
         if (!p) break
-        if (DEV_SETTINGS.showInterpolatedEnemyPositions)
+        if (DEV_SETTINGS.showExtrapolatedEnemyPositions)
         {
             const deltaTime = now - state.lastGameTickMessageTime + p.latency
             const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p, deltaTime)
@@ -82,7 +82,7 @@ export function processGameTick(msg : GameTickMessage, state : ClientState) {
                 }
             }
         }
-        else
+        else if (DEV_SETTINGS.showInterpolatedEnemyPositions)
         {   
             player.interpolationBuffer.push([now, p])
         }

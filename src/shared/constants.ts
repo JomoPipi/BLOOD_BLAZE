@@ -4,8 +4,9 @@ const CONSTANTS = (() => {
     const DEV_MODE = true
 
     const PLAYER_RADIUS = 0.02
-    const PLAYER_SPEED = 0.0002
-    
+    // const PLAYER_SPEED = 0.0002
+    const PLAYER_SPEED = 0.00015
+
     const BULLET_COOLDOWN = 80 // 200
     const BULLET_SPEED = 0.0006 / 2
 
@@ -24,6 +25,7 @@ const CONSTANTS = (() => {
         , MOVE_PLAYER
         , CREATE_PLAYER
         , EXTRAPOLATE_PLAYER_POSITION
+        , INTERPOLATE_PLAYER_POSITION
         , GET_PLAYER_POSITION_AFTER_WALL_COLLISION
         } as const
 
@@ -59,44 +61,47 @@ const CONSTANTS = (() => {
             })
     }
 
-    function EXTRAPOLATE_PLAYER_POSITION(data : SocketPlayer, deltaTime : number) {
+    function INTERPOLATE_PLAYER_POSITION(data : SocketPlayer, now : number, buffer : [number, SocketPlayer][]) {
         // Don't mutate data
         data = JSON.parse(JSON.stringify(data))
         // // "standard" interpolation/
         // ///////////////////////////////////////////////////////////////
-        // const props = ['x','y','angle'] as const
-        // const buffer = p.interpolationBuffer
-        // const oneGameTickAway = now - CONSTANTS.GAME_TICK
+        const props = ['x','y','angle'] as const
+        const oneGameTickAway = now - CONSTANTS.GAME_TICK
     
-        // // const dt = now - this.state.lastGameTickMessageTime// + p.data.latency
+        // const dt = now - this.state.lastGameTickMessageTime// + p.data.latency
     
-        // // const d_ = CONSTANTS.PLAYER_SPEED * dt
-        // // const dx = p.data.controls.x * d_
-        // // const dy = p.data.controls.y * d_
+        // const d_ = CONSTANTS.PLAYER_SPEED * dt
+        // const dx = p.data.controls.x * d_
+        // const dy = p.data.controls.y * d_
     
-        // // Drop older positions.
-        // while (buffer.length >= 2 && buffer[1]![0] <= oneGameTickAway)
-        // {
-        //     buffer.shift()
-        // }
+        // Drop older positions.
+        while (buffer.length >= 2 && buffer[1]![0] <= oneGameTickAway)
+        {
+            buffer.shift()
+        }
     
-        // if (buffer.length >= 2 && buffer[0]![0] <= oneGameTickAway && oneGameTickAway <= buffer[1]![0])
-        // {
-        //     for (const prop of props)
-        //     {
-        //         // const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
+        if (buffer.length >= 2 && buffer[0]![0] <= oneGameTickAway && oneGameTickAway <= buffer[1]![0])
+        {
+            for (const prop of props)
+            {
+                // const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
                 
-        //         const x0 = buffer[0]![1][prop]
-        //         const x1 = buffer[1]![1][prop]
-        //         const t0 = buffer[0]![0]
-        //         const t1 = buffer[1]![0]
+                const x0 = buffer[0]![1][prop]
+                const x1 = buffer[1]![1][prop]
+                const t0 = buffer[0]![0]
+                const t1 = buffer[1]![0]
     
-        //         p.data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
-        //     }
-        // }
-    
-        // this.drawPlayer(p.data, now)
-        // //////////////////////////////////////////////////////////////////////////
+                data[prop] = x0 + (x1 - x0) * (oneGameTickAway - t0) / (t1 - t0)
+            }
+        }
+        
+        return data
+    }
+
+    function EXTRAPOLATE_PLAYER_POSITION(data : SocketPlayer, deltaTime : number) {
+        // Don't mutate data
+        data = JSON.parse(JSON.stringify(data))
         
         const props = ['x','y','angle'] as const
     
