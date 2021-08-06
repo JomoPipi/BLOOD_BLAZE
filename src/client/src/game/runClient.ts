@@ -16,6 +16,11 @@ export function runClient(elements : ClientElements, username : string, state : 
     if (isRunning) throw 'The client is already running.'
     isRunning = true
 
+    if (CONSTANTS.DEV_MODE)
+    {
+        (window as any).state = state
+    }
+
     elements.canvas.height = elements.canvas.width = window.innerWidth
 
     const renderer = new GameRenderer(elements.canvas, username, state)

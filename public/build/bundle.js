@@ -1727,6 +1727,9 @@ var app = (function () {
         if (isRunning)
             throw 'The client is already running.';
         isRunning = true;
+        if (CONSTANTS.DEV_MODE) {
+            window.state = state;
+        }
         elements.canvas.height = elements.canvas.width = window.innerWidth;
         const renderer = new GameRenderer(elements.canvas, username, state);
         socket.on('mapdata', segments => {
