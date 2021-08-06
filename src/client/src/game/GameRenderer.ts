@@ -22,7 +22,7 @@ export class GameRenderer {
         this.segments = segments
     }
     
-    render(now : number) {
+    render(now : number, renderDelta : number) {
 
         const W = this.canvas.width
         const H = this.canvas.height
@@ -39,10 +39,39 @@ export class GameRenderer {
             
             if (DEV_SETTINGS.showExtrapolatedEnemyPositions)
             {
-                // const smoothen = Math.min(1, msgDelta / p.data.latency)
-                const deltaTime = msgDelta + p.data.latency // * smoothen
-            
+                // // non-"smooth" version:
+                // const deltaTime = msgDelta + p.data.latency
+                // const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
+                // this.drawPlayer(data, now)
+
+
+                // "smooth" version:
+                const smoothSpeed = 1.5
+                /**
+                 * Extrapolation smoothening:
+                 * limit the distance between the next extrapolated player position
+                 * and the previous so that the player goes at most `smoothSpeed`
+                 */
+                const { x: lastx, y: lasty } = p.lastExtrapolatedPosition
+                const deltaTime = msgDelta + p.data.latency
                 const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
+                p.lastExtrapolatedPosition = data
+                const dist = distance(data.x, data.y, lastx, lasty)
+                const speed = dist / renderDelta
+
+                if (speed > CONSTANTS.PLAYER_SPEED * smoothSpeed)
+                {
+                    const limiter = CONSTANTS.PLAYER_SPEED * smoothSpeed / speed
+                    const dx = data.x - lastx
+                    const dy = data.y - lasty
+
+                    data.x = lastx + dx * limiter
+                    data.y = lasty + dy * limiter
+                    p.lastExtrapolatedPosition = data
+                    
+                    console.log('limited speed:', speed)
+                }
+
                 this.drawPlayer(data, now)
             }
 
@@ -66,8 +95,7 @@ export class GameRenderer {
         if (DEV_SETTINGS.showServerBullet)
         {
             this.ctx.fillStyle = '#099'
-            const { bullets } = this.state.lastGameTickMessage
-            for (const b of bullets)
+            for (const b of this.state.lastGameTickMessage.bullets)
             {
                 this.circle(b.x * W, b.y * H, 2)
             }
@@ -89,12 +117,7 @@ export class GameRenderer {
         if (DEV_SETTINGS.showClientBullet)
         {
             this.ctx.fillStyle = '#770' 
-            const { deletedBullets } = this.state.lastGameTickMessage
             this.state.bullets = this.state.bullets.filter(b => {
-                if (deletedBullets[b.id])
-                {
-                    return false
-                }
                 const age = now - (this.state.bulletProps.get(b)?.receptionTime || 0)
                 const bx = b.x + b.speedX * age
                 const by = b.y + b.speedY * age
@@ -109,12 +132,7 @@ export class GameRenderer {
         if (DEV_SETTINGS.showIdealClientBullet)
         {
             this.ctx.fillStyle = '#00f' 
-            const { deletedBullets } = this.state.lastGameTickMessage
             this.state.bullets = this.state.bullets.filter(b => {
-                if (deletedBullets[b.id])
-                {
-                    return false
-                }
                 const props = this.state.bulletProps.get(b)!
                 const age = now - props.receptionTime
                 const bx = b.x + b.speedX * age
@@ -147,9 +165,7 @@ export class GameRenderer {
         if (DEV_SETTINGS.showClientPredictedBullet)
         {
             this.ctx.fillStyle = '#c0c'
-            const { deletedBullets } = this.state.lastGameTickMessage
             this.state.myPlayer.bullets = this.state.myPlayer.bullets.filter(bullet => {
-                if (deletedBullets[bullet.data.id]) return false
                 const age = now - bullet.timeCreated
                 const b = bullet.data
                 const bx = b.x + b.speedX * age

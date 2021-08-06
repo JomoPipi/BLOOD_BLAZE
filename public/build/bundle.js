@@ -1317,8 +1317,10 @@ var app = (function () {
     class Player {
         data;
         interpolationBuffer = [];
+        lastExtrapolatedPosition;
         constructor(data) {
             this.data = data;
+            this.lastExtrapolatedPosition = { x: data.x, y: data.y };
         }
     }
 
@@ -1357,9 +1359,71 @@ var app = (function () {
             this.lastGameTickMessage =
                 { players: [],
                     bullets: [],
-                    newBullets: [],
-                    deletedBullets: []
+                    newBullets: []
                 };
+        }
+        processGameTick(msg) {
+            const now = Date.now();
+            this.lastGameTickMessage = msg;
+            this.lastGameTickMessageTime = now;
+            this.myPlayer.bullets = this.myPlayer.bullets.filter(b => !msg.deletedBullets[b.data.id]);
+            this.bullets = this.bullets.filter(b => !msg.deletedBullets[b.id]);
+            this.bullets.push(...msg.newBullets);
+            // const qt = new QuadTree(0, 0, 1, 1, 4)
+            // qt.clear()
+            // msg.bullets.forEach(bullet => { qt.insert(bullet) })
+            // qt.getPointsInCircle({ x: 0.5, y: 0.5, r: 0.1 }).forEach(p => (p as any).poop = true)
+            // qt.draw()
+            for (const b of msg.newBullets) {
+                // These are the coodinates of the player's gun
+                // We have these x,y so we can show the bullet coming out of the player's gun
+                const p = this.players[b.shooter].data;
+                if (!p)
+                    break;
+                if (DEV_SETTINGS.showExtrapolatedEnemyPositions) {
+                    const deltaTime = now - this.lastGameTickMessageTime + p.latency;
+                    const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p, deltaTime);
+                    const display = { x: (data.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth,
+                        y: (data.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth
+                    };
+                    const props = { receptionTime: now, display };
+                    this.bulletProps.set(b, props);
+                }
+                else {
+                    const x = (p.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth;
+                    const y = (p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth;
+                    const props = { receptionTime: now, display: { x, y } };
+                    this.bulletProps.set(b, props);
+                }
+            }
+            for (const p of msg.players) {
+                // Create the player if it doesn't exist:
+                this.players[p.name] ||= new Player(p);
+                const player = this.players[p.name];
+                player.data = p;
+                if (p.name === this.myPlayer.name) {
+                    this.myPlayer.predictedPosition =
+                        { ...p, angle: this.myPlayer.controls.angle }; // We don't want the server's angle.
+                    if (CONSTANTS.DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction)
+                        continue;
+                    for (let j = 0; j < this.pendingInputs.length;) {
+                        const input = this.pendingInputs[j];
+                        if (input.messageNumber <= p.lastProcessedInput) {
+                            // Already processed. Its effect is already taken into account into the world update
+                            // we just got, so we can drop it.
+                            this.pendingInputs.splice(j, 1);
+                        }
+                        else {
+                            // Not processed by the server yet. Re-apply it.
+                            CONSTANTS.MOVE_PLAYER(this.myPlayer.predictedPosition, input);
+                            j++;
+                        }
+                    }
+                }
+                else if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
+                    player.interpolationBuffer.push([now, p]);
+                }
+            }
         }
     }
 
@@ -1491,7 +1555,7 @@ var app = (function () {
         updateSegments(segments) {
             this.segments = segments;
         }
-        render(now) {
+        render(now, renderDelta) {
             const W = this.canvas.width;
             const H = this.canvas.height;
             this.ctx.clearRect(0, 0, W, H);
@@ -1502,9 +1566,32 @@ var app = (function () {
                     continue;
                 const p = this.state.players[name];
                 if (DEV_SETTINGS.showExtrapolatedEnemyPositions) {
-                    // const smoothen = Math.min(1, msgDelta / p.data.latency)
-                    const deltaTime = msgDelta + p.data.latency; // * smoothen
+                    // // non-"smooth" version:
+                    // const deltaTime = msgDelta + p.data.latency
+                    // const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
+                    // this.drawPlayer(data, now)
+                    // "smooth" version:
+                    const smoothSpeed = 1.5;
+                    /**
+                     * Extrapolation smoothening:
+                     * limit the distance between the next extrapolated player position
+                     * and the previous so that the player goes at most `smoothSpeed`
+                     */
+                    const { x: lastx, y: lasty } = p.lastExtrapolatedPosition;
+                    const deltaTime = msgDelta + p.data.latency;
                     const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime);
+                    p.lastExtrapolatedPosition = data;
+                    const dist = distance(data.x, data.y, lastx, lasty);
+                    const speed = dist / renderDelta;
+                    if (speed > CONSTANTS.PLAYER_SPEED * smoothSpeed) {
+                        const limiter = CONSTANTS.PLAYER_SPEED * smoothSpeed / speed;
+                        const dx = data.x - lastx;
+                        const dy = data.y - lasty;
+                        data.x = lastx + dx * limiter;
+                        data.y = lasty + dy * limiter;
+                        p.lastExtrapolatedPosition = data;
+                        console.log('limited speed:', speed);
+                    }
                     this.drawPlayer(data, now);
                 }
                 if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
@@ -1520,8 +1607,7 @@ var app = (function () {
             }
             if (DEV_SETTINGS.showServerBullet) {
                 this.ctx.fillStyle = '#099';
-                const { bullets } = this.state.lastGameTickMessage;
-                for (const b of bullets) {
+                for (const b of this.state.lastGameTickMessage.bullets) {
                     this.circle(b.x * W, b.y * H, 2);
                 }
             }
@@ -1536,11 +1622,7 @@ var app = (function () {
             }
             if (DEV_SETTINGS.showClientBullet) {
                 this.ctx.fillStyle = '#770';
-                const { deletedBullets } = this.state.lastGameTickMessage;
                 this.state.bullets = this.state.bullets.filter(b => {
-                    if (deletedBullets[b.id]) {
-                        return false;
-                    }
                     const age = now - (this.state.bulletProps.get(b)?.receptionTime || 0);
                     const bx = b.x + b.speedX * age;
                     const by = b.y + b.speedY * age;
@@ -1552,11 +1634,7 @@ var app = (function () {
             }
             if (DEV_SETTINGS.showIdealClientBullet) {
                 this.ctx.fillStyle = '#00f';
-                const { deletedBullets } = this.state.lastGameTickMessage;
                 this.state.bullets = this.state.bullets.filter(b => {
-                    if (deletedBullets[b.id]) {
-                        return false;
-                    }
                     const props = this.state.bulletProps.get(b);
                     const age = now - props.receptionTime;
                     const bx = b.x + b.speedX * age;
@@ -1583,10 +1661,7 @@ var app = (function () {
             }
             if (DEV_SETTINGS.showClientPredictedBullet) {
                 this.ctx.fillStyle = '#c0c';
-                const { deletedBullets } = this.state.lastGameTickMessage;
                 this.state.myPlayer.bullets = this.state.myPlayer.bullets.filter(bullet => {
-                    if (deletedBullets[bullet.data.id])
-                        return false;
                     const age = now - bullet.timeCreated;
                     const b = bullet.data;
                     const bx = b.x + b.speedX * age;
@@ -1647,71 +1722,6 @@ var app = (function () {
         b.toggle('bleed2', !a.toggle('shake2'));
     }
 
-    // const qt = new QuadTree(0, 0, 1, 1, 4)
-    // ;(window as any).qt = qt
-    function processGameTick(msg, state) {
-        const now = Date.now();
-        window.state = state;
-        state.lastGameTickMessage = msg;
-        state.lastGameTickMessageTime = now;
-        state.bullets.push(...msg.newBullets);
-        // const qt = new QuadTree(0, 0, 1, 1, 4)
-        // qt.clear()
-        // msg.bullets.forEach(bullet => { qt.insert(bullet) })
-        // qt.getPointsInCircle({ x: 0.5, y: 0.5, r: 0.1 }).forEach(p => (p as any).poop = true)
-        // qt.draw()
-        for (const b of msg.newBullets) {
-            // These are the coodinates of the player's gun
-            // We have these x,y so we can show the bullet coming out of the player's gun
-            const p = state.players[b.shooter].data;
-            if (!p)
-                break;
-            if (DEV_SETTINGS.showExtrapolatedEnemyPositions) {
-                const deltaTime = now - state.lastGameTickMessageTime + p.latency;
-                const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p, deltaTime);
-                const display = { x: (data.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth,
-                    y: (data.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth
-                };
-                const props = { receptionTime: now, display };
-                state.bulletProps.set(b, props);
-            }
-            else {
-                const x = (p.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth;
-                const y = (p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth;
-                const props = { receptionTime: now, display: { x, y } };
-                state.bulletProps.set(b, props);
-            }
-        }
-        for (const p of msg.players) {
-            // Create the player if it doesn't exist:
-            state.players[p.name] ||= new Player(p);
-            const player = state.players[p.name];
-            player.data = p;
-            if (p.name === state.myPlayer.name) {
-                state.myPlayer.predictedPosition =
-                    { ...p, angle: state.myPlayer.controls.angle }; // We don't want the server's angle.
-                if (CONSTANTS.DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction)
-                    continue;
-                for (let j = 0; j < state.pendingInputs.length;) {
-                    const input = state.pendingInputs[j];
-                    if (input.messageNumber <= p.lastProcessedInput) {
-                        // Already processed. Its effect is already taken into account into the world update
-                        // we just got, so we can drop it.
-                        state.pendingInputs.splice(j, 1);
-                    }
-                    else {
-                        // Not processed by the server yet. Re-apply it.
-                        CONSTANTS.MOVE_PLAYER(state.myPlayer.predictedPosition, input);
-                        j++;
-                    }
-                }
-            }
-            else if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
-                player.interpolationBuffer.push([now, p]);
-            }
-        }
-    }
-
     let isRunning = false;
     function runClient(elements, username, state, socket) {
         if (isRunning)
@@ -1724,22 +1734,15 @@ var app = (function () {
             state.structures = segments;
             renderer.updateSegments(segments);
         });
-        socket.on('removedPlayer', name => {
-            delete state.players[name];
-        });
-        socket.on('gameTick', msg => {
-            processGameTick(msg, state);
-            // We need to render immediately to make sure
-            // the renderer doesn't miss any game ticks
-            renderer.render(Date.now());
-        });
+        socket.on('removedPlayer', name => { delete state.players[name]; });
+        socket.on('gameTick', msg => { state.processGameTick(msg); });
         (function updateLoop(lastUpdate) {
             const now = Date.now();
             const lastTime = lastUpdate || now;
             const deltaTime = now - lastTime;
             requestAnimationFrame(() => updateLoop(now));
             elements.inputs.processInputs(deltaTime, now);
-            renderer.render(now);
+            renderer.render(now, deltaTime);
             elements.scoreboard.innerHTML = DEV_SETTINGS.showGameMetadeta
                 ? Object.values(state.players)
                     .sort((p1, p2) => p2.data.score - p1.data.score)

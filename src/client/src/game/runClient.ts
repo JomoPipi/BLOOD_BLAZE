@@ -3,7 +3,6 @@ import { DEV_SETTINGS } from "./DEV_SETTINGS"
 import { GameRenderer } from "./GameRenderer"
 import type { InputProcessor } from "./InputProcessor"
 import { NETWORK_LATENCY } from "./NETWORK_LATENCY"
-import { processGameTick } from "./processGameTick"
 
 type ClientElements = { 
     inputs : InputProcessor
@@ -27,17 +26,9 @@ export function runClient(elements : ClientElements, username : string, state : 
         renderer.updateSegments(segments)
     })
 
-    socket.on('removedPlayer', name => { 
-        delete state.players[name] 
-    })
+    socket.on('removedPlayer', name => { delete state.players[name] })
 
-    socket.on('gameTick', msg => { 
-        processGameTick(msg, state)
-
-        // We need to render immediately to make sure
-        // the renderer doesn't miss any game ticks
-        renderer.render(Date.now()) 
-    })
+    socket.on('gameTick', msg => { state.processGameTick(msg) })
 
     ;(function updateLoop(lastUpdate? : number) {
 
@@ -49,7 +40,7 @@ export function runClient(elements : ClientElements, username : string, state : 
 
         elements.inputs.processInputs(deltaTime, now)
 
-        renderer.render(now)
+        renderer.render(now, deltaTime)
 
         elements.scoreboard.innerHTML = DEV_SETTINGS.showGameMetadeta 
             ? Object.values(state.players)

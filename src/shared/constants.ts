@@ -102,20 +102,10 @@ const CONSTANTS = (() => {
     function EXTRAPOLATE_PLAYER_POSITION(data : SocketPlayer, deltaTime : number) {
         // Don't mutate data
         data = JSON.parse(JSON.stringify(data))
-        
-        const props = ['x','y','angle'] as const
-    
         const dx = data.controls.x * CONSTANTS.PLAYER_SPEED * deltaTime
         const dy = data.controls.y * CONSTANTS.PLAYER_SPEED * deltaTime
-    
-        for (const prop of props)
-        {
-            // extrapolation
-            const predictionDelta = prop === 'x' ? dx : prop === 'y' ? dy : 0
-    
-            data[prop] += predictionDelta
-        }
-    
+        data.x += dx
+        data.y += dy
         return data
     }
 

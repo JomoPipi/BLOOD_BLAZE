@@ -176,8 +176,8 @@ export class Game {
             {
                 const [bx, by, newbx, newby, dt, shooter] = collisionArgs[bullet.id]!
                 const collidesWith = makeCollisionFunc(bx, by, newbx, newby)
-                // const extrapolated = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(player.data, dt)
-                if (shooter !== player.data.name && collidesWith(player.data))// && collidesWith(extrapolated))
+                const extrapolated = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(player.data, dt)
+                if (shooter !== player.data.name && collidesWith(extrapolated))
                 {
                     player.data.lastTimeGettingShot = now
                     this.deletedBullets[bullet.id] = true
