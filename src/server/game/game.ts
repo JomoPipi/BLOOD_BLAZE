@@ -98,45 +98,47 @@ export class Game {
     }
 
     naive_moveObjects(timeDelta : number, now : number) {
+        // This function is slower
 
-        this.bullets = this.bullets.filter(bullet => {
-            const bx = bullet.data.x
-            const by = bullet.data.y
-            const dt = bullet.hasMovedSinceCreation
-                ? timeDelta
-                : now - bullet.timeCreated + (this.getPlayerByName[bullet.shooter]?.data.latency || 0)
+        // this.bullets = this.bullets.filter(bullet => {
+        //     const bx = bullet.data.x
+        //     const by = bullet.data.y
+        //     const dt = bullet.hasMovedSinceCreation
+        //         ? timeDelta
+        //         : now - bullet.timeCreated + (this.getPlayerByName[bullet.shooter]?.data.latency || 0)
 
-            bullet.hasMovedSinceCreation = true
+        //     bullet.hasMovedSinceCreation = true
             
-            bullet.move(dt)
+        //     bullet.move(dt)
             
-            const newbx = bullet.data.x
-            const newby = bullet.data.y
+        //     const newbx = bullet.data.x
+        //     const newby = bullet.data.y
 
-            const collidesWith = makeCollisionFunc(bx, by, newbx, newby)            
+        //     const collidesWith = makeCollisionFunc(bx, by, newbx, newby)            
 
-            for (const player of this.players)
-            {
-                if (bullet.shooter !== player.data.name && collidesWith(player.data))
-                {
-                    player.data.lastTimeGettingShot = now
-                    this.deletedBullets[bullet.data.id] = true
-                    if (this.getPlayerByName[bullet.shooter])
-                    {
-                        this.getPlayerByName[bullet.shooter]!.data.score++
-                    }
-                    return false
-                }
-            }
+        //     for (const player of this.players)
+        //     {
+        //         if (bullet.shooter !== player.data.name && collidesWith(player.data))
+        //         {
+        //             player.data.lastTimeGettingShot = now
+        //             this.deletedBullets[bullet.data.id] = true
+        //             if (this.getPlayerByName[bullet.shooter])
+        //             {
+        //                 this.getPlayerByName[bullet.shooter]!.data.score++
+        //             }
+        //             return false
+        //         }
+        //     }
 
-            return 0 <= newbx && newbx <= 1 && 0 <= newby && newby <= 1
-        })
+        //     return 0 <= newbx && newbx <= 1 && 0 <= newby && newby <= 1
+        // })
     }
 
     moveObjects(timeDelta : number, now : number) {
         const bulletQT = new QuadTree<SocketBullet>(0, 0, 1, 1, 4)
         const collisionArgs : Record<number, 
             [number, number, number, number, number, string]> = {}
+
         this.bullets = this.bullets.filter(bullet => {
             const bx = bullet.data.x
             const by = bullet.data.y
@@ -153,7 +155,7 @@ export class Game {
 
             if (0 <= bx && bx <= 1 && 0 <= by && by <= 1)
             {
-                if (this.structures.collidesWithBullet(bx, by, newbx, newby))
+                if (this.structures.collidesWithBullet(bullet.originX, bullet.originY, newbx, newby))
                 {
                     this.deletedBullets[bullet.data.id] = true
                     return false
@@ -168,7 +170,6 @@ export class Game {
             }
         })
 
-        const toDelete : Record<number, true> = {}
         const radius = CONSTANTS.PLAYER_RADIUS + maxBulletSpeed * timeDelta
         for (const player of this.players)
         {
@@ -181,28 +182,24 @@ export class Game {
                 if (shooter !== player.data.name && collidesWith(extrapolated))
                 {
                     player.data.lastTimeGettingShot = now
-                    this.deletedBullets[bullet.id] = true
                     if (this.getPlayerByName[shooter])
                     {
                         this.getPlayerByName[shooter]!.data.score++
                     }
-                    toDelete[bullet.id] = true
+                    this.deletedBullets[bullet.id] = true
                     continue
                 }
             }
         }
 
-        this.bullets = this.bullets.filter(b => !toDelete[b.data.id])
+        this.bullets = this.bullets.filter(b => !this.deletedBullets[b.data.id])
     }
 
     getRenderData() : GameTickMessage {
-        const bullets = this.bullets.map(b => b.data)
-        const newBullets = this.newBullets.map(b => b.data)
-        const players = this.players.map(p => p.data)
         const message =
-            { players
-            , bullets
-            , newBullets
+            { players: this.players.map(p => p.data)
+            , bullets: this.bullets.map(b => b.data)
+            , newBullets: this.newBullets.filter(b => !this.deletedBullets[b.data.id]).map(b => b.data)
             , deletedBullets: this.deletedBullets
             }
         this.newBullets = []

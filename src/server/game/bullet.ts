@@ -4,11 +4,15 @@ export class Bullet  {
     readonly shooter : string
     data : SocketBullet
     hasMovedSinceCreation = false
+    readonly originX : number
+    readonly originY : number
 
     constructor(p : SocketPlayer, data : SocketBullet) {
         this.timeCreated = Date.now()
         this.shooter = p.name
         this.data = data
+        this.originX = p.x
+        this.originY = p.y
     }
     
     move(timeDelta : number) {
