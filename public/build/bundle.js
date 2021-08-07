@@ -1041,8 +1041,8 @@ var app = (function () {
         showClientBullet: true,
         showIdealClientBullet: true,
         showClientPredictedBullet: true,
-        showExtrapolatedEnemyPositions: false,
-        showInterpolatedEnemyPositions: true,
+        showExtrapolatedEnemyPositions: true,
+        showInterpolatedEnemyPositions: false,
         showUninterpolatedEnemyPositions: false,
         showWhatOtherClientsPredict: false,
         showGameMetadeta: false
@@ -1314,6 +1314,17 @@ var app = (function () {
     	}
     }
 
+    class Bullet {
+        data;
+        receptionTime;
+        display;
+        constructor(data, time, display) {
+            this.data = data;
+            this.receptionTime = time;
+            this.display = display;
+        }
+    }
+
     class Player {
         data;
         interpolationBuffer = [];
@@ -1324,6 +1335,7 @@ var app = (function () {
         }
     }
 
+    // import { CONSTANTS } from '../../../shared/constants'
     class MyPlayer {
         name;
         predictedPosition;
@@ -1345,7 +1357,6 @@ var app = (function () {
     }
     class ClientState {
         pendingInputs = [];
-        bulletProps = new WeakMap();
         bullets = [];
         structures = [];
         players;
@@ -1367,8 +1378,7 @@ var app = (function () {
             this.lastGameTickMessage = msg;
             this.lastGameTickMessageTime = now;
             this.myPlayer.bullets = this.myPlayer.bullets.filter(b => !msg.deletedBullets[b.data.id]);
-            this.bullets = this.bullets.filter(b => !msg.deletedBullets[b.id]);
-            this.bullets.push(...msg.newBullets);
+            this.bullets = this.bullets.filter(b => !msg.deletedBullets[b.data.id]);
             // const qt = new QuadTree(0, 0, 1, 1, 4)
             // qt.clear()
             // msg.bullets.forEach(bullet => { qt.insert(bullet) })
@@ -1386,14 +1396,12 @@ var app = (function () {
                     const display = { x: (data.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth,
                         y: (data.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth
                     };
-                    const props = { receptionTime: now, display };
-                    this.bulletProps.set(b, props);
+                    this.bullets.push(new Bullet(b, now, display));
                 }
                 else {
                     const x = (p.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth;
                     const y = (p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth;
-                    const props = { receptionTime: now, display: { x, y } };
-                    this.bulletProps.set(b, props);
+                    this.bullets.push(new Bullet(b, now, { x, y }));
                 }
             }
             for (const p of msg.players) {
@@ -1450,7 +1458,7 @@ var app = (function () {
         data;
         constructor(p, joystick) {
             this.timeCreated = Date.now();
-            this.data = createBullet(p, joystick, Math.random());
+            this.data = createBullet(p, joystick, Math.random() + ':' + p.name);
         }
     }
     function createBullet(p, joystick, id) {
@@ -1598,9 +1606,9 @@ var app = (function () {
             if (DEV_SETTINGS.showClientBullet) {
                 this.ctx.fillStyle = '#770';
                 this.state.bullets = this.state.bullets.filter(b => {
-                    const age = now - (this.state.bulletProps.get(b)?.receptionTime || 0);
-                    const bx = b.x + b.speedX * age;
-                    const by = b.y + b.speedY * age;
+                    const age = now - b.receptionTime;
+                    const bx = b.data.x + b.data.speedX * age;
+                    const by = b.data.y + b.data.speedY * age;
                     const x = bx * W;
                     const y = by * H;
                     this.circle(x, y, 2);
@@ -1610,22 +1618,21 @@ var app = (function () {
             if (DEV_SETTINGS.showIdealClientBullet) {
                 this.ctx.fillStyle = '#00f';
                 this.state.bullets = this.state.bullets.filter(b => {
-                    const props = this.state.bulletProps.get(b);
-                    const age = now - props.receptionTime;
-                    const bx = b.x + b.speedX * age;
-                    const by = b.y + b.speedY * age;
+                    const age = now - b.receptionTime;
+                    const bx = b.data.x + b.data.speedX * age;
+                    const by = b.data.y + b.data.speedY * age;
                     const x = bx * W;
                     const y = by * H;
                     // const dx = x - props.display.x
                     // const dy = y - props.display.y
                     // const lag = this.state.players[b.shooter]?.data.latency || 0
                     const secondsToMerge = 0.5;
-                    const mergeRate = Math.min(now - props.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge;
+                    const mergeRate = Math.min(now - b.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge;
                     // props.display.x += dx * mergeRate
                     // props.display.y += dy * mergeRate
                     // this.circle(props.display.x, props.display.y, 2)
-                    const x1 = props.display.x + age * b.speedX * W;
-                    const y1 = props.display.y + age * b.speedY * H;
+                    const x1 = b.display.x + age * b.data.speedX * W;
+                    const y1 = b.display.y + age * b.data.speedY * H;
                     const dx = x - x1;
                     const dy = y - y1;
                     const X = x1 + dx * mergeRate;
@@ -1714,11 +1721,8 @@ var app = (function () {
                 const dy = data.y - lasty;
                 data.x = lastx + dx * limiter;
                 data.y = lasty + dy * limiter;
-                p.lastExtrapolatedPosition = data;
             }
-            else {
-                p.lastExtrapolatedPosition = data;
-            }
+            p.lastExtrapolatedPosition = data;
             const [x, y] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(serverx, servery, data.x, data.y, this.state.structures);
             return { ...data, x, y };
         }

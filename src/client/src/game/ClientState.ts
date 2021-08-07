@@ -1,5 +1,6 @@
 
 // import { CONSTANTS } from '../../../shared/constants'
+import { Bullet } from './Bullet'
 import type { ClientPredictedBullet } from './ClientPredictedBullet'
 import { DEV_SETTINGS } from './DEV_SETTINGS'
 import { Player } from './Player'
@@ -27,8 +28,7 @@ class MyPlayer {
 
 export class ClientState {
     pendingInputs : PlayerControlsMessage[] = []
-    bulletProps = new WeakMap<SocketBullet, { receptionTime : number, display : Point }>()
-    bullets : SocketBullet[] = []
+    bullets : Bullet[] = []
     structures : LineSegment[] = []
     players : Record<string, Player>
     myPlayer : MyPlayer
@@ -52,10 +52,8 @@ export class ClientState {
         this.lastGameTickMessage = msg
         this.lastGameTickMessageTime = now
         
-        this.myPlayer.bullets = this.myPlayer.bullets.filter(b=> !msg.deletedBullets[b.data.id])
-        this.bullets = this.bullets.filter(b => !msg.deletedBullets[b.id])
-    
-        this.bullets.push(...msg.newBullets)
+        this.myPlayer.bullets = this.myPlayer.bullets.filter(b => !msg.deletedBullets[b.data.id])
+        this.bullets = this.bullets.filter(b => !msg.deletedBullets[b.data.id])
     
         // const qt = new QuadTree(0, 0, 1, 1, 4)
         // qt.clear()
@@ -77,17 +75,14 @@ export class ClientState {
                     { x: (data.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth
                     , y: (data.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth
                     }
-                const props = { receptionTime: now, display }
-                this.bulletProps.set(b, props)
+                this.bullets.push(new Bullet(b, now, display))
             }
             else
             {
                 const x = (p.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth
                 const y = (p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth
-                const props = { receptionTime: now, display: { x, y } }
-                this.bulletProps.set(b, props)
+                this.bullets.push(new Bullet(b, now, { x, y }))
             }
-        
         }
     
         for (const p of msg.players)

@@ -7,7 +7,7 @@ export class ClientPredictedBullet {
 
     constructor(p : SocketPlayer, joystick : Point) {
         this.timeCreated = Date.now()
-        this.data = createBullet(p, joystick, Math.random())
+        this.data = createBullet(p, joystick, Math.random() + ':' + p.name as any as number)
     }
 }
 

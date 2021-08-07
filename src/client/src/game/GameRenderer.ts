@@ -85,9 +85,9 @@ export class GameRenderer {
         {
             this.ctx.fillStyle = '#770' 
             this.state.bullets = this.state.bullets.filter(b => {
-                const age = now - (this.state.bulletProps.get(b)?.receptionTime || 0)
-                const bx = b.x + b.speedX * age
-                const by = b.y + b.speedY * age
+                const age = now - b.receptionTime
+                const bx = b.data.x + b.data.speedX * age
+                const by = b.data.y + b.data.speedY * age
                 const x = bx * W
                 const y = by * H
                 
@@ -100,10 +100,9 @@ export class GameRenderer {
         {
             this.ctx.fillStyle = '#00f' 
             this.state.bullets = this.state.bullets.filter(b => {
-                const props = this.state.bulletProps.get(b)!
-                const age = now - props.receptionTime
-                const bx = b.x + b.speedX * age
-                const by = b.y + b.speedY * age
+                const age = now - b.receptionTime
+                const bx = b.data.x + b.data.speedX * age
+                const by = b.data.y + b.data.speedY * age
                 const x = bx * W
                 const y = by * H
                 // const dx = x - props.display.x
@@ -111,13 +110,13 @@ export class GameRenderer {
 
                 // const lag = this.state.players[b.shooter]?.data.latency || 0
                 const secondsToMerge = 0.5
-                const mergeRate = Math.min(now - props.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge
+                const mergeRate = Math.min(now - b.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge
                 // props.display.x += dx * mergeRate
                 // props.display.y += dy * mergeRate
                 // this.circle(props.display.x, props.display.y, 2)
 
-                const x1 = props.display.x + age * b.speedX * W
-                const y1 = props.display.y + age * b.speedY * H
+                const x1 = b.display.x + age * b.data.speedX * W
+                const y1 = b.display.y + age * b.data.speedY * H
                 const dx = x - x1
                 const dy = y - y1
 
@@ -225,12 +224,9 @@ export class GameRenderer {
             const dy = data.y - lasty
             data.x = lastx + dx * limiter
             data.y = lasty + dy * limiter
-            p.lastExtrapolatedPosition = data
         }
-        else
-        {
-            p.lastExtrapolatedPosition = data
-        }
+
+        p.lastExtrapolatedPosition = data
         
         const [x, y] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION
             (serverx, servery, data.x, data.y, this.state.structures)

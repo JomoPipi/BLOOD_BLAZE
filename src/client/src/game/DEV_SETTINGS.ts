@@ -7,8 +7,8 @@ export const DEV_SETTINGS =
     , showClientBullet: true
     , showIdealClientBullet: true
     , showClientPredictedBullet: true
-    , showExtrapolatedEnemyPositions: false
-    , showInterpolatedEnemyPositions: true
+    , showExtrapolatedEnemyPositions: true
+    , showInterpolatedEnemyPositions: false
     , showUninterpolatedEnemyPositions: false
     , showWhatOtherClientsPredict: false
     , showGameMetadeta: false
