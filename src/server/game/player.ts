@@ -1,4 +1,5 @@
 
+// import { CONSTANTS } from "../../shared/constants.js"
 export class Player {
     data : SocketPlayer
     lastTimeShooting = 0

@@ -74,7 +74,7 @@ export default {
 		typescript({
 			sourceMap: !production,
 			inlineSources: !production,
-			rootDir: '/'
+			rootDir: '../'
 		}),
 
 		// In dev mode, call `npm run start` once

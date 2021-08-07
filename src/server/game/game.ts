@@ -1,4 +1,5 @@
 
+// import { CONSTANTS } from "../../shared/constants.js"
 import { Bullet } from "./Bullet.js"
 import { Player } from "./Player.js"
 import { Structure } from "./Structure.js"

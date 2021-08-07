@@ -1,6 +1,8 @@
 
 import { DEV_SETTINGS } from "./DEV_SETTINGS"
 import type { ClientState } from './ClientState'
+import type { Player } from "./Player"
+// import { CONSTANTS } from "../../../shared/constants"
 
 const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth
 export class GameRenderer {
@@ -9,7 +11,6 @@ export class GameRenderer {
     private readonly ctx
     private readonly username
     private readonly state
-    private segments : LineSegment[] = []
 
     constructor(canvas : HTMLCanvasElement, username : string, state : ClientState) {
         this.canvas = canvas
@@ -19,7 +20,7 @@ export class GameRenderer {
     }
 
     updateSegments(segments : LineSegment[]) {
-        this.segments = segments
+        this.state.structures = segments
     }
     
     render(now : number, renderDelta : number) {
@@ -39,39 +40,7 @@ export class GameRenderer {
             
             if (DEV_SETTINGS.showExtrapolatedEnemyPositions)
             {
-                // // non-"smooth" version:
-                // const deltaTime = msgDelta + p.data.latency
-                // const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
-                // this.drawPlayer(data, now)
-
-
-                // "smooth" version:
-                const smoothSpeed = 1.5
-                /**
-                 * Extrapolation smoothening:
-                 * limit the distance between the next extrapolated player position
-                 * and the previous so that the player goes at most `smoothSpeed`
-                 */
-                const { x: lastx, y: lasty } = p.lastExtrapolatedPosition
-                const deltaTime = msgDelta + p.data.latency
-                const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
-                p.lastExtrapolatedPosition = data
-                const dist = distance(data.x, data.y, lastx, lasty)
-                const speed = dist / renderDelta
-
-                if (speed > CONSTANTS.PLAYER_SPEED * smoothSpeed)
-                {
-                    const limiter = CONSTANTS.PLAYER_SPEED * smoothSpeed / speed
-                    const dx = data.x - lastx
-                    const dy = data.y - lasty
-
-                    data.x = lastx + dx * limiter
-                    data.y = lasty + dy * limiter
-                    p.lastExtrapolatedPosition = data
-                    
-                    console.log('limited speed:', speed)
-                }
-
+                const data = this.getExtrapolatedPlayer(p, msgDelta, renderDelta)
                 this.drawPlayer(data, now)
             }
 
@@ -108,9 +77,7 @@ export class GameRenderer {
         
         if (DEV_SETTINGS.showWhatOtherClientsPredict)
         {
-            const p = this.state.players[this.username]!
-            const deltaTime = msgDelta + p.data.latency
-            const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
+            const data = this.getExtrapolatedPlayer(this.state.players[this.username]!, msgDelta, renderDelta)
             this.drawPlayer(data, now, 'cyan')
         }
         
@@ -208,7 +175,7 @@ export class GameRenderer {
     drawWalls(w : number, h : number) {
         this.ctx.strokeStyle = 'blue'
         // console.log('drawing walls',this.segments.length)
-        for (const [p1, p2] of this.segments)
+        for (const [p1, p2] of this.state.structures)
         {
             this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h)
         }
@@ -227,6 +194,47 @@ export class GameRenderer {
         this.ctx.lineTo(x2, y2)
         this.ctx.stroke()
         this.ctx.closePath()
+    }
+
+    getExtrapolatedPlayer(p : Player, msgDelta : number, renderDelta : number) {
+        // /
+        // // non-"smooth" version:
+        // const deltaTime = msgDelta + p.data.latency
+        // const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
+        // this.drawPlayer(data, now)
+
+
+        // "smooth" version:
+        /**
+         * Extrapolation smoothening:
+         * limit the distance between the next extrapolated player position
+         * and the previous so that the player goes at most `smoothSpeed`
+         */
+        const deltaTime = msgDelta + p.data.latency
+        const { x: serverx, y: servery } = p.data
+        const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
+        const { x: lastx, y: lasty } = p.lastExtrapolatedPosition
+        const dist = distance(data.x, data.y, lastx, lasty)
+        const speed = dist / renderDelta
+        const smoothSpeed = 1.5
+
+        if (speed > CONSTANTS.PLAYER_SPEED * smoothSpeed)
+        {
+            const limiter = CONSTANTS.PLAYER_SPEED * smoothSpeed / speed
+            const dx = data.x - lastx
+            const dy = data.y - lasty
+            data.x = lastx + dx * limiter
+            data.y = lasty + dy * limiter
+            p.lastExtrapolatedPosition = data
+        }
+        else
+        {
+            p.lastExtrapolatedPosition = data
+        }
+        
+        const [x, y] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION
+            (serverx, servery, data.x, data.y, this.state.structures)
+        return { ...data, x, y }
     }
 }
 

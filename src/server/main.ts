@@ -8,6 +8,7 @@ import '../shared/constants.js'
 import '../shared/helpers.js'
 import '../shared/QuadTree.js'
 import { Game } from './game/Game.js'
+// import { CONSTANTS } from '../shared/constants.js'
 
 // Understanding just 1% of something brings you closer to understanding 100% of it.
 
