@@ -2,7 +2,7 @@
 export class Bullet  {
     readonly timeCreated : number
     readonly shooter : string
-    data : SocketBullet
+    readonly data : SocketBullet
     hasMovedSinceCreation = false
     readonly originX : number
     readonly originY : number

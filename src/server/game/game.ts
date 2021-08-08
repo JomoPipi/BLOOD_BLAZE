@@ -2,7 +2,7 @@
 // import { CONSTANTS } from "../../shared/constants.js"
 import { Bullet } from "./Bullet.js"
 import { Player } from "./Player.js"
-import { Structure } from "./Structure.js"
+import { Walls } from "./Walls.js"
 
 const epsilon = 1e-3
 const maxBulletSpeed = CONSTANTS.BULLET_SPEED + CONSTANTS.PLAYER_SPEED
@@ -13,7 +13,7 @@ export class Game {
     private bullets : Bullet[] = []
     private newBullets : Bullet[] = []
     private deletedBullets : Record<number, true> = {}
-    structures = new Structure()
+    structures = new Walls()
 
     addPlayer(name : string) {
         if (this.playerExists(name)) return false
@@ -142,9 +142,9 @@ export class Game {
         this.bullets = this.bullets.filter(bullet => {
             const bx = bullet.data.x
             const by = bullet.data.y
-            const dt = bullet.hasMovedSinceCreation
-                ? timeDelta
-                : now - bullet.timeCreated + (this.getPlayerByName[bullet.shooter]?.data.latency || 0)
+            const playerLag = this.getPlayerByName[bullet.shooter]?.data.latency || 0
+            const age = now - bullet.timeCreated + playerLag
+            const dt = bullet.hasMovedSinceCreation ? timeDelta : age
 
             bullet.hasMovedSinceCreation = true
             

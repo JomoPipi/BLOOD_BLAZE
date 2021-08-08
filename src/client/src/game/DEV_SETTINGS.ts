@@ -4,12 +4,12 @@ export const DEV_SETTINGS =
     , showPredictedPlayer: true
     , showServerPlayer: false
     , showServerBullet: false
-    , showClientBullet: true
+    , showClientBullet: false
     , showIdealClientBullet: true
     , showClientPredictedBullet: true
     , showExtrapolatedEnemyPositions: true
     , showInterpolatedEnemyPositions: false
     , showUninterpolatedEnemyPositions: false
     , showWhatOtherClientsPredict: false
-    , showGameMetadeta: false
+    , showGameMetadeta: true
     } as const

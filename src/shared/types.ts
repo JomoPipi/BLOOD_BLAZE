@@ -7,25 +7,31 @@ type LineSegment = [Point,Point]
 
 type ServerToClientSocketEvents = keyof ServerToClientMessageTypes
 type ServerToClientMessageTypes = {
-  nomination : [boolean, string]
-  gameTick : GameTickMessage
-  removedPlayer : string
-  mapdata : LineSegment[]
+  readonly nomination : [boolean, string]
+  readonly gameTick : GameTickMessage
+  readonly removedPlayer : string
+  readonly mapdata : LineSegment[]
   // newBullets : NewBulletsForClientsMessage
 }
 
 type ClientToServerSocketEvents = keyof ClientToServerMessageTypes
 type ClientToServerMessageTypes = {
-  nomination : string
-  controlsInput : PlayerControlsMessage
-  networkLatency : number
+  readonly nomination : string
+  readonly controlsInput : PlayerControlsMessage
+  readonly networkLatency : number
 
   // Builtin events
-  ping : Function
-  connection : ServerSocket
-  disconnect : never
+  readonly ping : Function
+  readonly connection : ServerSocket
+  readonly disconnect : never
 }
 
+type GameTickMessage = {
+  readonly players : SocketPlayer[]
+  readonly bullets : SocketBullet[]
+  readonly newBullets : SocketBullet[]
+  readonly deletedBullets : Record<number, true>
+}
 interface ServerSocket {
   on <T extends ClientToServerSocketEvents>
     (event : T, fn : (x : ClientToServerMessageTypes[T]) => void) : void
@@ -55,8 +61,6 @@ interface ClientSocket {
 }
 
 type Joystick = Point
-
-
 
 type PlayerControlsMessage = { 
   x : number
@@ -90,36 +94,9 @@ type SocketBullet = {
   readonly expirationDistance : number
 }
 
-type GameTickMessage = {
-  players : SocketPlayer[]
-  bullets : SocketBullet[]
-  newBullets : SocketBullet[]
-  deletedBullets : Record<number, true>
-}
-
-// type NewBulletForServerMessage = {
-//   x : number
-//   y : number
-//   speedX : number
-//   speedY : number
-//   timeFired : number
-//   owner : string
-//   id : number
-// }
-
-// type NewBulletsForClientsMessage = {
-//   x : number
-//   y : number
-//   speedX : number
-//   speedY : number
-//   timeFired : number
-//   id : number
-// }[]
-
 type Rectangle = {
   x : number
   y : number
   w : number
   h : number
 }
-

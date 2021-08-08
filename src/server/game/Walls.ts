@@ -7,7 +7,7 @@ enum MaterialType {
     NON_NEWTONIAN, // players can pass; bullets cannot.
 }
 
-export class Structure {
+export class Walls {
     material : MaterialType = MaterialType.WALL;
     segments : LineSegment[] = []
 

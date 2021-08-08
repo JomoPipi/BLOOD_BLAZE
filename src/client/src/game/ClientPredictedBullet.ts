@@ -19,12 +19,14 @@ function createBullet(p : SocketPlayer, joystick : Point, id : number, walls : L
     const bigX = x + speedX * 20000 // Arbitrary amount to ensure the bullet leaves the area
     const bigY = y + speedY * 20000 // and collides with at least the boundary wall.
     
-    const [_, expirationDistance] = walls.reduce(([pt, min], w) => {
+    const [_, expirationDistance, collidedWall] = walls.reduce(([pt, min, _], w) => {
         const point = CONSTANTS.LINE_SEGMENT_INTERSECTION_POINT(w, [p, { x: bigX, y: bigY }])
-        if (!point) return [pt, min]
+        if (!point) return [pt, min, _]
         const dist = distance(point[0], point[1], x, y)
-        return dist < min ? [point, dist] : [pt, min]
-    }, [[69, 420], Infinity])
+        return dist < min ? [point, dist, w] : [pt, min, _]
+    }, [[69, 420], Infinity, null as any])
+
+    console.log('wall =',JSON.stringify(collidedWall))
 
     const bullet = { x, y, speedX, speedY, id, shooter: p.name, expirationDistance }
     return bullet

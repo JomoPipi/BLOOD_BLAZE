@@ -55,25 +55,19 @@ export class ClientState {
         this.myPlayer.bullets = this.myPlayer.bullets.filter(b => !msg.deletedBullets[b.data.id])
         this.bullets = this.bullets.filter(b => !msg.deletedBullets[b.data.id])
     
-        // const qt = new QuadTree(0, 0, 1, 1, 4)
-        // qt.clear()
-        // msg.bullets.forEach(bullet => { qt.insert(bullet) })
-        // qt.getPointsInCircle({ x: 0.5, y: 0.5, r: 0.1 }).forEach(p => (p as any).poop = true)
-        // qt.draw()
-    
+        const W = window.innerWidth
         for (const b of msg.newBullets)
         {
             // These are the coodinates of the player's gun
             // We have these x,y so we can show the bullet coming out of the player's gun
-            const p = this.players[b.shooter]!.data
-            if (!p) break
+            const player = this.players[b.shooter]! 
+            if (!player) break
+            const p = player.data
             if (DEV_SETTINGS.showExtrapolatedEnemyPositions)
             {
-                const deltaTime = now - this.lastGameTickMessageTime + p.latency
-                const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p, deltaTime)
                 const display = 
-                    { x: (data.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth
-                    , y: (data.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth
+                    { x: (player.lastExtrapolatedPosition.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * W
+                    , y: (player.lastExtrapolatedPosition.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * W
                     }
                 this.bullets.push(new Bullet(b, now, display))
             }
