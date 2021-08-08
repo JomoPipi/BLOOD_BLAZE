@@ -105,16 +105,10 @@ export class GameRenderer {
                 const by = b.data.y + b.data.speedY * age
                 const x = bx * W
                 const y = by * H
-                // const dx = x - props.display.x
-                // const dy = y - props.display.y
-
-                // const lag = this.state.players[b.shooter]?.data.latency || 0
+                
                 const secondsToMerge = 0.5
                 const mergeRate = Math.min(now - b.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge
-                // props.display.x += dx * mergeRate
-                // props.display.y += dy * mergeRate
-                // this.circle(props.display.x, props.display.y, 2)
-
+                
                 const x1 = b.display.x + age * b.data.speedX * W
                 const y1 = b.display.y + age * b.data.speedY * H
                 const dx = x - x1
@@ -122,6 +116,11 @@ export class GameRenderer {
 
                 const X = x1 + dx * mergeRate
                 const Y = y1 + dy * mergeRate
+
+                const lag = -(this.state.players[b.data.shooter]?.data.latency || 0)
+                const traveled = distance(b.data.x + b.data.speedX * lag, b.data.y + b.data.speedY * lag, X/W, Y/H)
+                if (traveled >= b.data.expirationDistance) return false
+
                 this.circle(X, Y, 2)
                 
                 return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
@@ -138,6 +137,10 @@ export class GameRenderer {
                 const by = b.y + b.speedY * age
                 const x = bx * W
                 const y = by * H
+
+                const traveled = distance(b.x, b.y, bx, by)
+                if (traveled >= b.expirationDistance) return false
+
                 this.circle(x, y, 2)
                 return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
             })

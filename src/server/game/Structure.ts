@@ -11,10 +11,10 @@ export class Structure {
     material : MaterialType = MaterialType.WALL;
     segments : LineSegment[] = []
 
-    collidesWithBullet(oldX : number, oldY : number, x : number, y : number) {
-        return this.segments.some(wall => 
-            intersection(wall, [{ x: oldX, y: oldY }, { x, y }]))
-    }
+    // collidesWithBullet(oldX : number, oldY : number, x : number, y : number) {
+    //     return this.segments.some(wall => 
+    //         CONSTANTS.LINE_SEGMENT_INTERSECTION(wall, [{ x: oldX, y: oldY }, { x, y }]))
+    // }
 
     private generateWalls(n : number) {
         const minLength = 0.1
@@ -36,15 +36,17 @@ export class Structure {
         const minLength = 0.1
         const maxLength = 0.5
         const randomPoint = () => ([ Math.random() * 0.5, Math.random() * 0.5 ]) 
+        type Seg = [[number, number], [number, number]]
+        const boundary = [[[0,0],[0,1]],[[0,1],[1,1]],[[1,1],[1,0]],[[1,0],[0,0]]] as Seg[]
         const walls = [...Array(n)].map(_ => {
             const length = minLength + Math.random() *  (maxLength - minLength)
             const [x, y] = randomPoint() as [number, number]
             const slopeCount = 4
             const rndAngle = [...Array(slopeCount)].map((_,i) => i * Math.PI / slopeCount)[Math.random() * slopeCount | 0]!
             const p2 = [x + Math.cos(rndAngle) * length, y + Math.sin(rndAngle) * length]
-            const s = [[x, y], p2] as [[number, number], [number, number]]
+            const s = [[x, y], p2] as Seg
             return s
-        })
+        }).concat(boundary)
         // Reflect each line segment on all four quadrants:
         .map(([[x1, y1],[x2, y2]]) => 
             [ [{ x: x1, y: y1 }, { x: x2, y: y2 }]         // Identity
@@ -278,59 +280,6 @@ function pseudoIntersection(_l1 : LineSegment, _l2 : LineSegment) {
         ? [x, y]
         : null
 }
-
-
-
-
-
-
-
-
-
-// The "true" intersection function:
-function intersection(l1 : LineSegment, l2 : LineSegment) {
-    for (const p1 of l1) {
-        for (const p2 of l2) {
-            if (p1.x === p2.x && p1.y === p2.y) {
-                return [p1.x, p1.y];
-            }
-        }
-    }
-    
-    const dx1 = l1[1].x - l1[0].x;
-    const dx2 = l2[1].x - l2[0].x;
-    if (dx1 === 0 && dx2 === 0)
-        return null;
-    const m1 = (l1[1].y - l1[0].y) / dx1;
-    const m2 = (l2[1].y - l2[0].y) / dx2;
-    if (m1 === m2)
-        return null;
-    const b1 = l1[0].y - m1 * l1[0].x;
-    const b2 = l2[0].y - m2 * l2[0].x;
-    const x = dx1 === 0
-        ? l1[0].x
-        : dx2 === 0
-            ? l2[0].x
-            : (b2 - b1) / (m1 - m2);
-
-    const y1 = m1 * x + b1
-    const y2 = m2 * x + b2
-    const y = dx1 === 0 ? y2 : y1
-
-    const EPSILON = 1e-9
-    return Math.min(l1[0].x, l1[1].x) - EPSILON <= x && x <= Math.max(l1[0].x, l1[1].x) + EPSILON
-        && Math.min(l2[0].x, l2[1].x) - EPSILON <= x && x <= Math.max(l2[0].x, l2[1].x) + EPSILON
-        && Math.min(l1[0].y, l1[1].y) - EPSILON <= y && y <= Math.max(l1[0].y, l1[1].y) + EPSILON
-        && Math.min(l2[0].y, l2[1].y) - EPSILON <= y && y <= Math.max(l2[0].y, l2[1].y) + EPSILON
-        ? [x, y]
-        : null
-}
-
-
-
-
-
-
 
 // "nice" maps:
 ; /* 1 */ [[{x:0.39361785881765665,y:0.05719405335755723},{x:0.5568195941823557,y:0.05719405335755723}],[{x:0.6063821411823433,y:0.05719405335755723},{x:0.4431804058176443,y:0.05719405335755723}],[{x:0.39361785881765665,y:0.9428059466424428},{x:0.5568195941823557,y:0.9428059466424428}],[{x:0.6063821411823433,y:0.9428059466424428},{x:0.4431804058176443,y:0.9428059466424428}],[{x:0.36325714961752775,y:0.11428365200002144},{x:0.2917811841611711,y:0.18575961745637812}],[{x:0.6367428503824722,y:0.11428365200002144},{x:0.708218815838829,y:0.18575961745637812}],[{x:0.36325714961752775,y:0.8857163479999786},{x:0.2917811841611711,y:0.8142403825436219}],[{x:0.6367428503824722,y:0.8857163479999786},{x:0.708218815838829,y:0.8142403825436219}],[{x:0.2164951472133566,y:0.2428596171026327},{x:0.05466030031449351,y:0.40469446400149583}],[{x:0.7835048527866434,y:0.2428596171026327},{x:0.9453396996855065,y:0.40469446400149583}],[{x:0.2164951472133566,y:0.7571403828973673},{x:0.05466030031449351,y:0.5953055359985042}],[{x:0.7835048527866434,y:0.7571403828973673},{x:0.9453396996855065,y:0.5953055359985042}],[{x:0.44132859863811025,y:0.28329976677747437},{x:0.5690572345237609,y:0.28329976677747437}],[{x:0.5586714013618898,y:0.28329976677747437},{x:0.4309427654762391,y:0.28329976677747437}],[{x:0.44132859863811025,y:0.7167002332225256},{x:0.5690572345237609,y:0.7167002332225256}],[{x:0.5586714013618898,y:0.7167002332225256},{x:0.4309427654762391,y:0.7167002332225256}],[{x:0.2175652318507172,y:0.17008039978925005},{x:0.4680608489445199,y:0.4205760168830527}],[{x:0.7824347681492828,y:0.17008039978925005},{x:0.5319391510554801,y:0.4205760168830527}],[{x:0.2175652318507172,y:0.82991960021075},{x:0.4680608489445199,y:0.5794239831169473}],[{x:0.7824347681492828,y:0.82991960021075},{x:0.5319391510554801,y:0.5794239831169473}],[{x:0.4411064550154802,y:0.10598910856497534},{x:0.09131533017347698,y:0.4557802334069786}],[{x:0.5588935449845198,y:0.10598910856497534},{x:0.908684669826523,y:0.4557802334069786}],[{x:0.4411064550154802,y:0.8940108914350247},{x:0.09131533017347698,y:0.5442197665930214}],[{x:0.5588935449845198,y:0.8940108914350247},{x:0.908684669826523,y:0.5442197665930214}]]

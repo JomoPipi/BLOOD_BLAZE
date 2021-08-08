@@ -28,6 +28,7 @@ const CONSTANTS = (() => {
         , INTERPOLATE_PLAYER_POSITION
         , GET_PLAYER_POSITION_AFTER_WALL_COLLISION
         , PLAYER_COLLIDES_WITH_WALL
+        , LINE_SEGMENT_INTERSECTION_POINT
         } as const
 
     return Object.freeze(CONST)
@@ -166,6 +167,44 @@ const CONSTANTS = (() => {
                 y0 - radius_dy
             ]
         }
+    }
+
+    function LINE_SEGMENT_INTERSECTION_POINT(l1 : LineSegment, l2 : LineSegment) : [number, number] | null {
+        for (const p1 of l1) {
+            for (const p2 of l2) {
+                if (p1.x === p2.x && p1.y === p2.y) {
+                    return [p1.x, p1.y];
+                }
+            }
+        }
+        
+        const dx1 = l1[1].x - l1[0].x;
+        const dx2 = l2[1].x - l2[0].x;
+        if (dx1 === 0 && dx2 === 0)
+            return null;
+        const m1 = (l1[1].y - l1[0].y) / dx1;
+        const m2 = (l2[1].y - l2[0].y) / dx2;
+        if (m1 === m2)
+            return null;
+        const b1 = l1[0].y - m1 * l1[0].x;
+        const b2 = l2[0].y - m2 * l2[0].x;
+        const x = dx1 === 0
+            ? l1[0].x
+            : dx2 === 0
+            ? l2[0].x
+            : (b2 - b1) / (m1 - m2);
+    
+        const y1 = m1 * x + b1
+        const y2 = m2 * x + b2
+        const y = dx1 === 0 ? y2 : y1
+    
+        const EPSILON = 1e-9
+        return Math.min(l1[0].x, l1[1].x) - EPSILON <= x && x <= Math.max(l1[0].x, l1[1].x) + EPSILON
+            && Math.min(l2[0].x, l2[1].x) - EPSILON <= x && x <= Math.max(l2[0].x, l2[1].x) + EPSILON
+            && Math.min(l1[0].y, l1[1].y) - EPSILON <= y && y <= Math.max(l1[0].y, l1[1].y) + EPSILON
+            && Math.min(l2[0].y, l2[1].y) - EPSILON <= y && y <= Math.max(l2[0].y, l2[1].y) + EPSILON
+            ? [x, y]
+            : null
     }
 
     function PLAYER_COLLIDES_WITH_WALL(oldX : number, oldY : number, x : number, y : number, segments : LineSegment[]) : boolean {

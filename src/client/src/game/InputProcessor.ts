@@ -51,7 +51,11 @@ export class InputProcessor {
         {
             this.state.myPlayer.lastTimeShooting = now
             
-            const bullet = new ClientPredictedBullet(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls)
+            const bullet = new ClientPredictedBullet(
+                this.state.myPlayer.predictedPosition, 
+                this.state.myPlayer.controls, 
+                this.state.structures)
+                
             if (DEV_SETTINGS.enableClientSidePrediction)
             {
                 this.state.myPlayer.bullets.push(bullet)

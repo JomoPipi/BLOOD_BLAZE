@@ -1456,17 +1456,26 @@ var app = (function () {
     class ClientPredictedBullet {
         timeCreated;
         data;
-        constructor(p, joystick) {
+        constructor(p, joystick, walls) {
             this.timeCreated = Date.now();
-            this.data = createBullet(p, joystick, Math.random() + ':' + p.name);
+            this.data = createBullet(p, joystick, Math.random() + ':' + p.name, walls);
         }
     }
-    function createBullet(p, joystick, id) {
+    function createBullet(p, joystick, id, walls) {
         const speedX = CONSTANTS.BULLET_SPEED * Math.cos(p.angle) + joystick.x * CONSTANTS.PLAYER_SPEED;
         const speedY = CONSTANTS.BULLET_SPEED * Math.sin(p.angle) + joystick.y * CONSTANTS.PLAYER_SPEED;
         const x = p.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle);
         const y = p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle);
-        const bullet = { x, y, speedX, speedY, id, shooter: p.name };
+        const bigX = x + speedX * 20000; // Arbitrary amount to ensure the bullet leaves the area
+        const bigY = y + speedY * 20000; // and collides with at least the boundary wall.
+        const [_, expirationDistance] = walls.reduce(([pt, min], w) => {
+            const point = CONSTANTS.LINE_SEGMENT_INTERSECTION_POINT(w, [p, { x: bigX, y: bigY }]);
+            if (!point)
+                return [pt, min];
+            const dist = distance(point[0], point[1], x, y);
+            return dist < min ? [point, dist] : [pt, min];
+        }, [[69, 420], Infinity]);
+        const bullet = { x, y, speedX, speedY, id, shooter: p.name, expirationDistance };
         return bullet;
     }
 
@@ -1506,7 +1515,7 @@ var app = (function () {
             }
             if (this.state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting)) {
                 this.state.myPlayer.lastTimeShooting = now;
-                const bullet = new ClientPredictedBullet(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls);
+                const bullet = new ClientPredictedBullet(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls, this.state.structures);
                 if (DEV_SETTINGS.enableClientSidePrediction) {
                     this.state.myPlayer.bullets.push(bullet);
                 }
@@ -1623,20 +1632,18 @@ var app = (function () {
                     const by = b.data.y + b.data.speedY * age;
                     const x = bx * W;
                     const y = by * H;
-                    // const dx = x - props.display.x
-                    // const dy = y - props.display.y
-                    // const lag = this.state.players[b.shooter]?.data.latency || 0
                     const secondsToMerge = 0.5;
                     const mergeRate = Math.min(now - b.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge;
-                    // props.display.x += dx * mergeRate
-                    // props.display.y += dy * mergeRate
-                    // this.circle(props.display.x, props.display.y, 2)
                     const x1 = b.display.x + age * b.data.speedX * W;
                     const y1 = b.display.y + age * b.data.speedY * H;
                     const dx = x - x1;
                     const dy = y - y1;
                     const X = x1 + dx * mergeRate;
                     const Y = y1 + dy * mergeRate;
+                    const lag = -(this.state.players[b.data.shooter]?.data.latency || 0);
+                    const traveled = distance(b.data.x + b.data.speedX * lag, b.data.y + b.data.speedY * lag, X / W, Y / H);
+                    if (traveled >= b.data.expirationDistance)
+                        return false;
                     this.circle(X, Y, 2);
                     return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
                 });
@@ -1650,6 +1657,9 @@ var app = (function () {
                     const by = b.y + b.speedY * age;
                     const x = bx * W;
                     const y = by * H;
+                    const traveled = distance(b.x, b.y, bx, by);
+                    if (traveled >= b.expirationDistance)
+                        return false;
                     this.circle(x, y, 2);
                     return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
                 });

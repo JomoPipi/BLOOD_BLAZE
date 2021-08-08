@@ -155,9 +155,14 @@ export class Game {
 
             if (0 <= bx && bx <= 1 && 0 <= by && by <= 1)
             {
-                if (this.structures.collidesWithBullet(bullet.originX, bullet.originY, newbx, newby))
+                const dist = distance(bullet.originX, bullet.originY, bx, by)
+                if (dist >= bullet.data.expirationDistance)
                 {
-                    this.deletedBullets[bullet.data.id] = true
+                    // Don't tell the client to delete bullets for this.
+                    // Let them do it at the right time.
+                    // And leave the following line commented out:
+                    // this.deletedBullets[bullet.data.id] = true
+
                     return false
                 }
                 collisionArgs[bullet.data.id] = [bx, by, newbx, newby, dt, bullet.shooter]
