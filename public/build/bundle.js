@@ -1451,9 +1451,12 @@ var app = (function () {
     class ClientPredictedBullet {
         timeCreated;
         data;
+        endPoint;
         constructor(p, joystick, walls) {
             this.timeCreated = Date.now();
-            this.data = createBullet(p, joystick, Math.random() + ':' + p.name, walls);
+            const [bullet, endPoint] = createBullet(p, joystick, Math.random() + ':' + p.name, walls);
+            this.data = bullet;
+            this.endPoint = endPoint;
         }
     }
     function createBullet(p, joystick, id, walls) {
@@ -1463,16 +1466,17 @@ var app = (function () {
         const y = p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle);
         const bigX = x + speedX * 20000; // Arbitrary amount to ensure the bullet leaves the area
         const bigY = y + speedY * 20000; // and collides with at least the boundary wall.
-        const [_, expirationDistance, collidedWall] = walls.reduce(([pt, min, _], w) => {
-            const point = CONSTANTS.LINE_SEGMENT_INTERSECTION_POINT(w, [p, { x: bigX, y: bigY }]);
+        // The four boundary walls ensure that expirationDistance is less than Infinity.
+        const bulletTrajectory = [p, { x: bigX, y: bigY }];
+        const [[endX, endY], expirationDistance, collidedWall] = walls.reduce(([pt, min, _], w) => {
+            const point = CONSTANTS.LINE_SEGMENT_INTERSECTION_POINT(w, bulletTrajectory);
             if (!point)
                 return [pt, min, _];
             const dist = distance(point[0], point[1], x, y);
             return dist < min ? [point, dist, w] : [pt, min, _];
         }, [[69, 420], Infinity, null]);
-        console.log('wall =', JSON.stringify(collidedWall));
         const bullet = { x, y, speedX, speedY, id, shooter: p.name, expirationDistance };
-        return bullet;
+        return [bullet, { x: endX, y: endY }];
     }
 
     // import { CONSTANTS } from "../../../shared/constants"
@@ -1645,7 +1649,6 @@ var app = (function () {
                 });
             }
             if (DEV_SETTINGS.showClientPredictedBullet) {
-                this.ctx.fillStyle = '#c0c';
                 this.state.myPlayer.bullets = this.state.myPlayer.bullets.filter(bullet => {
                     const age = now - bullet.timeCreated;
                     const b = bullet.data;
@@ -1656,7 +1659,10 @@ var app = (function () {
                     const traveled = distance(b.x, b.y, bx, by);
                     if (traveled >= b.expirationDistance)
                         return false;
+                    this.ctx.fillStyle = '#c0c';
                     this.circle(x, y, 2);
+                    this.ctx.fillStyle = '#3e3';
+                    this.circle(bullet.endPoint.x * W, bullet.endPoint.y * H, 2);
                     return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
                 });
             }

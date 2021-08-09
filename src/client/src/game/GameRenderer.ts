@@ -129,7 +129,6 @@ export class GameRenderer {
     
         if (DEV_SETTINGS.showClientPredictedBullet)
         {
-            this.ctx.fillStyle = '#c0c'
             this.state.myPlayer.bullets = this.state.myPlayer.bullets.filter(bullet => {
                 const age = now - bullet.timeCreated
                 const b = bullet.data
@@ -141,7 +140,12 @@ export class GameRenderer {
                 const traveled = distance(b.x, b.y, bx, by)
                 if (traveled >= b.expirationDistance) return false
 
+                this.ctx.fillStyle = '#c0c'
                 this.circle(x, y, 2)
+
+                this.ctx.fillStyle = '#3e3'
+                this.circle(bullet.endPoint.x * W, bullet.endPoint.y * H, 2)
+
                 return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
             })
         }

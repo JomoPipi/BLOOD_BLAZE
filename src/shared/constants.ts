@@ -170,6 +170,7 @@ const CONSTANTS = (() => {
     }
 
     function LINE_SEGMENT_INTERSECTION_POINT(l1 : LineSegment, l2 : LineSegment) : [number, number] | null {
+        const EPSILON = 1e-9
         for (const p1 of l1) {
             for (const p2 of l2) {
                 if (p1.x === p2.x && p1.y === p2.y) {
@@ -180,25 +181,25 @@ const CONSTANTS = (() => {
         
         const dx1 = l1[1].x - l1[0].x;
         const dx2 = l2[1].x - l2[0].x;
-        if (dx1 === 0 && dx2 === 0)
+        const vert1 = Math.abs(dx1) < EPSILON
+        const vert2 = Math.abs(dx2) < EPSILON
+        
+        if (vert1 && vert2)
             return null;
         const m1 = (l1[1].y - l1[0].y) / dx1;
         const m2 = (l2[1].y - l2[0].y) / dx2;
+
         if (m1 === m2)
             return null;
+
         const b1 = l1[0].y - m1 * l1[0].x;
         const b2 = l2[0].y - m2 * l2[0].x;
-        const x = dx1 === 0
-            ? l1[0].x
-            : dx2 === 0
-            ? l2[0].x
-            : (b2 - b1) / (m1 - m2);
+        const x = vert1 ? l1[0].x : vert2 ? l2[0].x : (b2 - b1) / (m1 - m2);
     
         const y1 = m1 * x + b1
         const y2 = m2 * x + b2
-        const y = dx1 === 0 ? y2 : y1
+        const y = vert1 ? y2 : y1
     
-        const EPSILON = 1e-9
         return Math.min(l1[0].x, l1[1].x) - EPSILON <= x && x <= Math.max(l1[0].x, l1[1].x) + EPSILON
             && Math.min(l2[0].x, l2[1].x) - EPSILON <= x && x <= Math.max(l2[0].x, l2[1].x) + EPSILON
             && Math.min(l1[0].y, l1[1].y) - EPSILON <= y && y <= Math.max(l1[0].y, l1[1].y) + EPSILON
