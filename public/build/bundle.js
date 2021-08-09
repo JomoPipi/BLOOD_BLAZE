@@ -1358,7 +1358,10 @@ var app = (function () {
     class ClientState {
         pendingInputs = [];
         bullets = [];
-        structures = [];
+        structures = { [WallType.BRICK]: [],
+            [WallType.FENCE]: [],
+            [WallType.NON_NEWTONIAN]: []
+        };
         players;
         myPlayer;
         lastGameTickMessageTime;
@@ -1367,11 +1370,7 @@ var app = (function () {
             this.players = { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) };
             this.myPlayer = new MyPlayer(CONSTANTS.CREATE_PLAYER(username));
             this.lastGameTickMessageTime = Date.now();
-            this.lastGameTickMessage =
-                { players: [],
-                    bullets: [],
-                    newBullets: []
-                };
+            this.lastGameTickMessage = { players: [], newBullets: [], bullets: [] };
         }
         processGameTick(msg) {
             const now = Date.now();
@@ -1493,7 +1492,9 @@ var app = (function () {
             const { x: oldX, y: oldY } = this.state.myPlayer.predictedPosition;
             CONSTANTS.MOVE_PLAYER(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls);
             const { x: tempX, y: tempY } = this.state.myPlayer.predictedPosition;
-            const [nextX, nextY] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(oldX, oldY, tempX, tempY, this.state.structures);
+            const walls = this.state.structures;
+            const wallsPlayersCannotPass = walls[WallType.BRICK].concat(walls[WallType.FENCE]);
+            const [nextX, nextY] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(oldX, oldY, tempX, tempY, wallsPlayersCannotPass);
             const { x: resetX, y: resetY } = this.state.myPlayer.controls;
             let shouldResetControls = false;
             if (tempX !== nextX || tempY !== nextY) {
@@ -1515,7 +1516,9 @@ var app = (function () {
             }
             if (this.state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting)) {
                 this.state.myPlayer.lastTimeShooting = now;
-                const bullet = new ClientPredictedBullet(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls, this.state.structures);
+                const walls = this.state.structures;
+                const wallsBulletsCannotPass = walls[WallType.BRICK].concat(walls[WallType.NON_NEWTONIAN]);
+                const bullet = new ClientPredictedBullet(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls, wallsBulletsCannotPass);
                 if (DEV_SETTINGS.enableClientSidePrediction) {
                     this.state.myPlayer.bullets.push(bullet);
                 }
@@ -1563,16 +1566,11 @@ var app = (function () {
     class GameRenderer {
         canvas;
         ctx;
-        username;
         state;
-        constructor(canvas, username, state) {
+        constructor(canvas, state) {
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
-            this.username = username;
             this.state = state;
-        }
-        updateSegments(segments) {
-            this.state.structures = segments;
         }
         render(now, renderDelta) {
             const W = this.canvas.width;
@@ -1581,7 +1579,7 @@ var app = (function () {
             this.drawWalls(W, H);
             const msgDelta = now - this.state.lastGameTickMessageTime;
             for (const name in this.state.players) {
-                if (name === this.username)
+                if (name === this.state.myPlayer.name)
                     continue;
                 const p = this.state.players[name];
                 if (DEV_SETTINGS.showExtrapolatedEnemyPositions) {
@@ -1597,7 +1595,7 @@ var app = (function () {
                 }
             }
             if (DEV_SETTINGS.showServerPlayer) {
-                this.drawPlayer(this.state.players[this.username].data, now, 'purple');
+                this.drawPlayer(this.state.players[this.state.myPlayer.name].data, now, 'purple');
             }
             if (DEV_SETTINGS.showServerBullet) {
                 this.ctx.fillStyle = '#099';
@@ -1609,7 +1607,7 @@ var app = (function () {
                 this.drawPlayer(this.state.myPlayer.predictedPosition, now);
             }
             if (DEV_SETTINGS.showWhatOtherClientsPredict) {
-                const data = this.getExtrapolatedPlayer(this.state.players[this.username], msgDelta, renderDelta);
+                const data = this.getExtrapolatedPlayer(this.state.players[this.state.myPlayer.name], msgDelta, renderDelta);
                 this.drawPlayer(data, now, 'cyan');
             }
             if (DEV_SETTINGS.showClientBullet) {
@@ -1627,6 +1625,8 @@ var app = (function () {
             if (DEV_SETTINGS.showIdealClientBullet) {
                 this.ctx.fillStyle = '#00f';
                 this.state.bullets = this.state.bullets.filter(b => {
+                    if (b.data.shooter === this.state.myPlayer.name)
+                        return false;
                     const age = now - b.receptionTime;
                     const bx = b.data.x + b.data.speedX * age;
                     const by = b.data.y + b.data.speedY * age;
@@ -1661,6 +1661,7 @@ var app = (function () {
                         return false;
                     this.ctx.fillStyle = '#c0c';
                     this.circle(x, y, 2);
+                    // Hit debugger / Powerup
                     this.ctx.fillStyle = '#3e3';
                     this.circle(bullet.endPoint.x * W, bullet.endPoint.y * H, 2);
                     return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
@@ -1676,7 +1677,7 @@ var app = (function () {
             this.ctx.fillStyle =
                 this.ctx.strokeStyle =
                     isGettingShot ? `rgb(255,${R},${R})` : color;
-            if (p.name === this.username && isGettingShot) {
+            if (p.name === this.state.myPlayer.name && isGettingShot) {
                 const wait = 50 + Math.random() * 200;
                 throttled(traumatize, wait, now);
             }
@@ -1689,9 +1690,16 @@ var app = (function () {
             this.ctx.fillText(p.name, x - 17, y - 17);
         }
         drawWalls(w, h) {
-            this.ctx.strokeStyle = 'blue';
-            for (const [p1, p2] of this.state.structures) {
-                this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h);
+            // this.ctx.lineWidth = 2
+            const wallColors = [['#0e8', WallType.NON_NEWTONIAN],
+                ['#44f', WallType.FENCE],
+                ['#410', WallType.BRICK]
+            ];
+            for (const [color, type] of wallColors) {
+                this.ctx.strokeStyle = color;
+                for (const [p1, p2] of this.state.structures[type]) {
+                    this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h);
+                }
             }
         }
         circle(x, y, r, stroke) {
@@ -1734,7 +1742,9 @@ var app = (function () {
                 data.y = lasty + dy * limiter;
             }
             p.lastExtrapolatedPosition = data;
-            const [x, y] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(serverx, servery, data.x, data.y, this.state.structures);
+            const walls = this.state.structures;
+            const wallsPlayersCannotPass = walls[WallType.BRICK].concat(walls[WallType.FENCE]);
+            const [x, y] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(serverx, servery, data.x, data.y, wallsPlayersCannotPass);
             return { ...data, x, y };
         }
     }
@@ -1746,7 +1756,7 @@ var app = (function () {
     }
 
     let isRunning = false;
-    function runClient(elements, username, state, socket) {
+    function runClient(elements, state, socket) {
         if (isRunning)
             throw 'The client is already running.';
         isRunning = true;
@@ -1754,11 +1764,10 @@ var app = (function () {
             window.state = state;
         }
         elements.canvas.height = elements.canvas.width = window.innerWidth;
-        const renderer = new GameRenderer(elements.canvas, username, state);
+        const renderer = new GameRenderer(elements.canvas, state);
         socket.on('mapdata', segments => {
             console.log('got the mapdata');
             state.structures = segments;
-            renderer.updateSegments(segments);
         });
         socket.on('removedPlayer', name => { delete state.players[name]; });
         socket.on('gameTick', msg => { state.processGameTick(msg); });
@@ -1889,13 +1898,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-cooxpp");
-    			add_location(center, file$1, 22, 0, 795);
+    			add_location(center, file$1, 22, 0, 785);
     			attr_dev(div0, "class", "scoreboard svelte-cooxpp");
-    			add_location(div0, file$1, 23, 0, 824);
+    			add_location(div0, file$1, 23, 0, 814);
     			attr_dev(canvas_1, "class", "svelte-cooxpp");
-    			add_location(canvas_1, file$1, 24, 0, 879);
+    			add_location(canvas_1, file$1, 24, 0, 869);
     			attr_dev(div1, "class", "input-container svelte-cooxpp");
-    			add_location(div1, file$1, 25, 0, 909);
+    			add_location(div1, file$1, 25, 0, 899);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1971,7 +1980,7 @@ var app = (function () {
     	let scoreboard;
     	const state = new ClientState(username);
     	const inputs = new InputProcessor(state, socket);
-    	onMount(() => runClient({ inputs, canvas, scoreboard }, username, state, socket));
+    	onMount(() => runClient({ inputs, canvas, scoreboard }, state, socket));
     	const devMode = CONSTANTS.DEV_MODE;
     	const writable_props = ["socket", "username"];
 

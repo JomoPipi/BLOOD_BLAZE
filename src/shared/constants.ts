@@ -120,6 +120,7 @@ const CONSTANTS = (() => {
             const [{ x: sx1, y: sy1 }, { x: sx2, y: sy2 }] = segment
             const [x, y] = coord
             const pr = CONSTANTS.PLAYER_RADIUS
+            const EPSILON = 1e-9
 
             if (sx1 === sx2)
             { // Handle the case of the vertical line:
@@ -130,8 +131,8 @@ const CONSTANTS = (() => {
                     ? [sx1 + (oldX > x ? pr : -pr), y]
                     : coord
             }
-            else if (sy1 === sy2)
-            { // Handle the case of the horizontal line:
+            else if (Math.abs(sy1 - sy2) < EPSILON)
+            { // Handle the case of the horizontal (or near horizontal) line:
                 const collides = Math.min(sx1, sx2) <= x + pr && x <= Math.max(sx1, sx2) + pr
                     && Math.min(oldY, y - pr) < sy1 && sy1 < Math.max(oldY, y + pr)
 
@@ -259,5 +260,11 @@ const CONSTANTS = (() => {
 
 })()
 
-Object.assign(globalThis, { CONSTANTS })
+enum WallType {
+    BRICK, // A basic wall; players nor bullets can pass through it.
+    FENCE, // A fence; bullets can pass through it, but players cannot.
+    NON_NEWTONIAN, // players can pass; bullets cannot.
+}
+
+Object.assign(globalThis, { CONSTANTS, WallType })
     

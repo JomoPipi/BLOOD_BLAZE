@@ -21,7 +21,7 @@
     const state = new ClientState(username)
     const inputs = new InputProcessor(state, socket)
 
-    onMount(() => runClient({ inputs, canvas, scoreboard }, username, state, socket))
+    onMount(() => runClient({ inputs, canvas, scoreboard }, state, socket))
     
     const devMode = CONSTANTS.DEV_MODE
 </script>

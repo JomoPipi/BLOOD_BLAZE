@@ -29,7 +29,11 @@ class MyPlayer {
 export class ClientState {
     pendingInputs : PlayerControlsMessage[] = []
     bullets : Bullet[] = []
-    structures : LineSegment[] = []
+    structures : Record<WallType, LineSegment[]> =
+        { [WallType.BRICK]: []
+        , [WallType.FENCE]: []
+        , [WallType.NON_NEWTONIAN]: []
+        }
     players : Record<string, Player>
     myPlayer : MyPlayer
     lastGameTickMessageTime : number
@@ -39,11 +43,7 @@ export class ClientState {
         this.players = { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) }
         this.myPlayer = new MyPlayer(CONSTANTS.CREATE_PLAYER(username))
         this.lastGameTickMessageTime = Date.now()
-        this.lastGameTickMessage = 
-            { players: []
-            , bullets: []
-            , newBullets: []
-            }
+        this.lastGameTickMessage = { players: [], newBullets: [], bullets: [] }
     }
 
     processGameTick(msg : GameTickMessage) {

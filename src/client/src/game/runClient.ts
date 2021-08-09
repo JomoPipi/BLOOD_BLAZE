@@ -13,7 +13,7 @@ type ClientElements = {
 
 let isRunning = false
 
-export function runClient(elements : ClientElements, username : string, state : ClientState, socket : ClientSocket) {
+export function runClient(elements : ClientElements, state : ClientState, socket : ClientSocket) {
     if (isRunning) throw 'The client is already running.'
     isRunning = true
 
@@ -24,12 +24,11 @@ export function runClient(elements : ClientElements, username : string, state : 
 
     elements.canvas.height = elements.canvas.width = window.innerWidth
 
-    const renderer = new GameRenderer(elements.canvas, username, state)
+    const renderer = new GameRenderer(elements.canvas, state)
 
     socket.on('mapdata', segments => {
         console.log('got the mapdata')
         state.structures = segments
-        renderer.updateSegments(segments)
     })
 
     socket.on('removedPlayer', name => { delete state.players[name] })

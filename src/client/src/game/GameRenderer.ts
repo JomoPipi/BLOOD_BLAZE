@@ -9,18 +9,12 @@ export class GameRenderer {
 
     private readonly canvas
     private readonly ctx
-    private readonly username
     private readonly state
 
-    constructor(canvas : HTMLCanvasElement, username : string, state : ClientState) {
+    constructor(canvas : HTMLCanvasElement, state : ClientState) {
         this.canvas = canvas
         this.ctx = canvas.getContext('2d')!
-        this.username = username
         this.state = state
-    }
-
-    updateSegments(segments : LineSegment[]) {
-        this.state.structures = segments
     }
     
     render(now : number, renderDelta : number) {
@@ -35,7 +29,7 @@ export class GameRenderer {
         const msgDelta = now - this.state.lastGameTickMessageTime
         for (const name in this.state.players)
         {   
-            if (name === this.username) continue
+            if (name === this.state.myPlayer.name) continue
             const p = this.state.players[name]!
             
             if (DEV_SETTINGS.showExtrapolatedEnemyPositions)
@@ -58,7 +52,7 @@ export class GameRenderer {
 
         if (DEV_SETTINGS.showServerPlayer)
         {
-            this.drawPlayer(this.state.players[this.username]!.data, now, 'purple')
+            this.drawPlayer(this.state.players[this.state.myPlayer.name]!.data, now, 'purple')
         }
     
         if (DEV_SETTINGS.showServerBullet)
@@ -69,7 +63,7 @@ export class GameRenderer {
                 this.circle(b.x * W, b.y * H, 2)
             }
         }
-
+    
         if (DEV_SETTINGS.showPredictedPlayer)
         {
             this.drawPlayer(this.state.myPlayer.predictedPosition, now)
@@ -77,7 +71,7 @@ export class GameRenderer {
         
         if (DEV_SETTINGS.showWhatOtherClientsPredict)
         {
-            const data = this.getExtrapolatedPlayer(this.state.players[this.username]!, msgDelta, renderDelta)
+            const data = this.getExtrapolatedPlayer(this.state.players[this.state.myPlayer.name]!, msgDelta, renderDelta)
             this.drawPlayer(data, now, 'cyan')
         }
         
@@ -100,6 +94,7 @@ export class GameRenderer {
         {
             this.ctx.fillStyle = '#00f' 
             this.state.bullets = this.state.bullets.filter(b => {
+                if (b.data.shooter === this.state.myPlayer.name) return false;
                 const age = now - b.receptionTime
                 const bx = b.data.x + b.data.speedX * age
                 const by = b.data.y + b.data.speedY * age
@@ -143,6 +138,7 @@ export class GameRenderer {
                 this.ctx.fillStyle = '#c0c'
                 this.circle(x, y, 2)
 
+                // Hit debugger / Powerup
                 this.ctx.fillStyle = '#3e3'
                 this.circle(bullet.endPoint.x * W, bullet.endPoint.y * H, 2)
 
@@ -161,7 +157,7 @@ export class GameRenderer {
         this.ctx.strokeStyle =
         isGettingShot ? `rgb(255,${R},${R})` : color
         
-        if (p.name === this.username && isGettingShot)
+        if (p.name === this.state.myPlayer.name && isGettingShot)
         {
             const wait = 50 + Math.random() * 200
             throttled(traumatize, wait, now)
@@ -179,10 +175,19 @@ export class GameRenderer {
     }
 
     drawWalls(w : number, h : number) {
-        this.ctx.strokeStyle = 'blue'
-        for (const [p1, p2] of this.state.structures)
+        // this.ctx.lineWidth = 2
+        const wallColors =
+            [ ['#0e8', WallType.NON_NEWTONIAN]
+            , ['#44f', WallType.FENCE]
+            , ['#410', WallType.BRICK]
+            ] as const
+        for (const [color, type] of wallColors)
         {
-            this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h)
+            this.ctx.strokeStyle = color
+            for (const [p1, p2] of this.state.structures[type])
+            {
+                this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h)
+            }
         }
     }
 
@@ -234,8 +239,10 @@ export class GameRenderer {
 
         p.lastExtrapolatedPosition = data
         
+        const walls = this.state.structures
+        const wallsPlayersCannotPass = walls[WallType.BRICK].concat(walls[WallType.FENCE])
         const [x, y] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION
-            (serverx, servery, data.x, data.y, this.state.structures)
+            (serverx, servery, data.x, data.y, wallsPlayersCannotPass)
         return { ...data, x, y }
     }
 }

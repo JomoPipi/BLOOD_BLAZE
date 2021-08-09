@@ -21,7 +21,10 @@ export class InputProcessor {
         const { x: oldX, y: oldY } = this.state.myPlayer.predictedPosition
         CONSTANTS.MOVE_PLAYER(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls)
         const { x: tempX, y: tempY } = this.state.myPlayer.predictedPosition
-        const [nextX, nextY] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(oldX, oldY, tempX, tempY, this.state.structures)
+        const walls = this.state.structures
+        const wallsPlayersCannotPass = walls[WallType.BRICK].concat(walls[WallType.FENCE])
+        const [nextX, nextY] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION
+            (oldX, oldY, tempX, tempY, wallsPlayersCannotPass)
 
         const { x: resetX, y: resetY } = this.state.myPlayer.controls
         let shouldResetControls = false
@@ -51,10 +54,12 @@ export class InputProcessor {
         {
             this.state.myPlayer.lastTimeShooting = now
             
+            const walls = this.state.structures
+            const wallsBulletsCannotPass = walls[WallType.BRICK].concat(walls[WallType.NON_NEWTONIAN])
             const bullet = new ClientPredictedBullet(
                 this.state.myPlayer.predictedPosition, 
                 this.state.myPlayer.controls, 
-                this.state.structures)
+                wallsBulletsCannotPass)
                 
             if (DEV_SETTINGS.enableClientSidePrediction)
             {

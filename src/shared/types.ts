@@ -10,8 +10,7 @@ type ServerToClientMessageTypes = {
   readonly nomination : [boolean, string]
   readonly gameTick : GameTickMessage
   readonly removedPlayer : string
-  readonly mapdata : LineSegment[]
-  // newBullets : NewBulletsForClientsMessage
+  readonly mapdata : Record<WallType, LineSegment[]>
 }
 
 type ClientToServerSocketEvents = keyof ClientToServerMessageTypes
@@ -26,12 +25,17 @@ type ClientToServerMessageTypes = {
   readonly disconnect : never
 }
 
-type GameTickMessage = {
+type GameTickMessage<T extends typeof CONSTANTS.DEV_MODE = typeof CONSTANTS.DEV_MODE> = {
   readonly players : SocketPlayer[]
-  readonly bullets : SocketBullet[]
   readonly newBullets : SocketBullet[]
   readonly deletedBullets : Record<number, true>
-}
+} 
+& (T extends true ? 
+{ 
+  readonly bullets : SocketBullet[]
+} 
+: {})
+
 interface ServerSocket {
   on <T extends ClientToServerSocketEvents>
     (event : T, fn : (x : ClientToServerMessageTypes[T]) => void) : void
