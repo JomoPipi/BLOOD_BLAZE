@@ -36,7 +36,7 @@ export class Walls {
         const minLength = 0.1
         const maxLength = 0.5
         const slopeCount = 4
-        const angles = [...Array(slopeCount)].map((_,i) => Math.PI + i * Math.PI / slopeCount)
+        const angles = [...Array(slopeCount)].map((_,i) => Math.PI/2 + i * Math.PI / slopeCount)
         const randomPoint = () => ([ Math.random() * 0.5, Math.random() * 0.5 ]) 
         type Seg = [[number, number], [number, number]]
         const boundary = (options.includeBoundary 
@@ -62,23 +62,21 @@ export class Walls {
     }
 
     generateRandomMap(nWalls : Record<WallType, number>) {
-        // const minLength = 0.02
-        // const maxLength = 0.5
-        // for (const type of )
         
-        const brickWalls = this.generateBeautifulSymmetricWalls(nWalls[WallType.BRICK], { includeBoundary: true }) 
-        const fences = this.generateBeautifulSymmetricWalls(nWalls[WallType.FENCE]) 
-        if (!isTraversableEverywhere(1, 1, brickWalls.concat(fences)))
-        {
-            this.generateRandomMap(nWalls)
-            return;
-        }
-        const nnWalls = this.generateBeautifulSymmetricWalls(nWalls[WallType.NON_NEWTONIAN]) 
-        this.segments[WallType.BRICK] = brickWalls
-        this.segments[WallType.FENCE] = fences
-        this.segments[WallType.NON_NEWTONIAN] = nnWalls
+        // const brickWalls = this.generateBeautifulSymmetricWalls(nWalls[WallType.BRICK], { includeBoundary: true }) 
+        // const fences = this.generateBeautifulSymmetricWalls(nWalls[WallType.FENCE]) 
+        // if (!isTraversableEverywhere(1, 1, brickWalls.concat(fences)))
+        // {
+        //     this.generateRandomMap(nWalls)
+        //     return;
+        // }
+        // const nnWalls = this.generateBeautifulSymmetricWalls(nWalls[WallType.NON_NEWTONIAN]) 
+        // this.segments[WallType.BRICK] = brickWalls
+        // this.segments[WallType.FENCE] = fences
+        // this.segments[WallType.NON_NEWTONIAN] = nnWalls
 
-
+        this.segments = {0:[],1:[[{x:0.350437490023222,y:0.23221086153457404},{x:0.2291871541171328,y:0.23221086153457407}],[{x:0.649562509976778,y:0.23221086153457404},{x:0.7708128458828671,y:0.23221086153457407}],[{x:0.350437490023222,y:0.767789138465426},{x:0.2291871541171328,y:0.767789138465426}],[{x:0.649562509976778,y:0.767789138465426},{x:0.7708128458828671,y:0.767789138465426}],[{x:0.49335054222106445,y:0.09193402617748803},{x:0.1924333025679748,y:0.3928512658305777}],[{x:0.5066494577789356,y:0.09193402617748803},{x:0.8075666974320252,y:0.3928512658305777}],[{x:0.49335054222106445,y:0.908065973822512},{x:0.1924333025679748,y:0.6071487341694223}],[{x:0.5066494577789356,y:0.908065973822512},{x:0.8075666974320252,y:0.6071487341694223}],[{x:0.32090401806055624,y:0.15491248424329807},{x:0.0043107649589152475,y:-0.16168076885834287}],[{x:0.6790959819394438,y:0.15491248424329807},{x:0.9956892350410848,y:-0.16168076885834287}],[{x:0.32090401806055624,y:0.8450875157567019},{x:0.0043107649589152475,y:1.1616807688583428}],[{x:0.6790959819394438,y:0.8450875157567019},{x:0.9956892350410848,y:1.1616807688583428}],[{x:0.15512970641628387,y:0.07083775845666718},{x:0.026079745236700397,y:-0.05821220272291627}],[{x:0.8448702935837161,y:0.07083775845666718},{x:0.9739202547632996,y:-0.05821220272291627}],[{x:0.15512970641628387,y:0.9291622415433328},{x:0.026079745236700397,y:1.0582122027229164}],[{x:0.8448702935837161,y:0.9291622415433328},{x:0.9739202547632996,y:1.0582122027229164}]],2:[]}
+        
 
             
         function isTraversableEverywhere(width : number, height : number, walls : LineSegment[]) {

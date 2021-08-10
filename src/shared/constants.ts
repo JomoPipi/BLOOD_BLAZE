@@ -133,12 +133,31 @@ const CONSTANTS = (() => {
             }
             else if (Math.abs(sy1 - sy2) < EPSILON)
             { // Handle the case of the horizontal (or near horizontal) line:
-                const collides = Math.min(sx1, sx2) <= x + pr && x <= Math.max(sx1, sx2) + pr
+                // const collides = Math.min(sx1, sx2) <= x && x <= Math.max(sx1, sx2)
+                //     && Math.min(oldY, y) < sy1 && sy1 < Math.max(oldY, y)
+                
+                const collides = Math.min(sx1, sx2) <= x && x <= Math.max(sx1, sx2)
                     && Math.min(oldY, y - pr) < sy1 && sy1 < Math.max(oldY, y + pr)
 
-                return collides
-                    ? [x, sy1 + (oldY > y ? pr : -pr)]
-                    : coord
+                if (collides) {
+                    
+                console.log('we here')
+                 return [x, sy1 + (oldY > y ? pr : -pr)]
+                }
+                
+                // Check if the player collides with either tip of the segment:
+                for (const { x: tipX, y: tipY } of segment)
+                {
+                    if (distance(x, y, tipX, tipY) >= pr) continue
+                    const angle = Math.atan2(sx1 - y, 0)
+                    const angle2 = Math.atan2(tipX - x, tipY - y)
+                    const da = angle2 - (angle + Math.PI)
+                    const dx = Math.cos(da) * pr
+                    const dy = Math.sin(da) * pr
+                    return [tipX - dx, tipY - dy]
+                }
+
+                return coord
             }
 
             const sm = (sy2 - sy1) / (sx2 - sx1)
@@ -150,23 +169,39 @@ const CONSTANTS = (() => {
             const x0 = (b - bʹ) / (smʹ - sm)
             const y0 = smʹ * x0 + bʹ
 
-            const d = distance(x, y, x0, y0)
-            if (d >= pr) return coord
-            const xe = Math.sign(x0 - oldX)
-            const ye = Math.sign(y0 - oldY)
+            if (distance(x, y, x0, y0) >= pr) return coord
+
+            // const xe = Math.sign(x0 - oldX)
+            // const ye = Math.sign(y0 - oldY)
             const angle = Math.atan2(y0 - y, x0 - x)
             const radius_dx = Math.cos(angle) * pr
             const radius_dy = Math.sin(angle) * pr
-            if (!( Math.min(sx1,sx2) - radius_dx * xe <= x0 && x0 <= Math.max(sx1,sx2) + radius_dx * xe
-                && Math.min(sy1,sy2) - radius_dy * ye <= y0 && y0 <= Math.max(sy1,sy2) + radius_dy * ye
-                ))
+            // if (!( Math.min(sx1,sx2) - radius_dx * xe <= x0 && x0 <= Math.max(sx1,sx2) + radius_dx * xe
+            //     && Math.min(sy1,sy2) - radius_dy * ye <= y0 && y0 <= Math.max(sy1,sy2) + radius_dy * ye
+            //     ))
+
+            // Chceck if the intersection is indeed within the segments:
+            if (Math.min(sx1,sx2) <= x0 && x0 <= Math.max(sx1,sx2) && 
+                Math.min(sy1,sy2) <= y0 && y0 <= Math.max(sy1,sy2))
             {
-                return coord
+                // Push the player away from the wall:
+                return [x0 - radius_dx,  y0 - radius_dy]
             }
-            return [
-                x0 - radius_dx, 
-                y0 - radius_dy
-            ]
+            
+            // Check if the player collides with either tip of the segment:
+            for (const { x: tipX, y: tipY } of segment)
+            {
+                if (distance(x, y, tipX, tipY) >= pr) continue
+                const angle2 = Math.atan2(tipX - x, tipY - y)
+                const da = angle2 - (angle + Math.PI)
+                const flip = sm > 0 ? 1 : -1
+                console.log('flip =',flip)
+                const dx = Math.cos(angle - da) * pr * flip
+                const dy = Math.sin(angle - da) * pr * flip
+                return [tipX - dx, tipY - dy]
+            }
+
+            return coord
         }
     }
 

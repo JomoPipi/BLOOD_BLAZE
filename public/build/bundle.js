@@ -1662,7 +1662,7 @@ var app = (function () {
                     this.ctx.fillStyle = '#c0c';
                     this.circle(x, y, 2);
                     // Hit debugger / Powerup
-                    this.ctx.fillStyle = '#3e3';
+                    this.ctx.fillStyle = '#f00';
                     this.circle(bullet.endPoint.x * W, bullet.endPoint.y * H, 2);
                     return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
                 });
@@ -2342,8 +2342,8 @@ var app = (function () {
     	let username = "";
 
     	function proceed(name) {
-    		console.log("Welcome to the game,", name + "!");
     		$$invalidate(1, username = name);
+    		console.log("Welcome to the game,", name + "!");
     	}
 
     	const devMode = CONSTANTS.DEV_MODE; // It's not defined outside of script tags 🤷

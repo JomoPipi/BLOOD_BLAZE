@@ -139,7 +139,7 @@ export class GameRenderer {
                 this.circle(x, y, 2)
 
                 // Hit debugger / Powerup
-                this.ctx.fillStyle = '#3e3'
+                this.ctx.fillStyle = '#f00'
                 this.circle(bullet.endPoint.x * W, bullet.endPoint.y * H, 2)
 
                 return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1

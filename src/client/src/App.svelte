@@ -9,8 +9,8 @@
 	
 	let username = ''
 	function proceed(name : string) {
-		console.log('Welcome to the game,', name + '!')
 		username = name
+		console.log('Welcome to the game,', name + '!')
 	}
 
     const devMode = CONSTANTS.DEV_MODE // It's not defined outside of script tags 🤷
