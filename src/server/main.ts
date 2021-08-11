@@ -25,10 +25,14 @@ console.log('GAME_TICK =',CONSTANTS.GAME_TICK)
 
 const game = new Game()
 game.structures.generateRandomMap(
-    { [WallType.BRICK]: 5
-    , [WallType.FENCE]: 4
-    , [WallType.NON_NEWTONIAN]: 3
+    { [WallType.BRICK]: 3
+    , [WallType.FENCE]: 3
+    , [WallType.NON_NEWTONIAN]: 0
     })
+    // { [WallType.BRICK]: 5
+    // , [WallType.FENCE]: 4
+    // , [WallType.NON_NEWTONIAN]: 3
+    // })
 
 io.on('connection', socket => {
 
