@@ -109,12 +109,8 @@ const CONSTANTS = (() => {
         data.y += dy
         return data
     }
-
+    
     function GET_PLAYER_POSITION_AFTER_WALL_COLLISION(oldX : number, oldY : number, playerX : number, playerY : number, segments : LineSegment[]) : readonly [number, number] {
-
-        // Old way: problem is that the player can be pushed through walls
-        // if he walks through an acute angle.
-        // return segments.reduce(pushPlayerAgainstWall, [playerX, playerY])
 
         return segments
             .map(segment => {
@@ -125,58 +121,50 @@ const CONSTANTS = (() => {
             .map(([[x, y]]) => [x - playerX, y - playerY] as const)
             .reduce(([px, py], [dx, dy]) => [px + dx, py + dy], [playerX, playerY])
 
-        function postCollisionPosition(coord : [number, number], segment : LineSegment) : [number, number] {
-            // Return a coordinate that is at least a player's radius away from the line segment.
-            // The line segment is a "wall" pushing back on the player.
-            const [{ x: sx1, y: sy1 }, { x: sx2, y: sy2 }] = segment
-            const [x, y] = coord
+        function postCollisionPosition(player : [number, number], wall : LineSegment) : readonly [number, number] {
+            // Return a coordinate that is at least a player's radius away from the line wall.
+            const [{ x: sx1, y: sy1 }, { x: sx2, y: sy2 }] = wall
+            const [x, y] = player
             const pr = CONSTANTS.PLAYER_RADIUS
             const EPSILON = 1e-9
+            const tip_or_nothing = () => {
+                // Check if the player collides with either tip of the wall:
+                for (const { x: tipX, y: tipY } of wall)
+                {
+                    const d = distance(x, y, tipX, tipY)
+                    if (d >= pr) continue
+                    const dx = (tipX - x) / d
+                    const dy = (tipY - y) / d
+                    return [tipX - dx * pr, tipY - dy * pr] as const
+                }
+                // They didn't, so just return the player's position:
+                return player
+            }
 
-            if (Math.abs(sx1 - sx2) < EPSILON)
-            { // Handle the case of the vertical line:
+            if (Math.abs(sx1 - sx2) < EPSILON) // Handle the case of the vertical line:
+            {
                 const collides = 
                     Math.min(sy1, sy2) <= y && y <= Math.max(sy1, sy2) &&
                     Math.min(oldX, x - pr) < sx1 && sx1 < Math.max(oldX, x + pr)
 
-                if (collides) return [sx1 + Math.sign(oldX - x) * pr, y]
-
-                // Check if the player collides with either tip of the segment:
-                for (const { x: tipX, y: tipY } of segment)
-                {
-                    const d = distance(x, y, tipX, tipY)
-                    if (d >= pr) continue
-                    const dx = (tipX - x) / d
-                    const dy = (tipY - y) / d
-                    return [tipX - dx * pr, tipY - dy * pr]
-                }
-
-                return coord
+                return collides
+                    ? [sx1 + Math.sign(oldX - sx1) * pr, y] as const
+                    : tip_or_nothing()
             }
-            else if (Math.abs(sy1 - sy2) < EPSILON)
-            { // Handle the case of the horizontal (or near horizontal) line:
+            else if (Math.abs(sy1 - sy2) < EPSILON) // Handle the case of the horizontal line:
+            { 
                 const collides =
                     Math.min(sx1, sx2) <= x && x <= Math.max(sx1, sx2) && 
                     Math.min(oldY, y - pr) < sy1 && sy1 < Math.max(oldY, y + pr)
 
-                if (collides) return [x, sy1 + Math.sign(oldY - y) * pr]
-
-                // Check if the player collides with either tip of the segment:
-                for (const { x: tipX, y: tipY } of segment)
-                {
-                    const d = distance(x, y, tipX, tipY)
-                    if (d >= pr) continue
-                    const dx = (tipX - x) / d
-                    const dy = (tipY - y) / d
-                    return [tipX - dx * pr, tipY - dy * pr]
-                }
-
-                return coord
+                return collides
+                    ? [x, sy1 + Math.sign(oldY - sy1) * pr] as const
+                    : tip_or_nothing()
             }
 
             const sm = (sy2 - sy1) / (sx2 - sx1)
             const b = sy1 - sm * sx1
-            // line perpendicular to the wall, passing through the coord:
+            // line perpendicular to the wall, passing through the player:
             const smʹ = -1 / sm
             const bʹ = y - smʹ * x
             // intersection of perpendicular line to the wall - the closest point from (x,y) to the wall:
@@ -184,11 +172,14 @@ const CONSTANTS = (() => {
             const y0 = smʹ * x0 + bʹ
 
             const d = distance(x, y, x0, y0)
-            if (d >= pr) return coord
+            if (d >= pr) return player
 
-            // Chceck if the intersection is indeed within the segments:
-            if (Math.min(sx1,sx2) <= x0 && x0 <= Math.max(sx1,sx2) && 
-                Math.min(sy1,sy2) <= y0 && y0 <= Math.max(sy1,sy2))
+            // Checks if the intersection is indeed within the segments:
+            const collides = 
+                Math.min(sx1,sx2) <= x0 && x0 <= Math.max(sx1,sx2) && 
+                Math.min(sy1,sy2) <= y0 && y0 <= Math.max(sy1,sy2)
+
+            if (collides)
             {
                 const dx = (x0 - x) / d
                 const dy = (y0 - y) / d
@@ -196,17 +187,7 @@ const CONSTANTS = (() => {
                 return [x0 - dx * pr,  y0 - dy * pr]
             }
             
-            // Check if the player collides with either tip of the segment:
-            for (const { x: tipX, y: tipY } of segment)
-            {
-                const d = distance(x, y, tipX, tipY)
-                if (d >= pr) continue
-                const dx = (tipX - x) / d
-                const dy = (tipY - y) / d
-                return [tipX - dx * pr, tipY - dy * pr]
-            }
-
-            return coord
+            return tip_or_nothing()
         }
     }
 

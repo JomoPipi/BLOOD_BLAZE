@@ -32,16 +32,13 @@ export class Walls {
         return walls
     }
     
-    private generateBeautifulSymmetricWalls(n : number, options : Partial<{ includeBoundary : boolean }> = {}) {
+    private generateBeautifulSymmetricWalls(n : number) {
         const minLength = 0.1
         const maxLength = 0.5
-        const slopeCount = 7
+        const slopeCount = 4
         const angles = [...Array(slopeCount)].map((_,i) => Math.PI/2 + i * Math.PI / slopeCount)
         const randomPoint = () => ([ Math.random() * 0.5, Math.random() * 0.5 ]) 
         type Seg = [[number, number], [number, number]]
-        const boundary = (options.includeBoundary 
-            ? [[[0,0],[0,1]],[[0,1],[1,1]],[[1,1],[1,0]],[[1,0],[0,0]]]
-            : []) as Seg[]
         const walls = [...Array(n)].map(_ => {
             const length = minLength + Math.random() *  (maxLength - minLength)
             const [x, y] = randomPoint() as [number, number]
@@ -49,8 +46,8 @@ export class Walls {
             const p2 = [x + Math.cos(rndAngle) * length, y + Math.sin(rndAngle) * length]
             const s = [[x, y], p2] as Seg
             return s
-        }).concat(boundary)
-        // Reflect each line segment on all four quadrants:
+        })
+        // Reflect each line segment on all four quadrants for some nice symmetry:
         .map(([[x1, y1],[x2, y2]]) => 
             [ [{ x: x1, y: y1 }, { x: x2, y: y2 }]         // Identity
             , [{ x: 1-x1, y: y1 }, { x: 1-x2, y: y2 }]     // Reflect horizontally
@@ -63,7 +60,10 @@ export class Walls {
 
     generateRandomMap(nWalls : Record<WallType, number>) {
         
-        const brickWalls = this.generateBeautifulSymmetricWalls(nWalls[WallType.BRICK], { includeBoundary: true }) 
+        const COMPLETELY_ESSENTIAL_BOUNDARY_WALLS =
+            ([[[0,0],[0,1]],[[0,1],[1,1]],[[1,1],[1,0]],[[1,0],[0,0]]] as const)
+            .map(([[x1,y1],[x2,y2]]) => [{ x: x1, y: y1 }, { x: x2, y: y2 }] as LineSegment)
+        const brickWalls = this.generateBeautifulSymmetricWalls(nWalls[WallType.BRICK]).concat(COMPLETELY_ESSENTIAL_BOUNDARY_WALLS)
         const fences = this.generateBeautifulSymmetricWalls(nWalls[WallType.FENCE]) 
         if (!isTraversableEverywhere(1, 1, brickWalls.concat(fences)))
         {
