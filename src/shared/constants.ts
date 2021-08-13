@@ -27,7 +27,6 @@ const CONSTANTS = (() => {
         , EXTRAPOLATE_PLAYER_POSITION
         , INTERPOLATE_PLAYER_POSITION
         , GET_PLAYER_POSITION_AFTER_WALL_COLLISION
-        , PLAYER_COLLIDES_WITH_WALL
         , LINE_SEGMENT_INTERSECTION_POINT
         } as const
 
@@ -111,10 +110,22 @@ const CONSTANTS = (() => {
         return data
     }
 
-    function GET_PLAYER_POSITION_AFTER_WALL_COLLISION(oldX : number, oldY : number, x : number, y : number, segments : LineSegment[]) : [number, number] {
-        return segments.reduce(pushCollision, [x, y])
+    function GET_PLAYER_POSITION_AFTER_WALL_COLLISION(oldX : number, oldY : number, playerX : number, playerY : number, segments : LineSegment[]) : readonly [number, number] {
 
-        function pushCollision(coord : [number, number], segment : LineSegment) : [number, number] {
+        // Old way: problem is that the player can be pushed through walls
+        // if he walks through an acute angle.
+        // return segments.reduce(pushPlayerAgainstWall, [playerX, playerY])
+
+        return segments
+            .map(segment => {
+                const [x, y] = postCollisionPosition([playerX, playerY], segment)
+                return [[x, y], distance(playerX, playerY, x, y)] as const
+            })
+            .filter(([_,dist]) => dist > 0)
+            .map(([[x, y]]) => [x - playerX, y - playerY] as const)
+            .reduce(([px, py], [dx, dy]) => [px + dx, py + dy], [playerX, playerY])
+
+        function postCollisionPosition(coord : [number, number], segment : LineSegment) : [number, number] {
             // Return a coordinate that is at least a player's radius away from the line segment.
             // The line segment is a "wall" pushing back on the player.
             const [{ x: sx1, y: sy1 }, { x: sx2, y: sy2 }] = segment
@@ -236,55 +247,6 @@ const CONSTANTS = (() => {
             && Math.min(l2[0].y, l2[1].y) - EPSILON <= y && y <= Math.max(l2[0].y, l2[1].y) + EPSILON
             ? [x, y]
             : null
-    }
-
-    function PLAYER_COLLIDES_WITH_WALL(oldX : number, oldY : number, x : number, y : number, segments : LineSegment[]) : boolean {
-        throw 'Uncomment everything if you want to use this.'
-
-        // return segments.some(findCollision)
-
-        // function findCollision(segment : LineSegment) : boolean {
-        //     // Return a coordinate that is at least a player's radius away from the line segment.
-        //     // The line segment is a "wall" pushing back on the player.
-        //     const [{ x: sx1, y: sy1 }, { x: sx2, y: sy2 }] = segment
-        //     const pr = CONSTANTS.PLAYER_RADIUS
-
-        //     if (sx1 === sx2)
-        //     { // Handle the case of the vertical line:
-        //         const collides = Math.min(sy1, sy2) <= y + pr && y <= Math.max(sy1, sy2) + pr
-        //             && Math.min(oldX, x - pr) < sx1 && sx1 < Math.max(oldX, x + pr)
-
-        //         return collides
-        //     }
-        //     else if (sy1 === sy2)
-        //     { // Handle the case of the horizontal line:
-        //         const collides = Math.min(sx1, sx2) <= x + pr && x <= Math.max(sx1, sx2) + pr
-        //             && Math.min(oldY, y - pr) < sy1 && sy1 < Math.max(oldY, y + pr)
-
-        //         return collides
-        //     }
-
-        //     const sm = (sy2 - sy1) / (sx2 - sx1)
-        //     const b = sy1 - sm * sx1
-        //     // line perpendicular to the wall, passing through the coord:
-        //     const smʹ = -1 / sm
-        //     const bʹ = y - smʹ * x
-        //     // intersection of perpendicular line to the wall - the closest point from (x,y) to the wall:
-        //     const x0 = (b - bʹ) / (smʹ - sm)
-        //     const y0 = smʹ * x0 + bʹ
-
-        //     const d = distance(x, y, x0, y0)
-        //     if (d >= pr) return false
-        //     const xe = Math.sign(x0 - oldX)
-        //     const ye = Math.sign(y0 - oldY)
-        //     const angle = Math.atan2(y0 - y, x0 - x)
-        //     const radius_dx = Math.cos(angle) * pr
-        //     const radius_dy = Math.sin(angle) * pr
-        //     const collides = Math.min(sx1,sx2) - radius_dx * xe <= x0 && x0 <= Math.max(sx1,sx2) + radius_dx * xe
-        //         && Math.min(sy1,sy2) - radius_dy * ye <= y0 && y0 <= Math.max(sy1,sy2) + radius_dy * ye
-                
-        //     return collides
-        // }
     }
 
 })()

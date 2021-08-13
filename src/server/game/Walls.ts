@@ -35,7 +35,7 @@ export class Walls {
     private generateBeautifulSymmetricWalls(n : number, options : Partial<{ includeBoundary : boolean }> = {}) {
         const minLength = 0.1
         const maxLength = 0.5
-        const slopeCount = 4
+        const slopeCount = 7
         const angles = [...Array(slopeCount)].map((_,i) => Math.PI/2 + i * Math.PI / slopeCount)
         const randomPoint = () => ([ Math.random() * 0.5, Math.random() * 0.5 ]) 
         type Seg = [[number, number], [number, number]]
