@@ -27,12 +27,8 @@ const game = new Game()
 game.structures.generateRandomMap(
     { [WallType.BRICK]: 3
     , [WallType.FENCE]: 3
-    , [WallType.NON_NEWTONIAN]: 0
+    , [WallType.NON_NEWTONIAN]: 2
     })
-    // { [WallType.BRICK]: 5
-    // , [WallType.FENCE]: 4
-    // , [WallType.NON_NEWTONIAN]: 3
-    // })
 
 io.on('connection', socket => {
 
