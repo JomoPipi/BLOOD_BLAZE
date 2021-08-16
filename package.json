@@ -4,7 +4,7 @@
   "description": "DEVASTATING BLOOD DEATH EXTREME",
   "type": "module",
   "scripts": {
-    "build": "cd src/client && npm install && rollup -c",
+    "build": "cd src/client && npm install && npx rollup -c",
     "test": "jest",
     "setup": "npm install && cd src/client && npm install && cd ../..",
     "dev-client": "cd src/client && npx rollup -c -w",
