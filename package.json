@@ -12,6 +12,7 @@
     "dev-server:compile": "tsc -w",
     "dev-server:run": "nodemon"
   },
+  "engines": { "node": "14.x" },
   "nodemonConfig": {
     "restartable": "rs",
     "ignore": [
