@@ -78,6 +78,6 @@ let lastGameLoop = Date.now()
     setTimeout(gameLoop, CONSTANTS.GAME_TICK)
 })()
 
-server.listen(3000, () => console.log('SERVER IS LISTENING!'))
+server.listen(process.env.PORT || 3000, () => console.log('SERVER IS LISTENING!'))
 
 export {}
