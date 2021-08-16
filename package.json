@@ -4,7 +4,7 @@
   "description": "DEVASTATING BLOOD DEATH EXTREME",
   "type": "module",
   "scripts": {
-    "build": "cd src/client && npx rollup -c",
+    "build": "cd src/client && cat ./node_modules/rollup-plugin-svelte/index.js && npx rollup -c",
     "test": "jest",
     "setup": "npm install && cd src/client && npm install && cd ../..",
     "dev-client": "cd src/client && npx rollup -c -w",
