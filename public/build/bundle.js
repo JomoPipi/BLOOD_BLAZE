@@ -24,9 +24,6 @@ var app = (function () {
     function safe_not_equal(a, b) {
         return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
     }
-    function is_empty(obj) {
-        return Object.keys(obj).length === 0;
-    }
 
     function append(target, node) {
         target.appendChild(node);
@@ -83,7 +80,7 @@ var app = (function () {
     }
     function get_current_component() {
         if (!current_component)
-            throw new Error('Function called outside component initialization');
+            throw new Error(`Function called outside component initialization`);
         return current_component;
     }
     function onMount(fn) {
@@ -119,7 +116,6 @@ var app = (function () {
                 set_current_component(component);
                 update(component.$$);
             }
-            set_current_component(null);
             dirty_components.length = 0;
             while (binding_callbacks.length)
                 binding_callbacks.pop()();
@@ -199,24 +195,22 @@ var app = (function () {
     function create_component(block) {
         block && block.c();
     }
-    function mount_component(component, target, anchor, customElement) {
+    function mount_component(component, target, anchor) {
         const { fragment, on_mount, on_destroy, after_update } = component.$$;
         fragment && fragment.m(target, anchor);
-        if (!customElement) {
-            // onMount happens before the initial afterUpdate
-            add_render_callback(() => {
-                const new_on_destroy = on_mount.map(run).filter(is_function);
-                if (on_destroy) {
-                    on_destroy.push(...new_on_destroy);
-                }
-                else {
-                    // Edge case - component was destroyed immediately,
-                    // most likely as a result of a binding initialising
-                    run_all(new_on_destroy);
-                }
-                component.$$.on_mount = [];
-            });
-        }
+        // onMount happens before the initial afterUpdate
+        add_render_callback(() => {
+            const new_on_destroy = on_mount.map(run).filter(is_function);
+            if (on_destroy) {
+                on_destroy.push(...new_on_destroy);
+            }
+            else {
+                // Edge case - component was destroyed immediately,
+                // most likely as a result of a binding initialising
+                run_all(new_on_destroy);
+            }
+            component.$$.on_mount = [];
+        });
         after_update.forEach(add_render_callback);
     }
     function destroy_component(component, detaching) {
@@ -241,6 +235,7 @@ var app = (function () {
     function init(component, options, instance, create_fragment, not_equal, props, dirty = [-1]) {
         const parent_component = current_component;
         set_current_component(component);
+        const prop_values = options.props || {};
         const $$ = component.$$ = {
             fragment: null,
             ctx: null,
@@ -252,21 +247,19 @@ var app = (function () {
             // lifecycle
             on_mount: [],
             on_destroy: [],
-            on_disconnect: [],
             before_update: [],
             after_update: [],
-            context: new Map(parent_component ? parent_component.$$.context : options.context || []),
+            context: new Map(parent_component ? parent_component.$$.context : []),
             // everything else
             callbacks: blank_object(),
-            dirty,
-            skip_bound: false
+            dirty
         };
         let ready = false;
         $$.ctx = instance
-            ? instance(component, options.props || {}, (i, ret, ...rest) => {
+            ? instance(component, prop_values, (i, ret, ...rest) => {
                 const value = rest.length ? rest[0] : ret;
                 if ($$.ctx && not_equal($$.ctx[i], $$.ctx[i] = value)) {
-                    if (!$$.skip_bound && $$.bound[i])
+                    if ($$.bound[i])
                         $$.bound[i](value);
                     if (ready)
                         make_dirty(component, i);
@@ -292,14 +285,11 @@ var app = (function () {
             }
             if (options.intro)
                 transition_in(component.$$.fragment);
-            mount_component(component, options.target, options.anchor, options.customElement);
+            mount_component(component, options.target, options.anchor);
             flush();
         }
         set_current_component(parent_component);
     }
-    /**
-     * Base class for Svelte components. Used when dev=false.
-     */
     class SvelteComponent {
         $destroy() {
             destroy_component(this, 1);
@@ -314,55 +304,51 @@ var app = (function () {
                     callbacks.splice(index, 1);
             };
         }
-        $set($$props) {
-            if (this.$$set && !is_empty($$props)) {
-                this.$$.skip_bound = true;
-                this.$$set($$props);
-                this.$$.skip_bound = false;
-            }
+        $set() {
+            // overridden by instance, if it has props
         }
     }
 
     function dispatch_dev(type, detail) {
-        document.dispatchEvent(custom_event(type, Object.assign({ version: '3.38.2' }, detail)));
+        document.dispatchEvent(custom_event(type, Object.assign({ version: '3.24.0' }, detail)));
     }
     function append_dev(target, node) {
-        dispatch_dev('SvelteDOMInsert', { target, node });
+        dispatch_dev("SvelteDOMInsert", { target, node });
         append(target, node);
     }
     function insert_dev(target, node, anchor) {
-        dispatch_dev('SvelteDOMInsert', { target, node, anchor });
+        dispatch_dev("SvelteDOMInsert", { target, node, anchor });
         insert(target, node, anchor);
     }
     function detach_dev(node) {
-        dispatch_dev('SvelteDOMRemove', { node });
+        dispatch_dev("SvelteDOMRemove", { node });
         detach(node);
     }
     function listen_dev(node, event, handler, options, has_prevent_default, has_stop_propagation) {
-        const modifiers = options === true ? ['capture'] : options ? Array.from(Object.keys(options)) : [];
+        const modifiers = options === true ? ["capture"] : options ? Array.from(Object.keys(options)) : [];
         if (has_prevent_default)
             modifiers.push('preventDefault');
         if (has_stop_propagation)
             modifiers.push('stopPropagation');
-        dispatch_dev('SvelteDOMAddEventListener', { node, event, handler, modifiers });
+        dispatch_dev("SvelteDOMAddEventListener", { node, event, handler, modifiers });
         const dispose = listen(node, event, handler, options);
         return () => {
-            dispatch_dev('SvelteDOMRemoveEventListener', { node, event, handler, modifiers });
+            dispatch_dev("SvelteDOMRemoveEventListener", { node, event, handler, modifiers });
             dispose();
         };
     }
     function attr_dev(node, attribute, value) {
         attr(node, attribute, value);
         if (value == null)
-            dispatch_dev('SvelteDOMRemoveAttribute', { node, attribute });
+            dispatch_dev("SvelteDOMRemoveAttribute", { node, attribute });
         else
-            dispatch_dev('SvelteDOMSetAttribute', { node, attribute, value });
+            dispatch_dev("SvelteDOMSetAttribute", { node, attribute, value });
     }
     function set_data_dev(text, data) {
         data = '' + data;
         if (text.wholeText === data)
             return;
-        dispatch_dev('SvelteDOMSetData', { node: text, data });
+        dispatch_dev("SvelteDOMSetData", { node: text, data });
         text.data = data;
     }
     function validate_each_argument(arg) {
@@ -381,27 +367,24 @@ var app = (function () {
             }
         }
     }
-    /**
-     * Base class for Svelte components with some minor dev-enhancements. Used when dev=true.
-     */
     class SvelteComponentDev extends SvelteComponent {
         constructor(options) {
             if (!options || (!options.target && !options.$$inline)) {
-                throw new Error("'target' is a required option");
+                throw new Error(`'target' is a required option`);
             }
             super();
         }
         $destroy() {
             super.$destroy();
             this.$destroy = () => {
-                console.warn('Component was already destroyed'); // eslint-disable-line no-console
+                console.warn(`Component was already destroyed`); // eslint-disable-line no-console
             };
         }
         $capture_state() { }
         $inject_state() { }
     }
 
-    /* src\game\views\Nomination.svelte generated by Svelte v3.38.2 */
+    /* src\game\views\Nomination.svelte generated by Svelte v3.24.0 */
     const file$5 = "src\\game\\views\\Nomination.svelte";
 
     function create_fragment$5(ctx) {
@@ -449,30 +432,30 @@ var app = (function () {
     			t8 = space();
     			bloodblaze = element("bloodblaze");
     			attr_dev(h1, "class", "svelte-1ggq3y7");
-    			add_location(h1, file$5, 34, 2, 912);
+    			add_location(h1, file$5, 34, 2, 957);
     			attr_dev(h2, "class", "svelte-1ggq3y7");
-    			add_location(h2, file$5, 35, 2, 940);
+    			add_location(h2, file$5, 35, 2, 985);
     			attr_dev(div0, "class", "title svelte-1ggq3y7");
-    			add_location(div0, file$5, 33, 1, 889);
+    			add_location(div0, file$5, 33, 1, 934);
     			attr_dev(input, "autocomplete", "off");
     			attr_dev(input, "placeholder", "Enter your name");
     			attr_dev(input, "pattern", "[A-Za-z0-9 _]*");
     			attr_dev(input, "class", "svelte-1ggq3y7");
-    			add_location(input, file$5, 40, 4, 1101);
+    			add_location(input, file$5, 40, 4, 1146);
     			attr_dev(button, "class", "svelte-1ggq3y7");
-    			add_location(button, file$5, 44, 4, 1234);
+    			add_location(button, file$5, 44, 4, 1279);
     			attr_dev(form, "type", "text");
     			attr_dev(form, "action", "");
-    			add_location(form, file$5, 39, 3, 1043);
-    			add_location(span0, file$5, 46, 2, 1271);
+    			add_location(form, file$5, 39, 3, 1088);
+    			add_location(span0, file$5, 46, 2, 1316);
     			attr_dev(span1, "class", "inner svelte-1ggq3y7");
-    			add_location(span1, file$5, 38, 2, 1018);
+    			add_location(span1, file$5, 38, 2, 1063);
     			attr_dev(div1, "class", "svelte-1ggq3y7");
-    			add_location(div1, file$5, 37, 1, 1009);
+    			add_location(div1, file$5, 37, 1, 1054);
     			attr_dev(bloodblaze, "class", "svelte-1ggq3y7");
-    			add_location(bloodblaze, file$5, 48, 1, 1290);
+    			add_location(bloodblaze, file$5, 48, 1, 1335);
     			attr_dev(main, "class", "svelte-1ggq3y7");
-    			add_location(main, file$5, 32, 0, 880);
+    			add_location(main, file$5, 32, 0, 925);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -534,8 +517,6 @@ var app = (function () {
     }
 
     function instance$5($$self, $$props, $$invalidate) {
-    	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Nomination", slots, []);
     	let { proceed } = $$props;
     	let { blaze } = $$props;
     	let { socket } = $$props;
@@ -574,7 +555,10 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Nomination> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$$set = $$props => {
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("Nomination", $$slots, []);
+
+    	$$self.$set = $$props => {
     		if ("proceed" in $$props) $$invalidate(2, proceed = $$props.proceed);
     		if ("blaze" in $$props) $$invalidate(0, blaze = $$props.blaze);
     		if ("socket" in $$props) $$invalidate(3, socket = $$props.socket);
@@ -655,7 +639,7 @@ var app = (function () {
     	}
     }
 
-    /* src\game\uielements\DirectionPad.svelte generated by Svelte v3.38.2 */
+    /* src\game\uielements\DirectionPad.svelte generated by Svelte v3.24.0 */
     const file$4 = "src\\game\\uielements\\DirectionPad.svelte";
 
     function create_fragment$4(ctx) {
@@ -665,7 +649,7 @@ var app = (function () {
     		c: function create() {
     			canvas_1 = element("canvas");
     			attr_dev(canvas_1, "class", "svelte-eupre8");
-    			add_location(canvas_1, file$4, 45, 0, 1271);
+    			add_location(canvas_1, file$4, 45, 0, 1318);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -695,8 +679,6 @@ var app = (function () {
     }
 
     function instance$4($$self, $$props, $$invalidate) {
-    	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("DirectionPad", slots, []);
     	let canvas;
     	let W;
     	let H;
@@ -750,6 +732,9 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<DirectionPad> was created with unknown prop '${key}'`);
     	});
 
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("DirectionPad", $$slots, []);
+
     	function canvas_1_binding($$value) {
     		binding_callbacks[$$value ? "unshift" : "push"](() => {
     			canvas = $$value;
@@ -757,7 +742,7 @@ var app = (function () {
     		});
     	}
 
-    	$$self.$$set = $$props => {
+    	$$self.$set = $$props => {
     		if ("callback" in $$props) $$invalidate(1, callback = $$props.callback);
     	};
 
@@ -811,7 +796,7 @@ var app = (function () {
     	}
     }
 
-    /* src\game\uielements\Joystick.svelte generated by Svelte v3.38.2 */
+    /* src\game\uielements\Joystick.svelte generated by Svelte v3.24.0 */
     const file$3 = "src\\game\\uielements\\Joystick.svelte";
 
     function create_fragment$3(ctx) {
@@ -823,9 +808,9 @@ var app = (function () {
     			div = element("div");
     			canvas_1 = element("canvas");
     			attr_dev(canvas_1, "class", "svelte-18l9nl");
-    			add_location(canvas_1, file$3, 88, 4, 2664);
+    			add_location(canvas_1, file$3, 88, 4, 2707);
     			attr_dev(div, "class", "svelte-18l9nl");
-    			add_location(div, file$3, 87, 0, 2631);
+    			add_location(div, file$3, 87, 0, 2674);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -862,8 +847,6 @@ var app = (function () {
     const lineWidth = 8;
 
     function instance$3($$self, $$props, $$invalidate) {
-    	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Joystick", slots, []);
     	let container;
     	let canvas;
     	let W;
@@ -961,6 +944,9 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Joystick> was created with unknown prop '${key}'`);
     	});
 
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("Joystick", $$slots, []);
+
     	function canvas_1_binding($$value) {
     		binding_callbacks[$$value ? "unshift" : "push"](() => {
     			canvas = $$value;
@@ -975,7 +961,7 @@ var app = (function () {
     		});
     	}
 
-    	$$self.$$set = $$props => {
+    	$$self.$set = $$props => {
     		if ("callback" in $$props) $$invalidate(2, callback = $$props.callback);
     	};
 
@@ -1048,7 +1034,7 @@ var app = (function () {
         showGameMetadeta: true
     };
 
-    /* src\game\views\DevSwitches.svelte generated by Svelte v3.38.2 */
+    /* src\game\views\DevSwitches.svelte generated by Svelte v3.24.0 */
 
     const { Object: Object_1 } = globals;
     const file$2 = "src\\game\\views\\DevSwitches.svelte";
@@ -1056,8 +1042,6 @@ var app = (function () {
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[4] = list[i];
-    	child_ctx[5] = list;
-    	child_ctx[6] = i;
     	return child_ctx;
     }
 
@@ -1086,11 +1070,11 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = space();
     			attr_dev(input, "type", "checkbox");
-    			add_location(input, file$2, 19, 12, 610);
+    			add_location(input, file$2, 19, 12, 656);
     			attr_dev(h4, "class", "svelte-1p5603t");
-    			add_location(h4, file$2, 20, 12, 681);
+    			add_location(h4, file$2, 20, 12, 727);
     			attr_dev(label, "class", "svelte-1p5603t");
-    			add_location(label, file$2, 18, 8, 589);
+    			add_location(label, file$2, 18, 8, 635);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, label, anchor);
@@ -1162,11 +1146,11 @@ var app = (function () {
     			}
 
     			attr_dev(button0, "class", "settings-button svelte-1p5603t");
-    			add_location(button0, file$2, 8, 0, 320);
-    			add_location(button1, file$2, 13, 4, 473);
+    			add_location(button0, file$2, 8, 0, 366);
+    			add_location(button1, file$2, 13, 4, 519);
     			attr_dev(div, "class", "settings-page svelte-1p5603t");
     			toggle_class(div, "show", /*settingsPage*/ ctx[1].isOpen);
-    			add_location(div, file$2, 12, 0, 407);
+    			add_location(div, file$2, 12, 0, 453);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1267,8 +1251,6 @@ var app = (function () {
     const func = s => !s[0] ? s : s[0].toUpperCase() + s.slice(1);
 
     function instance$2($$self, $$props, $$invalidate) {
-    	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("DevSwitches", slots, []);
     	const DEV_SWITCHES = Object.keys(DEV_SETTINGS).filter(k => typeof DEV_SETTINGS[k] === "boolean");
 
     	const settingsPage = {
@@ -1283,6 +1265,9 @@ var app = (function () {
     	Object_1.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<DevSwitches> was created with unknown prop '${key}'`);
     	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("DevSwitches", $$slots, []);
 
     	function input_change_handler(option) {
     		DEV_SETTINGS[option] = this.checked;
@@ -1809,7 +1794,7 @@ var app = (function () {
     }
     Object.assign(window, { startBot, endBot });
 
-    /* src\game\views\GameClient.svelte generated by Svelte v3.38.2 */
+    /* src\game\views\GameClient.svelte generated by Svelte v3.24.0 */
     const file$1 = "src\\game\\views\\GameClient.svelte";
 
     // (28:4) {#if devMode}
@@ -1898,13 +1883,13 @@ var app = (function () {
     			t5 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(center, "class", "svelte-cooxpp");
-    			add_location(center, file$1, 22, 0, 785);
+    			add_location(center, file$1, 22, 0, 830);
     			attr_dev(div0, "class", "scoreboard svelte-cooxpp");
-    			add_location(div0, file$1, 23, 0, 814);
+    			add_location(div0, file$1, 23, 0, 859);
     			attr_dev(canvas_1, "class", "svelte-cooxpp");
-    			add_location(canvas_1, file$1, 24, 0, 869);
+    			add_location(canvas_1, file$1, 24, 0, 914);
     			attr_dev(div1, "class", "input-container svelte-cooxpp");
-    			add_location(div1, file$1, 25, 0, 899);
+    			add_location(div1, file$1, 25, 0, 944);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1971,8 +1956,6 @@ var app = (function () {
     }
 
     function instance$1($$self, $$props, $$invalidate) {
-    	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("GameClient", slots, []);
     	let { socket } = $$props;
     	let { username } = $$props;
     	NETWORK_LATENCY.beginRetrieving(socket);
@@ -1988,6 +1971,9 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<GameClient> was created with unknown prop '${key}'`);
     	});
 
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("GameClient", $$slots, []);
+
     	function div0_binding($$value) {
     		binding_callbacks[$$value ? "unshift" : "push"](() => {
     			scoreboard = $$value;
@@ -2002,7 +1988,7 @@ var app = (function () {
     		});
     	}
 
-    	$$self.$$set = $$props => {
+    	$$self.$set = $$props => {
     		if ("socket" in $$props) $$invalidate(5, socket = $$props.socket);
     		if ("username" in $$props) $$invalidate(0, username = $$props.username);
     	};
@@ -2089,7 +2075,7 @@ var app = (function () {
     	}
     }
 
-    /* src\App.svelte generated by Svelte v3.38.2 */
+    /* src\App.svelte generated by Svelte v3.24.0 */
 
     const { console: console_1 } = globals;
     const file = "src\\App.svelte";
@@ -2206,7 +2192,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "id", "debug-window");
     			attr_dev(div, "class", "svelte-yuxzpj");
-    			add_location(div, file, 21, 1, 628);
+    			add_location(div, file, 21, 1, 666);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2257,7 +2243,7 @@ var app = (function () {
     			if_block1_anchor = empty();
     			attr_dev(div, "id", "bloodscreen");
     			attr_dev(div, "class", "svelte-yuxzpj");
-    			add_location(div, file, 14, 0, 458);
+    			add_location(div, file, 14, 0, 496);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2290,8 +2276,6 @@ var app = (function () {
     				if (!if_block0) {
     					if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
     					if_block0.c();
-    				} else {
-    					if_block0.p(ctx, dirty);
     				}
 
     				transition_in(if_block0, 1);
@@ -2329,8 +2313,6 @@ var app = (function () {
     }
 
     function instance($$self, $$props, $$invalidate) {
-    	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("App", slots, []);
     	let { blaze } = $$props;
 
     	// @ts-ignore
@@ -2353,7 +2335,10 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<App> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$$set = $$props => {
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("App", $$slots, []);
+
+    	$$self.$set = $$props => {
     		if ("blaze" in $$props) $$invalidate(0, blaze = $$props.blaze);
     	};
 
