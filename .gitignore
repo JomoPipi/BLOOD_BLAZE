@@ -6,3 +6,4 @@
 /src/client/public/build/
 
 .vercel
+"node_modules" 
