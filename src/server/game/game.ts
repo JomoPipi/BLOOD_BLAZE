@@ -1,7 +1,7 @@
 
 // import { CONSTANTS } from "../../shared/constants.js"
-import { Bullet } from "./Bullet.js"
-import { Player } from "./Player.js"
+import { Bullet } from "./bullet.js"
+import { Player } from "./player.js"
 import { Walls } from "./Walls.js"
 
 const epsilon = 1e-3
@@ -18,10 +18,8 @@ export class Game {
     addPlayer(name : string) {
         if (this.playerExists(name)) return false
         const player = new Player(name)
-
         this.players.push(player)
         this.getPlayerByName[name] = player
-
         return true
     }
 
