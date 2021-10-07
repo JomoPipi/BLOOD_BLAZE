@@ -1,7 +1,7 @@
 
 // import { CONSTANTS } from "../../shared/constants.js"
-import { Bullet } from "./bullet.js"
-import { Player } from "./player.js"
+import { Bullet } from "./_bullet.js"
+import { Player } from "./_player.js"
 import { Walls } from "./Walls.js"
 
 const epsilon = 1e-3
