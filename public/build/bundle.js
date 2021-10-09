@@ -431,30 +431,30 @@ var app = (function () {
     			span0 = element("span");
     			t8 = space();
     			bloodblaze = element("bloodblaze");
-    			attr_dev(h1, "class", "svelte-1ggq3y7");
+    			attr_dev(h1, "class", "svelte-11xvoez");
     			add_location(h1, file$5, 34, 2, 957);
-    			attr_dev(h2, "class", "svelte-1ggq3y7");
+    			attr_dev(h2, "class", "svelte-11xvoez");
     			add_location(h2, file$5, 35, 2, 985);
-    			attr_dev(div0, "class", "title svelte-1ggq3y7");
+    			attr_dev(div0, "class", "title svelte-11xvoez");
     			add_location(div0, file$5, 33, 1, 934);
     			attr_dev(input, "autocomplete", "off");
     			attr_dev(input, "placeholder", "Enter your name");
     			attr_dev(input, "pattern", "[A-Za-z0-9 _]*");
-    			attr_dev(input, "class", "svelte-1ggq3y7");
+    			attr_dev(input, "class", "svelte-11xvoez");
     			add_location(input, file$5, 40, 4, 1146);
-    			attr_dev(button, "class", "svelte-1ggq3y7");
+    			attr_dev(button, "class", "svelte-11xvoez");
     			add_location(button, file$5, 44, 4, 1279);
     			attr_dev(form, "type", "text");
     			attr_dev(form, "action", "");
     			add_location(form, file$5, 39, 3, 1088);
     			add_location(span0, file$5, 46, 2, 1316);
-    			attr_dev(span1, "class", "inner svelte-1ggq3y7");
+    			attr_dev(span1, "class", "inner svelte-11xvoez");
     			add_location(span1, file$5, 38, 2, 1063);
-    			attr_dev(div1, "class", "svelte-1ggq3y7");
+    			attr_dev(div1, "class", "svelte-11xvoez");
     			add_location(div1, file$5, 37, 1, 1054);
-    			attr_dev(bloodblaze, "class", "svelte-1ggq3y7");
+    			attr_dev(bloodblaze, "class", "svelte-11xvoez");
     			add_location(bloodblaze, file$5, 48, 1, 1335);
-    			attr_dev(main, "class", "svelte-1ggq3y7");
+    			attr_dev(main, "class", "svelte-11xvoez");
     			add_location(main, file$5, 32, 0, 925);
     		},
     		l: function claim(nodes) {
@@ -1355,7 +1355,11 @@ var app = (function () {
             this.players = { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) };
             this.myPlayer = new MyPlayer(CONSTANTS.CREATE_PLAYER(username));
             this.lastGameTickMessageTime = Date.now();
-            this.lastGameTickMessage = { players: [], newBullets: [], bullets: [] };
+            this.lastGameTickMessage =
+                { players: [],
+                    newBullets: []
+                    // , bullets: []
+                };
         }
         processGameTick(msg) {
             const now = Date.now();
@@ -1582,12 +1586,14 @@ var app = (function () {
             if (DEV_SETTINGS.showServerPlayer) {
                 this.drawPlayer(this.state.players[this.state.myPlayer.name].data, now, 'purple');
             }
-            if (DEV_SETTINGS.showServerBullet) {
-                this.ctx.fillStyle = '#099';
-                for (const b of this.state.lastGameTickMessage.bullets) {
-                    this.circle(b.x * W, b.y * H, 2);
-                }
-            }
+            // if (DEV_SETTINGS.showServerBullet)
+            // {
+            //     this.ctx.fillStyle = '#099'
+            //     for (const b of this.state.lastGameTickMessage.bullets)
+            //     {
+            //         this.circle(b.x * W, b.y * H, 2)
+            //     }
+            // }
             if (DEV_SETTINGS.showPredictedPlayer) {
                 this.drawPlayer(this.state.myPlayer.predictedPosition, now);
             }
@@ -1763,14 +1769,15 @@ var app = (function () {
             requestAnimationFrame(() => updateLoop(now));
             elements.inputs.processInputs(deltaTime, now);
             renderer.render(now, deltaTime);
-            elements.scoreboard.innerHTML = DEV_SETTINGS.showGameMetadeta
-                ? Object.values(state.players)
+            elements.scoreboard.innerHTML =
+                Object.values(state.players)
                     .sort((p1, p2) => p2.data.score - p1.data.score)
                     .map(p => `<span style="color: orange">${p.data.name}:</span> ${p.data.score}`)
                     .join('<br>')
-                    + `<br> pending requests: ${state.pendingInputs.length}`
-                    + `<br> network latency: ${NETWORK_LATENCY.value}`
-                : '';
+                    + (DEV_SETTINGS.showGameMetadeta
+                        ? `<br> pending requests: ${state.pendingInputs.length}`
+                            + `<br> network latency: ${NETWORK_LATENCY.value}`
+                        : '');
         })();
     }
 

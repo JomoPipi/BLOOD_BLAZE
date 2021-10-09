@@ -89,13 +89,49 @@
 		}
 	}
 	h1 {
-		color: #ff3e00;
+		$col: #ff3e00;
+		color: $col;
 		text-transform: uppercase;
 		font-size: 4em;
-		font-weight: 100;
+		letter-spacing: 0.2em;
+		font-weight: 600;
 		border: 1px solid rgb(189, 185, 84);
 		animation: border-glow 3s infinite;
+
+		text-align: center;
+		font-size: 6em;
+		//   color: $col;
+		letter-spacing: -3px;
+		font-weight: 700;
+		text-transform: uppercase;
+		animation: blur 7s ease-out infinite;
+		text-shadow: 0px 0px 5px $col, 0px 0px 7px $col;
+		margin-bottom: 0;
 	}
+
+	@keyframes blur {
+	from {
+		$col: #ff3e00;
+		text-shadow:0px 0px 10px $col,
+		0px 0px 10px $col, 
+		0px 0px 25px $col,
+		0px 0px 25px $col,
+		0px 0px 25px $col,
+		0px 0px 25px $col,
+		0px 0px 25px $col,
+		0px 0px 25px $col,
+		0px 0px 50px $col,
+		0px 0px 50px $col,
+		0px 0px 50px rgb(238, 78, 185),
+		0px 0px 150px rgb(238, 78, 185),
+		0px 10px 100px rgb(238, 78, 185),
+		0px 10px 100px rgb(238, 78, 185),
+		0px 10px 100px rgb(238, 78, 185),
+		0px 10px 100px rgb(238, 78, 185),
+		0px -10px 100px rgb(238, 78, 185),
+		0px -10px 100px rgb(238, 78, 185);
+	}
+}
 	h2 {
 		color: rgb(129, 80, 65);
 		font-style: italic;

@@ -43,7 +43,11 @@ export class ClientState {
         this.players = { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) }
         this.myPlayer = new MyPlayer(CONSTANTS.CREATE_PLAYER(username))
         this.lastGameTickMessageTime = Date.now()
-        this.lastGameTickMessage = { players: [], newBullets: [], bullets: [] }
+        this.lastGameTickMessage = 
+            { players: []
+            , newBullets: []
+            // , bullets: []
+            }
     }
 
     processGameTick(msg : GameTickMessage) {

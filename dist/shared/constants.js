@@ -1,6 +1,6 @@
 "use strict";
 const CONSTANTS = (() => {
-    const DEV_MODE = true;
+    const DEV_MODE = false;
     const PLAYER_RADIUS = 0.02;
     const PLAYER_SPEED = 0.0002;
     // const PLAYER_SPEED = 0.00015

@@ -47,13 +47,14 @@ export function runClient(elements : ClientElements, state : ClientState, socket
 
         renderer.render(now, deltaTime)
 
-        elements.scoreboard.innerHTML = DEV_SETTINGS.showGameMetadeta 
-            ? Object.values(state.players)
+        elements.scoreboard.innerHTML = 
+            Object.values(state.players)
                 .sort((p1, p2) => p2.data.score - p1.data.score)
                 .map(p => `<span style="color: orange">${p.data.name}:</span> ${p.data.score}`)
-                .join('<br>') 
-                + `<br> pending requests: ${state.pendingInputs.length}`
+                .join('<br>')
+                + (DEV_SETTINGS.showGameMetadeta 
+                ? `<br> pending requests: ${state.pendingInputs.length}`
                 + `<br> network latency: ${NETWORK_LATENCY.value}`
-            : ''
+                : '')
     })()
 }

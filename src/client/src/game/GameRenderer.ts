@@ -55,14 +55,14 @@ export class GameRenderer {
             this.drawPlayer(this.state.players[this.state.myPlayer.name]!.data, now, 'purple')
         }
     
-        if (DEV_SETTINGS.showServerBullet)
-        {
-            this.ctx.fillStyle = '#099'
-            for (const b of this.state.lastGameTickMessage.bullets)
-            {
-                this.circle(b.x * W, b.y * H, 2)
-            }
-        }
+        // if (DEV_SETTINGS.showServerBullet)
+        // {
+        //     this.ctx.fillStyle = '#099'
+        //     for (const b of this.state.lastGameTickMessage.bullets)
+        //     {
+        //         this.circle(b.x * W, b.y * H, 2)
+        //     }
+        // }
     
         if (DEV_SETTINGS.showPredictedPlayer)
         {
