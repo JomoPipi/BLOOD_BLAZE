@@ -55,8 +55,8 @@
     }
     .scoreboard {
         position: absolute;
-        top: 0;
-        padding-top: 2rem;
+        top: 22px;
         right: 10px;
+        background-color: rgba(161, 252, 255, 0.7);
     }
 </style>
