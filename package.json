@@ -4,7 +4,7 @@
   "description": "DEVASTATING BLOOD DEATH EXTREME",
   "type": "module",
   "scripts": {
-    "build": "node dist/server/main.js",
+    "build": "echo \"hello world!\" ",
     "_build": "tsc && cd src/client && ls ./src/bots && npx rollup -c",
     "test": "jest",
     "setup": "npm install && cd src/client && npm install && cd ../..",
