@@ -8,7 +8,7 @@ import { NETWORK_LATENCY } from "./NETWORK_LATENCY"
 type ClientElements = { 
     inputs : InputProcessor
     canvas : HTMLCanvasElement
-    scoreboard : HTMLDivElement
+    updateScoreboard : (scores : ({ name : string, value : number })[]) => void
 }
 
 let isRunning = false
@@ -47,16 +47,16 @@ export function runClient(elements : ClientElements, state : ClientState, socket
 
         renderer.render(now, deltaTime)
 
-        const gameMetadata = CONSTANTS.DEV_MODE && DEV_SETTINGS.showGameMetadeta 
-            ? `<br> pending requests: ${state.pendingInputs.length}`
-            + `<br> network latency: ${NETWORK_LATENCY.value}`
-            : ''
+        // const gameMetadata = 
+        //       `<br> pending requests: ${state.pendingInputs.length}`
+        //     + `<br> network latency: ${NETWORK_LATENCY.value}`
 
-        elements.scoreboard.innerHTML = 
-            Object.values(state.players)
-                .sort((p1, p2) => p2.data.score - p1.data.score)
-                .map(p => `<span style="color: orange">${p.data.name}:</span> ${p.data.score}`)
-                .join('<br>')
-                + gameMetadata
+        const scores = Object.values(state.players)
+            .sort((p1, p2) => p2.data.score - p1.data.score)
+            .map(p => ({ name: p.data.name, value: p.data.score }))
+            .slice(0,5)
+
+        elements.updateScoreboard(scores)
+        
     })()
 }

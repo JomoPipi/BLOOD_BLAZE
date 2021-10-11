@@ -36,26 +36,31 @@
 
 	function sanitizeText(event : any) {
 		event.target.value = 
-		event.target.value.replace(/[^A-Za-z0-9 _]/g, '')
+		event.target.value
+			.replace(/[^A-Za-z0-9 _]/g, '')
+			.slice(0, CONSTANTS.USERNAME_CHARACTER_LIMIT)
 	}
+	const charLimit = CONSTANTS.USERNAME_CHARACTER_LIMIT
 </script>
 
 <main>
-	<div class="title">
-		<h1> BLOOD {blaze} </h1>
+	<span class="title">
+		<h1> 
+			<span class="_1"> BLOOD </span> 
+			<span class="_2"> {blaze} </span>
+		</h1>
 		<h2> A Devastating Bloodbath of Boundless Mortality </h2>
-	</div>
-	<div>
-		<span class="inner">
-			<form type="text" action="" on:submit={tryUsername}>
-				<input autocomplete="off" 
-					placeholder="Enter your name" 
-					pattern="[A-Za-z0-9 _]*" 
-					on:keyup={sanitizeText}/>
-				<button> GO </button>
-			</form>
-		<span/>
-	</div>
+	</span>
+	<span class="inner">
+		<form type="text" action="" on:submit={tryUsername}>
+			<input autocomplete="off" 
+				placeholder="Enter your name" 
+				pattern="[A-Za-z0-9 _]*"
+				maxlength={charLimit}
+				on:keyup={sanitizeText}/>
+			<button> GO </button>
+		</form>
+	<span/>
 	<bloodblaze/>
 </main>
 
@@ -69,24 +74,12 @@
 		display: grid;
 		grid-template-rows: 61% 39%;
 		box-sizing: border-box;
+	}
 
-		div {
-			align-items: center;
-			box-sizing: border-box;
-			width: 100%;
-			height: 100%;
-
-			&.title {
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-			}
-			
-			.inner {
-				display: inline-block;
-				box-sizing: border-box;
-			}
-		}
+	.title {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 	}
 	h1 {
 		$col: #ff3e00;
@@ -95,7 +88,7 @@
 		font-size: 4em;
 		letter-spacing: 0.2em;
 		font-weight: 600;
-		border: 1px solid rgb(189, 185, 84);
+		// border: 1px solid rgb(189, 185, 84);
 		animation: border-glow 3s infinite;
 
 		text-align: center;
@@ -104,37 +97,75 @@
 		letter-spacing: -3px;
 		font-weight: 700;
 		text-transform: uppercase;
-		animation: blur 7s ease-out infinite;
+		animation: breathe 1s alternate infinite;
 		text-shadow: 0px 0px 5px $col, 0px 0px 7px $col;
 		margin-bottom: 0;
+
+		._1 {
+			animation: blur 3s ease-out infinite;
+		}
+
+		._2 {
+			animation: blur 3s ease-out infinite;
+			animation-delay: 0.5s;
+		}
 	}
 
-	@keyframes blur {
-	from {
-		$col: #ff3e00;
-		text-shadow:0px 0px 10px $col,
-		0px 0px 10px $col, 
-		0px 0px 25px $col,
-		0px 0px 25px $col,
-		0px 0px 25px $col,
-		0px 0px 25px $col,
-		0px 0px 25px $col,
-		0px 0px 25px $col,
-		0px 0px 50px $col,
-		0px 0px 50px $col,
-		0px 0px 50px rgb(238, 78, 185),
-		0px 0px 150px rgb(238, 78, 185),
-		0px 10px 100px rgb(238, 78, 185),
-		0px 10px 100px rgb(238, 78, 185),
-		0px 10px 100px rgb(238, 78, 185),
-		0px 10px 100px rgb(238, 78, 185),
-		0px -10px 100px rgb(238, 78, 185),
-		0px -10px 100px rgb(238, 78, 185);
+	@keyframes breathe {
+		from {
+			filter: hue-rotate(0);
+		}
+		to {
+			filter: hue-rotate(-18deg);
+		}
+	}	
+	
+	@keyframes breathe2 {
+		from {
+			filter: invert(0);
+		}
+		to {
+			filter: invert(0.5);
+		}
 	}
-}
+	
+	@keyframes blur {
+		from {
+			$col: #ff3e00;
+			text-shadow:0px 0px 10px $col,
+			0px 0px 10px $col, 
+			0px 0px 25px $col,
+			0px 0px 25px $col,
+			0px 0px 25px $col,
+			0px 0px 25px $col,
+			0px 0px 25px $col,
+			0px 0px 25px $col,
+			0px 0px 50px $col,
+			0px 0px 50px $col,
+			0px 0px 50px rgb(238, 78, 185),
+			0px 0px 150px rgb(238, 78, 185),
+			0px 10px 100px rgb(238, 78, 185),
+			0px 10px 100px rgb(238, 78, 185),
+			0px 10px 100px rgb(238, 78, 185),
+			0px 10px 100px rgb(238, 78, 185),
+			0px -10px 100px rgb(238, 78, 185),
+			0px -10px 100px rgb(238, 78, 185);
+		}
+	}
+	
 	h2 {
 		color: rgb(129, 80, 65);
 		font-style: italic;
+		animation: 2s breathe2 alternate infinite;
+		padding: 1em 0px;
+	}
+	.inner {
+		margin: 1em 0px;
+	}
+	.form {
+		background: red;
+		padding: 1em 0px;
+		margin: 1em;
 	}
 	input, button {
 		font-size: 1.25rem;

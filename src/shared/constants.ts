@@ -13,6 +13,8 @@ const CONSTANTS = (() => {
     const FPS = 20
     const GAME_TICK = 1000 / FPS
 
+    const USERNAME_CHARACTER_LIMIT = 8
+
     const CONST = 
         { DEV_MODE
         , PLAYER_RADIUS
@@ -28,6 +30,7 @@ const CONSTANTS = (() => {
         , INTERPOLATE_PLAYER_POSITION
         , GET_PLAYER_POSITION_AFTER_WALL_COLLISION
         , LINE_SEGMENT_INTERSECTION_POINT
+        , USERNAME_CHARACTER_LIMIT
         } as const
 
     return Object.freeze(CONST)
