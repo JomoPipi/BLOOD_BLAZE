@@ -40,18 +40,17 @@
 
 <style lang="scss">
     canvas {
-        background: rgb(243, 238, 255);
+        background: rgb(255, 255, 255);
+        filter: invert(1);
     }
     center {
         color: white;
     }
     .input-container {
-        border: 1rem solid rgba(255, 0, 0, 0.226);
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin: 0;
         padding: 0 2rem;
-        background-color: rgb(71, 61, 61);
     }
 </style>

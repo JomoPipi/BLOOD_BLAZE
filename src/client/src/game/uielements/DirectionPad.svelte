@@ -44,13 +44,16 @@
         
         const r = 40
         const [x,y] = [Math.cos(angle) * r + W/2, Math.sin(angle) * r + H/2]
+        const [x2,y2] = 
+            [ Math.cos(angle) * (r/2) + W/2
+            , Math.sin(angle) * (r/2) + H/2]
         ctx.beginPath()
         ctx.arc(W/2, H/2, r, 0, 7)
         ctx.closePath()
+        ctx.moveTo(x, y)
+        ctx.lineTo(x2, y2)
         ctx.stroke()
         ctx.beginPath()
-        ctx.arc(x, y, 6, 0, 7)
-        ctx.fill()
     }
 </script>
 

@@ -43,7 +43,9 @@
         color: white;
         margin: 4px;
         text-align: center;
-        width: 12em;
+        max-width: 6em;
+        width: 30%;
+        display: inline-block;
     }
 </style>
 <!-- <div class="scoreboard" bind:this={scoreboard}></div> -->

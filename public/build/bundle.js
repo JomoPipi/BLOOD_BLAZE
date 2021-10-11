@@ -1,2 +1,2846 @@
-var app=function(){"use strict";function t(){}function e(t){return t()}function n(){return Object.create(null)}function s(t){t.forEach(e)}function a(t){return"function"==typeof t}function o(t,e){return t!=t?e==e:t!==e||t&&"object"==typeof t||"function"==typeof t}function i(t,e){t.appendChild(e)}function l(t,e,n){t.insertBefore(e,n||null)}function r(t){t.parentNode.removeChild(t)}function c(t,e){for(let n=0;n<t.length;n+=1)t[n]&&t[n].d(e)}function u(t){return document.createElement(t)}function h(t){return document.createTextNode(t)}function d(){return h(" ")}function p(t,e,n,s){return t.addEventListener(e,n,s),()=>t.removeEventListener(e,n,s)}function m(t,e,n){null==n?t.removeAttribute(e):t.getAttribute(e)!==n&&t.setAttribute(e,n)}function f(t,e){e=""+e,t.wholeText!==e&&(t.data=e)}function y(t,e,n){t.classList[n?"add":"remove"](e)}let g;function P(t){g=t}function T(t){(function(){if(!g)throw new Error("Function called outside component initialization");return g})().$$.on_mount.push(t)}const b=[],S=[],x=[],E=[],v=Promise.resolve();let N=!1;function w(t){x.push(t)}let $=!1;const A=new Set;function C(){if(!$){$=!0;do{for(let t=0;t<b.length;t+=1){const e=b[t];P(e),O(e.$$)}for(b.length=0;S.length;)S.pop()();for(let t=0;t<x.length;t+=1){const e=x[t];A.has(e)||(A.add(e),e())}x.length=0}while(b.length);for(;E.length;)E.pop()();N=!1,$=!1,A.clear()}}function O(t){if(null!==t.fragment){t.update(),s(t.before_update);const e=t.dirty;t.dirty=[-1],t.fragment&&t.fragment.p(t.ctx,e),t.after_update.forEach(w)}}const _=new Set;let I;function k(){I={r:0,c:[],p:I}}function R(){I.r||s(I.c),I=I.p}function M(t,e){t&&t.i&&(_.delete(t),t.i(e))}function L(t,e,n,s){if(t&&t.o){if(_.has(t))return;_.add(t),I.c.push((()=>{_.delete(t),s&&(n&&t.d(1),s())})),t.o(e)}}function D(t){t&&t.c()}function Y(t,n,o){const{fragment:i,on_mount:l,on_destroy:r,after_update:c}=t.$$;i&&i.m(n,o),w((()=>{const n=l.map(e).filter(a);r?r.push(...n):s(n),t.$$.on_mount=[]})),c.forEach(w)}function B(t,e){const n=t.$$;null!==n.fragment&&(s(n.on_destroy),n.fragment&&n.fragment.d(e),n.on_destroy=n.fragment=null,n.ctx=[])}function W(t,e){-1===t.$$.dirty[0]&&(b.push(t),N||(N=!0,v.then(C)),t.$$.dirty.fill(0)),t.$$.dirty[e/31|0]|=1<<e%31}function z(e,a,o,i,l,c,u=[-1]){const h=g;P(e);const d=a.props||{},p=e.$$={fragment:null,ctx:null,props:c,update:t,not_equal:l,bound:n(),on_mount:[],on_destroy:[],before_update:[],after_update:[],context:new Map(h?h.$$.context:[]),callbacks:n(),dirty:u};let m=!1;if(p.ctx=o?o(e,d,((t,n,...s)=>{const a=s.length?s[0]:n;return p.ctx&&l(p.ctx[t],p.ctx[t]=a)&&(p.bound[t]&&p.bound[t](a),m&&W(e,t)),n})):[],p.update(),m=!0,s(p.before_update),p.fragment=!!i&&i(p.ctx),a.target){if(a.hydrate){const t=function(t){return Array.from(t.childNodes)}(a.target);p.fragment&&p.fragment.l(t),t.forEach(r)}else p.fragment&&p.fragment.c();a.intro&&M(e.$$.fragment),Y(e,a.target,a.anchor),C()}P(h)}class G{$destroy(){B(this,1),this.$destroy=t}$on(t,e){const n=this.$$.callbacks[t]||(this.$$.callbacks[t]=[]);return n.push(e),()=>{const t=n.indexOf(e);-1!==t&&n.splice(t,1)}}$set(){}}function U(e){let n,a,o,c,y,g,P,T,b,S,x,E,v,N,w,$,A,C,O,_,I;return{c(){n=u("main"),a=u("span"),o=u("h1"),c=u("span"),c.textContent="BLOOD",y=d(),g=u("span"),P=h(e[0]),T=d(),b=u("h2"),b.textContent="A Devastating Bloodbath of Boundless Mortality",S=d(),x=u("span"),E=u("form"),v=u("input"),N=d(),w=u("button"),w.textContent="GO",$=d(),A=u("span"),C=d(),O=u("bloodblaze"),m(c,"class","_1 svelte-151gubb"),m(g,"class","_2 svelte-151gubb"),m(o,"class","svelte-151gubb"),m(b,"class","svelte-151gubb"),m(a,"class","title svelte-151gubb"),m(v,"autocomplete","off"),m(v,"placeholder","Enter your name"),m(v,"pattern","[A-Za-z0-9 _]*"),m(v,"maxlength",e[2]),m(v,"class","svelte-151gubb"),m(w,"class","svelte-151gubb"),m(E,"type","text"),m(E,"action",""),m(O,"class","svelte-151gubb"),m(x,"class","inner svelte-151gubb"),m(n,"class","svelte-151gubb")},m(t,s){l(t,n,s),i(n,a),i(a,o),i(o,c),i(o,y),i(o,g),i(g,P),i(a,T),i(a,b),i(n,S),i(n,x),i(x,E),i(E,v),i(E,N),i(E,w),i(x,$),i(x,A),i(x,C),i(x,O),_||(I=[p(v,"keyup",X),p(E,"submit",e[1])],_=!0)},p(t,[e]){1&e&&f(P,t[0])},i:t,o:t,d(t){t&&r(n),_=!1,s(I)}}}function X(t){t.target.value=t.target.value.replace(/[^A-Za-z0-9 _]/g,"").slice(0,CONSTANTS.USERNAME_CHARACTER_LIMIT)}function q(t,e,n){let{proceed:s}=e,{blaze:a}=e,{socket:o}=e;T((()=>{o.on("nomination",(([t,e])=>{t&&(o.removeAllListeners("nomination"),s(e)),alert(t?`Welcome, ${e}!`:`Sorry, "${e}" is not available.`)})),CONSTANTS.DEV_MODE&&o.emit("nomination",Math.random().toString())}));const i=CONSTANTS.USERNAME_CHARACTER_LIMIT;return t.$set=t=>{"proceed"in t&&n(3,s=t.proceed),"blaze"in t&&n(0,a=t.blaze),"socket"in t&&n(4,o=t.socket)},[a,function(t){t.preventDefault();const e=t.target.children[0];e.value&&(o.emit("nomination",e.value),e.value="")},i,s,o]}class j extends G{constructor(t){super(),z(this,t,q,U,o,{proceed:3,blaze:0,socket:4})}}function F(e){let n;return{c(){n=u("canvas"),m(n,"class","svelte-eupre8")},m(t,s){l(t,n,s),e[2](n)},p:t,i:t,o:t,d(t){t&&r(n),e[2](null)}}}function V(t,e,n){let s,a,o,i;const l=window.innerWidth/2.5/PHI;let{callback:r=(()=>0)}=e,c=0;function u(){i.clearRect(0,0,a,o),i.strokeStyle="#fba";const[t,e]=[40*Math.cos(c)+a/2,40*Math.sin(c)+o/2];i.beginPath(),i.arc(a/2,o/2,40,0,7),i.closePath(),i.stroke(),i.beginPath(),i.arc(t,e,6,0,7),i.fill()}return T((()=>{a=n(0,s.width=o=n(0,s.height=l,s),s),i=s.getContext("2d"),n(0,s.style.margin="5px",s),n(0,s.style.backgroundColor="transparent",s),u(),n(0,s.ontouchstart=()=>r(c,!0),s),n(0,s.ontouchmove=function(t){const e=+s.offsetLeft,n=+s.offsetTop,i=t.targetTouches[0].clientX-e-a/2,l=t.targetTouches[0].clientY-n-o/2,h=Math.atan2(l,i);c=h,u(),r(h,!0)},s),n(0,s.ontouchend=()=>r(c,!1),s)})),t.$set=t=>{"callback"in t&&n(1,r=t.callback)},[s,r,function(t){S[t?"unshift":"push"]((()=>{s=t,n(0,s)}))}]}class H extends G{constructor(t){super(),z(this,t,V,F,o,{callback:1})}}function K(e){let n,s;return{c(){n=u("div"),s=u("canvas"),m(s,"class","svelte-18l9nl"),m(n,"class","svelte-18l9nl")},m(t,a){l(t,n,a),i(n,s),e[3](s),e[4](n)},p:t,i:t,o:t,d(t){t&&r(n),e[3](null),e[4](null)}}}function Z(t,e,n){let s,a,o,i,l,r;const c=window.innerWidth/2.5/PHI;let{callback:u=(()=>0)}=e;function h(){l.clearRect(0,0,o,i),l.strokeStyle="black",l.lineWidth=8,l.fillStyle="rgb(71, 61, 61)",l.beginPath();const[t,e]=r;l.arc(t,e,40,0,7),l.closePath(),l.stroke(),l.fill();const s=t-o/2,c=e-i/2,u=1.2*Math.PI/4;n(1,a.style.transform=`\n        perspective(200px) \n        rotateY(${u*s|0}deg)\n        rotateX(${-u*c|0}deg)`,a)}return T((()=>{n(0,s.style.width=n(0,s.style.height=Math.round(c)+"px",s),s),o=n(1,a.width=i=n(1,a.height=Math.round(1.5*c),a),a);const t=.5*Math.floor(c-1.5*c);n(1,a.style.left=n(1,a.style.top=t+"px",a),a),l=a.getContext("2d"),r=[o/2,i/2],h(),n(0,s.ontouchstart=function(t){e=t.targetTouches[0].clientX,d=t.targetTouches[0].clientY},s),n(0,s.ontouchmove=function(t){const n=.75*(t.targetTouches[0].clientX-e),s=.75*(t.targetTouches[0].clientY-d),a=o/2-40-8,i=Math.pow(a,2),l=Math.pow(n,2)+Math.pow(s,2),c=Math.sqrt(i/l),[p,m]=l>i?[n*c,s*c]:[n,s];r[0]=p+o/2,r[1]=m+o/2,h();u(p/a,m/a)},s),n(0,s.ontouchend=function(){r[0]=o/2,r[1]=i/2,h(),u(0,0)},s);let e=0,d=0})),t.$set=t=>{"callback"in t&&n(2,u=t.callback)},[s,a,u,function(t){S[t?"unshift":"push"]((()=>{a=t,n(1,a)}))},function(t){S[t?"unshift":"push"]((()=>{s=t,n(0,s)}))}]}class J extends G{constructor(t){super(),z(this,t,Z,K,o,{callback:2})}}const Q={enableClientSidePrediction:!0,showPredictedPlayer:!0,showServerPlayer:!1,showServerBullet:!1,showClientBullet:!1,showIdealClientBullet:!0,showClientPredictedBullet:!0,showExtrapolatedEnemyPositions:!0,showInterpolatedEnemyPositions:!1,showUninterpolatedEnemyPositions:!1,showWhatOtherClientsPredict:!1,showGameMetadeta:!0};function tt(t,e,n){const s=t.slice();return s[4]=e[n],s}function et(t){let e,n,s,a,o,c,f,y,g=t[4].split(st).map(at).join(" ")+"";function P(){t[3].call(n,t[4])}return{c(){e=u("label"),n=u("input"),s=d(),a=u("h4"),o=h(g),c=d(),m(n,"type","checkbox"),m(a,"class","svelte-1p5603t"),m(e,"class","svelte-1p5603t")},m(r,u){l(r,e,u),i(e,n),n.checked=t[0][t[4]],i(e,s),i(e,a),i(a,o),i(e,c),f||(y=p(n,"change",P),f=!0)},p(e,s){t=e,5&s&&(n.checked=t[0][t[4]])},d(t){t&&r(e),f=!1,y()}}}function nt(e){let n,o,h,f,g,P,T,b=e[2],S=[];for(let t=0;t<b.length;t+=1)S[t]=et(tt(e,b,t));return{c(){n=u("button"),n.textContent="⚙️",o=d(),h=u("div"),f=u("button"),f.textContent="back",g=d();for(let t=0;t<S.length;t+=1)S[t].c();m(n,"class","settings-button svelte-1p5603t"),m(h,"class","settings-page svelte-1p5603t"),y(h,"show",e[1].isOpen)},m(t,s){l(t,n,s),l(t,o,s),l(t,h,s),i(h,f),i(h,g);for(let t=0;t<S.length;t+=1)S[t].m(h,null);P||(T=[p(n,"click",(function(){a(e[1].toggle)&&e[1].toggle.apply(this,arguments)})),p(f,"click",(function(){a(e[1].toggle)&&e[1].toggle.apply(this,arguments)}))],P=!0)},p(t,[n]){if(e=t,5&n){let t;for(b=e[2],t=0;t<b.length;t+=1){const s=tt(e,b,t);S[t]?S[t].p(s,n):(S[t]=et(s),S[t].c(),S[t].m(h,null))}for(;t<S.length;t+=1)S[t].d(1);S.length=b.length}2&n&&y(h,"show",e[1].isOpen)},i:t,o:t,d(t){t&&r(n),t&&r(o),t&&r(h),c(S,t),P=!1,s(T)}}}const st=/([A-Z]+|[A-Z]?[a-z]+)(?=[A-Z]|\b)/,at=t=>t[0]?t[0].toUpperCase()+t.slice(1):t;function ot(t,e,n){const s=Object.keys(Q).filter((t=>"boolean"==typeof Q[t])),a={toggle(){n(1,a.isOpen^=1,a)},isOpen:0};return[Q,a,s,function(t){Q[t]=this.checked,n(0,Q),n(2,s)}]}class it extends G{constructor(t){super(),z(this,t,ot,nt,o,{})}}function lt(e){let n,s,a,o;return{c(){n=u("h4"),s=h(e[0]),a=h(" - "),o=h(e[1]),m(n,"class","svelte-13vahyg")},m(t,r){l(t,n,r),i(n,s),i(n,a),i(n,o),e[4](n)},p(t,[e]){1&e&&f(s,t[0]),2&e&&f(o,t[1])},i:t,o:t,d(t){t&&r(n),e[4](null)}}}function rt(t,e,n){let s,{name:a}=e,{value:o}=e,{maximum:i}=e,l=!1;return T((()=>{n(2,s.style.background=`linear-gradient(to right, #39f ${Math.round(100*o/i)}%, #111 0%)`,s),n(5,l=!0)})),t.$set=t=>{"name"in t&&n(0,a=t.name),"value"in t&&n(1,o=t.value),"maximum"in t&&n(3,i=t.maximum)},t.$$.update=()=>{42&t.$$.dirty&&l&&n(2,s.style.background=`linear-gradient(to right, #39f ${Math.round(100*o/i)}%, #111 0%)`,s)},[a,o,s,i,function(t){S[t?"unshift":"push"]((()=>{s=t,n(2,s),n(5,l),n(1,o),n(3,i)}))}]}class ct extends G{constructor(t){super(),z(this,t,rt,lt,o,{name:0,value:1,maximum:3})}}function ut(t,e,n){const s=t.slice();return s[2]=e[n],s}function ht(t){let e,n;return e=new ct({props:{name:t[2].name,value:t[2].value,maximum:t[0][0]?.value||0}}),{c(){D(e.$$.fragment)},m(t,s){Y(e,t,s),n=!0},p(t,n){const s={};1&n&&(s.name=t[2].name),1&n&&(s.value=t[2].value),1&n&&(s.maximum=t[0][0]?.value||0),e.$set(s)},i(t){n||(M(e.$$.fragment,t),n=!0)},o(t){L(e.$$.fragment,t),n=!1},d(t){B(e,t)}}}function dt(t){let e,n,s=t[0],a=[];for(let e=0;e<s.length;e+=1)a[e]=ht(ut(t,s,e));const o=t=>L(a[t],1,1,(()=>{a[t]=null}));return{c(){e=u("div");for(let t=0;t<a.length;t+=1)a[t].c();m(e,"class","svelte-oizbqy")},m(t,s){l(t,e,s);for(let t=0;t<a.length;t+=1)a[t].m(e,null);n=!0},p(t,[n]){if(1&n){let i;for(s=t[0],i=0;i<s.length;i+=1){const o=ut(t,s,i);a[i]?(a[i].p(o,n),M(a[i],1)):(a[i]=ht(o),a[i].c(),M(a[i],1),a[i].m(e,null))}for(k(),i=s.length;i<a.length;i+=1)o(i);R()}},i(t){if(!n){for(let t=0;t<s.length;t+=1)M(a[t]);n=!0}},o(t){a=a.filter(Boolean);for(let t=0;t<a.length;t+=1)L(a[t]);n=!1},d(t){t&&r(e),c(a,t)}}}function pt(t,e,n){let s=[{name:"12345678",value:3},{name:"Bob",value:2}];return[s,t=>{n(0,s=t)}]}class mt extends G{constructor(t){super(),z(this,t,pt,dt,o,{updateScoreboard:1})}get updateScoreboard(){return this.$$.ctx[1]}}class ft{data;receptionTime;display;constructor(t,e,n){this.data=t,this.receptionTime=e,this.display=n}}class yt{data;interpolationBuffer=[];lastExtrapolatedPosition;constructor(t){this.data=t,this.lastExtrapolatedPosition={x:t.x,y:t.y}}}class gt{name;predictedPosition;controls;lastTimeShooting=-1;isPressingTrigger=!1;bullets=[];constructor(t){this.name=t.name,this.predictedPosition=t,this.controls={x:0,y:0,angle:0,messageNumber:0,deltaTime:0}}}class Pt{pendingInputs=[];bullets=[];structures={[WallType.BRICK]:[],[WallType.FENCE]:[],[WallType.NON_NEWTONIAN]:[]};players;myPlayer;lastGameTickMessageTime;lastGameTickMessage;constructor(t){this.players={[t]:new yt(CONSTANTS.CREATE_PLAYER(t))},this.myPlayer=new gt(CONSTANTS.CREATE_PLAYER(t)),this.lastGameTickMessageTime=Date.now(),this.lastGameTickMessage={players:[],newBullets:[]}}processGameTick(t){const e=Date.now();this.lastGameTickMessage=t,this.lastGameTickMessageTime=e,this.myPlayer.bullets=this.myPlayer.bullets.filter((e=>!t.deletedBullets[e.data.id])),this.bullets=this.bullets.filter((e=>!t.deletedBullets[e.data.id]));const n=window.innerWidth;for(const s of t.newBullets){const t=this.players[s.shooter];if(!t)break;const a=t.data;if(Q.showExtrapolatedEnemyPositions){const o={x:(t.lastExtrapolatedPosition.x+CONSTANTS.PLAYER_RADIUS*Math.cos(a.angle))*n,y:(t.lastExtrapolatedPosition.y+CONSTANTS.PLAYER_RADIUS*Math.sin(a.angle))*n};this.bullets.push(new ft(s,e,o))}else{const t=(a.x+CONSTANTS.PLAYER_RADIUS*Math.cos(a.angle))*window.innerWidth,n=(a.y+CONSTANTS.PLAYER_RADIUS*Math.sin(a.angle))*window.innerWidth;this.bullets.push(new ft(s,e,{x:t,y:n}))}}for(const n of t.players){this.players[n.name]||=new yt(n);const t=this.players[n.name];if(t.data=n,n.name===this.myPlayer.name){if(this.myPlayer.predictedPosition={...n,angle:this.myPlayer.controls.angle},CONSTANTS.DEV_MODE&&!Q.enableClientSidePrediction)continue;for(let t=0;t<this.pendingInputs.length;){const e=this.pendingInputs[t];e.messageNumber<=n.lastProcessedInput?this.pendingInputs.splice(t,1):(CONSTANTS.MOVE_PLAYER(this.myPlayer.predictedPosition,e),t++)}}else Q.showInterpolatedEnemyPositions&&t.interpolationBuffer.push([e,n])}}}const Tt={value:0,beginRetrieving(t){if(this.isRetrieving)throw"Please only call this function once.";this.isRetrieving=!0;const e=()=>{const e=Date.now();t.volatile.emit("ping",(()=>{this.value=Date.now()-e,t.volatile.emit("networkLatency",this.value)}))};setInterval(e,5e3),e()},isRetrieving:!1};class bt{timeCreated;data;endPoint;constructor(t,e,n){this.timeCreated=Date.now();const[s,a]=function(t,e,n,s){const a=CONSTANTS.BULLET_SPEED*Math.cos(t.angle)+e.x*CONSTANTS.PLAYER_SPEED,o=CONSTANTS.BULLET_SPEED*Math.sin(t.angle)+e.y*CONSTANTS.PLAYER_SPEED,i=t.x+CONSTANTS.PLAYER_RADIUS*Math.cos(t.angle),l=t.y+CONSTANTS.PLAYER_RADIUS*Math.sin(t.angle),r=[t,{x:i+2e4*a,y:l+2e4*o}],[[c,u],h,d]=s.reduce((([t,e,n],s)=>{const a=CONSTANTS.LINE_SEGMENT_INTERSECTION_POINT(s,r);if(!a)return[t,e,n];const o=distance(a[0],a[1],i,l);return o<e?[a,o,s]:[t,e,n]}),[[69,420],1/0,null]);return[{x:i,y:l,speedX:a,speedY:o,id:n,shooter:t.name,expirationDistance:h},{x:c,y:u}]}(t,e,Math.random()+":"+t.name,n);this.data=s,this.endPoint=a}}class St{state;socket;canSendIdleInput=!0;constructor(t,e){this.state=t,this.socket=e}processInputs(t,e){this.state.myPlayer.controls.deltaTime=t;const{x:n,y:s}=this.state.myPlayer.predictedPosition;CONSTANTS.MOVE_PLAYER(this.state.myPlayer.predictedPosition,this.state.myPlayer.controls);const{x:a,y:o}=this.state.myPlayer.predictedPosition,i=this.state.structures,l=i[WallType.BRICK].concat(i[WallType.FENCE]),[r,c]=CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(n,s,a,o,l),{x:u,y:h}=this.state.myPlayer.controls;let d=!1;if(a!==r||o!==c){this.state.myPlayer.predictedPosition.x=r,this.state.myPlayer.predictedPosition.y=c;const e=(r-n)/(t*CONSTANTS.PLAYER_SPEED),a=(c-s)/(t*CONSTANTS.PLAYER_SPEED),o=e**2+a**2,i=Math.min(Math.sqrt(1/o),1);this.state.myPlayer.controls.x=e*i,this.state.myPlayer.controls.y=a*i,d=!0}if(this.state.myPlayer.isPressingTrigger&&CONSTANTS.CAN_SHOOT(e,this.state.myPlayer.lastTimeShooting)){this.state.myPlayer.lastTimeShooting=e;const t=this.state.structures,n=t[WallType.BRICK].concat(t[WallType.NON_NEWTONIAN]),s=new bt(this.state.myPlayer.predictedPosition,this.state.myPlayer.controls,n);Q.enableClientSidePrediction&&this.state.myPlayer.bullets.push(s),this.state.myPlayer.controls.requestedBullet=s.data}const p=0!==this.state.myPlayer.controls.x||0!==this.state.myPlayer.controls.y||this.state.myPlayer.isPressingTrigger;(p||this.canSendIdleInput)&&(this.sendInputsToServer(this.state.myPlayer.controls),this.canSendIdleInput=!1,d&&(this.state.myPlayer.controls.x=u,this.state.myPlayer.controls.y=h)),p&&(this.canSendIdleInput=!0)}moveJoystick(t,e){this.state.myPlayer.controls.x=t,this.state.myPlayer.controls.y=e}adjustAim(t,e){this.state.myPlayer.controls.angle=this.state.players[this.state.myPlayer.name].data.angle=this.state.myPlayer.predictedPosition.angle=t,this.state.myPlayer.isPressingTrigger=e}sendInputsToServer(t){this.state.pendingInputs.push({...t}),this.socket.emit("controlsInput",t),t.messageNumber++,t.requestedBullet=void 0}}const xt=CONSTANTS.PLAYER_RADIUS*window.innerWidth;class Et{canvas;ctx;state;constructor(t,e){this.canvas=t,this.ctx=t.getContext("2d"),this.state=e}render(t,e){const n=this.canvas.width,s=this.canvas.height;this.ctx.clearRect(0,0,n,s),this.drawWalls(n,s);const a=t-this.state.lastGameTickMessageTime;for(const n in this.state.players){if(n===this.state.myPlayer.name)continue;const s=this.state.players[n];if(Q.showExtrapolatedEnemyPositions){const n=this.getExtrapolatedPlayer(s,a,e);this.drawPlayer(n,t)}if(Q.showInterpolatedEnemyPositions){const e=CONSTANTS.INTERPOLATE_PLAYER_POSITION(s.data,t,s.interpolationBuffer);this.drawPlayer(e,t,"blue")}Q.showUninterpolatedEnemyPositions&&this.drawPlayer(s.data,t,"red")}if(Q.showServerPlayer&&this.drawPlayer(this.state.players[this.state.myPlayer.name].data,t,"purple"),Q.showPredictedPlayer&&this.drawPlayer(this.state.myPlayer.predictedPosition,t),Q.showWhatOtherClientsPredict){const n=this.getExtrapolatedPlayer(this.state.players[this.state.myPlayer.name],a,e);this.drawPlayer(n,t,"cyan")}Q.showClientBullet&&(this.ctx.fillStyle="#770",this.state.bullets=this.state.bullets.filter((e=>{const a=t-e.receptionTime,o=e.data.x+e.data.speedX*a,i=e.data.y+e.data.speedY*a,l=o*n,r=i*s;return this.circle(l,r,2),0<=o&&o<=1&&0<=i&&i<=1}))),Q.showIdealClientBullet&&(this.ctx.fillStyle="#00f",this.state.bullets=this.state.bullets.filter((e=>{if(e.data.shooter===this.state.myPlayer.name)return!1;const a=t-e.receptionTime,o=e.data.x+e.data.speedX*a,i=e.data.y+e.data.speedY*a,l=o*n,r=i*s,c=.001*Math.min(t-e.receptionTime,500)/.5,u=e.display.x+a*e.data.speedX*n,h=e.display.y+a*e.data.speedY*s,d=u+(l-u)*c,p=h+(r-h)*c,m=-(this.state.players[e.data.shooter]?.data.latency||0);return!(distance(e.data.x+e.data.speedX*m,e.data.y+e.data.speedY*m,d/n,p/s)>=e.data.expirationDistance)&&(this.circle(d,p,2),0<=o&&o<=1&&0<=i&&i<=1)}))),Q.showClientPredictedBullet&&(this.state.myPlayer.bullets=this.state.myPlayer.bullets.filter((e=>{const a=t-e.timeCreated,o=e.data,i=o.x+o.speedX*a,l=o.y+o.speedY*a,r=i*n,c=l*s;return!(distance(o.x,o.y,i,l)>=o.expirationDistance)&&(this.ctx.fillStyle="#c0c",this.circle(r,c,2),0<=i&&i<=1&&0<=l&&l<=1)})))}drawPlayer(t,e,n="#333"){const[s,a]=[t.x*this.canvas.width,t.y*this.canvas.height],o=e-t.lastTimeGettingShot,i=o<=255;if(this.ctx.fillStyle=this.ctx.strokeStyle=i?`rgb(255,${o},${o})`:n,t.name===this.state.myPlayer.name&&i){const t=50+200*Math.random();throttled(vt,t,e)}this.circle(s,a,xt,!i);const[l,r]=[s+xt*Math.cos(t.angle),a+xt*Math.sin(t.angle)];this.circle(l,r,2),this.ctx.fillStyle="#40f",this.ctx.fillText(t.name,s-17,a-17)}drawWalls(t,e){const n=[["#0e8",WallType.NON_NEWTONIAN],["#44f",WallType.FENCE],["#410",WallType.BRICK]];for(const[s,a]of n){this.ctx.strokeStyle=s;for(const[n,s]of this.state.structures[a])this.line(n.x*t,n.y*e,s.x*t,s.y*e)}}circle(t,e,n,s){this.ctx.beginPath(),this.ctx.arc(t,e,n,0,7),this.ctx[s?"stroke":"fill"](),this.ctx.closePath()}line(t,e,n,s){this.ctx.beginPath(),this.ctx.moveTo(t,e),this.ctx.lineTo(n,s),this.ctx.stroke(),this.ctx.closePath()}getExtrapolatedPlayer(t,e,n){const s=e+t.data.latency,{x:a,y:o}=t.data,i=CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(t.data,s),{x:l,y:r}=t.lastExtrapolatedPosition,c=distance(i.x,i.y,l,r)/n;if(c>1.5*CONSTANTS.PLAYER_SPEED){const t=1.5*CONSTANTS.PLAYER_SPEED/c,e=i.x-l,n=i.y-r;i.x=l+e*t,i.y=r+n*t}t.lastExtrapolatedPosition=i;const u=this.state.structures,h=u[WallType.BRICK].concat(u[WallType.FENCE]),[d,p]=CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(a,o,i.x,i.y,h);return{...i,x:d,y:p}}}function vt(){const t=document.body.classList,e=document.getElementById("bloodscreen").classList;t.toggle("shake",!e.toggle("bleed")),e.toggle("bleed2",!t.toggle("shake2"))}let Nt=!1;let wt=0;function $t(t){let e,n,s,a,o,c,p,y,g,P,T,b,x,v;function N(e){t[6].call(null,e)}let w={};void 0!==t[2]&&(w.updateScoreboard=t[2]),a=new mt({props:w}),S.push((()=>function(t,e,n){const s=t.$$.props[e];void 0!==s&&(t.$$.bound[s]=n,n(t.$$.ctx[s]))}(a,"updateScoreboard",N))),P=new J({props:{callback:t[3].moveJoystick.bind(t[3])}});let $=t[4]&&function(t){let e,n;return e=new it({}),{c(){D(e.$$.fragment)},m(t,s){Y(e,t,s),n=!0},i(t){n||(M(e.$$.fragment,t),n=!0)},o(t){L(e.$$.fragment,t),n=!1},d(t){B(e,t)}}}();return x=new H({props:{callback:t[3].adjustAim.bind(t[3])}}),{c(){e=u("center"),n=h(t[0]),s=d(),D(a.$$.fragment),c=d(),p=u("canvas"),y=d(),g=u("div"),D(P.$$.fragment),T=d(),$&&$.c(),b=d(),D(x.$$.fragment),m(e,"class","svelte-znqoos"),m(p,"class","svelte-znqoos"),m(g,"class","input-container svelte-znqoos")},m(o,r){l(o,e,r),i(e,n),l(o,s,r),Y(a,o,r),l(o,c,r),l(o,p,r),t[7](p),l(o,y,r),l(o,g,r),Y(P,g,null),i(g,T),$&&$.m(g,null),i(g,b),Y(x,g,null),v=!0},p(t,[e]){(!v||1&e)&&f(n,t[0]);const s={};var i;!o&&4&e&&(o=!0,s.updateScoreboard=t[2],i=()=>o=!1,E.push(i)),a.$set(s)},i(t){v||(M(a.$$.fragment,t),M(P.$$.fragment,t),M($),M(x.$$.fragment,t),v=!0)},o(t){L(a.$$.fragment,t),L(P.$$.fragment,t),L($),L(x.$$.fragment,t),v=!1},d(n){n&&r(e),n&&r(s),B(a,n),n&&r(c),n&&r(p),t[7](null),n&&r(y),n&&r(g),B(P),$&&$.d(),B(x)}}}function At(t,e,n){let s,a,{socket:o}=e,{username:i}=e;Tt.beginRetrieving(o);const l=new Pt(i),r=new St(l,o);T((()=>function(t,e,n){if(Nt)throw"The client is already running.";Nt=!0,CONSTANTS.DEV_MODE&&(window.state=e),t.canvas.height=t.canvas.width=window.innerWidth;const s=new Et(t.canvas,e);n.on("mapdata",(t=>{console.log("got the mapdata"),e.structures=t})),n.on("removedPlayer",(t=>{delete e.players[t]})),n.on("gameTick",(t=>{e.processGameTick(t)})),function n(a){const o=Date.now(),i=o-(a||o);requestAnimationFrame((()=>n(o))),t.inputs.processInputs(i,o),s.render(o,i);const l=Object.values(e.players).sort(((t,e)=>e.data.score-t.data.score)).map((t=>({name:t.data.name,value:t.data.score}))).slice(0,5);t.updateScoreboard(l)}()}({inputs:r,canvas:s,updateScoreboard:a},l,o)));const c=CONSTANTS.DEV_MODE;return t.$set=t=>{"socket"in t&&n(5,o=t.socket),"username"in t&&n(0,i=t.username)},[i,s,a,r,c,o,function(t){a=t,n(2,a)},function(t){S[t?"unshift":"push"]((()=>{s=t,n(1,s)}))}]}Object.assign(window,{startBot:function(){clearInterval(wt);const[t,e,n,s]=[...document.querySelector(".input-container").children];if(!t||!s)throw"Something changed here that caused this to throw.";s.ontouchstart(),t.ontouchstart({targetTouches:[{clientX:0,clientY:0}]}),t.ontouchmove({targetTouches:[{clientX:0,clientY:100}]});let a=1;wt=window.setInterval((()=>{t.ontouchmove({targetTouches:[{clientX:0,clientY:100*(a*=-1)}]})}),5e3)},endBot:function(){clearTimeout(wt)}});class Ct extends G{constructor(t){super(),z(this,t,At,$t,o,{socket:5,username:0})}}function Ot(t){let e,n;return e=new Ct({props:{socket:t[2],username:t[1]}}),{c(){D(e.$$.fragment)},m(t,s){Y(e,t,s),n=!0},p(t,n){const s={};2&n&&(s.username=t[1]),e.$set(s)},i(t){n||(M(e.$$.fragment,t),n=!0)},o(t){L(e.$$.fragment,t),n=!1},d(t){B(e,t)}}}function _t(t){let e,n;return e=new j({props:{proceed:t[3],socket:t[2],blaze:t[0]}}),{c(){D(e.$$.fragment)},m(t,s){Y(e,t,s),n=!0},p(t,n){const s={};1&n&&(s.blaze=t[0]),e.$set(s)},i(t){n||(M(e.$$.fragment,t),n=!0)},o(t){L(e.$$.fragment,t),n=!1},d(t){B(e,t)}}}function It(t){let e,n,s,a,o,i,c;const p=[_t,Ot],f=[];function y(t,e){return 0===t[1].length?0:1}s=y(t),a=f[s]=p[s](t);let g=t[4]&&function(t){let e;return{c(){e=u("div"),m(e,"id","debug-window"),m(e,"class","svelte-yuxzpj")},m(t,n){l(t,e,n)},d(t){t&&r(e)}}}();return{c(){e=u("div"),n=d(),a.c(),o=d(),g&&g.c(),i=h(""),m(e,"id","bloodscreen"),m(e,"class","svelte-yuxzpj")},m(t,a){l(t,e,a),l(t,n,a),f[s].m(t,a),l(t,o,a),g&&g.m(t,a),l(t,i,a),c=!0},p(t,[e]){let n=s;s=y(t),s===n?f[s].p(t,e):(k(),L(f[n],1,1,(()=>{f[n]=null})),R(),a=f[s],a||(a=f[s]=p[s](t),a.c()),M(a,1),a.m(o.parentNode,o))},i(t){c||(M(a),c=!0)},o(t){L(a),c=!1},d(t){t&&r(e),t&&r(n),f[s].d(t),t&&r(o),g&&g.d(t),t&&r(i)}}}function kt(t,e,n){let{blaze:s}=e;const a=io({transports:["websocket"],upgrade:!1});let o="";const i=CONSTANTS.DEV_MODE;return t.$set=t=>{"blaze"in t&&n(0,s=t.blaze)},[s,o,a,function(t){n(1,o=t),console.log("Welcome to the game,",t+"!")},i]}return new class extends G{constructor(t){super(),z(this,t,kt,It,o,{blaze:0})}}({target:document.body,props:{blaze:"Blaze"}})}();
+
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
+var app = (function () {
+    'use strict';
+
+    function noop() { }
+    function add_location(element, file, line, column, char) {
+        element.__svelte_meta = {
+            loc: { file, line, column, char }
+        };
+    }
+    function run(fn) {
+        return fn();
+    }
+    function blank_object() {
+        return Object.create(null);
+    }
+    function run_all(fns) {
+        fns.forEach(run);
+    }
+    function is_function(thing) {
+        return typeof thing === 'function';
+    }
+    function safe_not_equal(a, b) {
+        return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
+    }
+
+    function append(target, node) {
+        target.appendChild(node);
+    }
+    function insert(target, node, anchor) {
+        target.insertBefore(node, anchor || null);
+    }
+    function detach(node) {
+        node.parentNode.removeChild(node);
+    }
+    function destroy_each(iterations, detaching) {
+        for (let i = 0; i < iterations.length; i += 1) {
+            if (iterations[i])
+                iterations[i].d(detaching);
+        }
+    }
+    function element(name) {
+        return document.createElement(name);
+    }
+    function text(data) {
+        return document.createTextNode(data);
+    }
+    function space() {
+        return text(' ');
+    }
+    function empty() {
+        return text('');
+    }
+    function listen(node, event, handler, options) {
+        node.addEventListener(event, handler, options);
+        return () => node.removeEventListener(event, handler, options);
+    }
+    function attr(node, attribute, value) {
+        if (value == null)
+            node.removeAttribute(attribute);
+        else if (node.getAttribute(attribute) !== value)
+            node.setAttribute(attribute, value);
+    }
+    function children(element) {
+        return Array.from(element.childNodes);
+    }
+    function toggle_class(element, name, toggle) {
+        element.classList[toggle ? 'add' : 'remove'](name);
+    }
+    function custom_event(type, detail) {
+        const e = document.createEvent('CustomEvent');
+        e.initCustomEvent(type, false, false, detail);
+        return e;
+    }
+
+    let current_component;
+    function set_current_component(component) {
+        current_component = component;
+    }
+    function get_current_component() {
+        if (!current_component)
+            throw new Error(`Function called outside component initialization`);
+        return current_component;
+    }
+    function onMount(fn) {
+        get_current_component().$$.on_mount.push(fn);
+    }
+
+    const dirty_components = [];
+    const binding_callbacks = [];
+    const render_callbacks = [];
+    const flush_callbacks = [];
+    const resolved_promise = Promise.resolve();
+    let update_scheduled = false;
+    function schedule_update() {
+        if (!update_scheduled) {
+            update_scheduled = true;
+            resolved_promise.then(flush);
+        }
+    }
+    function add_render_callback(fn) {
+        render_callbacks.push(fn);
+    }
+    function add_flush_callback(fn) {
+        flush_callbacks.push(fn);
+    }
+    let flushing = false;
+    const seen_callbacks = new Set();
+    function flush() {
+        if (flushing)
+            return;
+        flushing = true;
+        do {
+            // first, call beforeUpdate functions
+            // and update components
+            for (let i = 0; i < dirty_components.length; i += 1) {
+                const component = dirty_components[i];
+                set_current_component(component);
+                update(component.$$);
+            }
+            dirty_components.length = 0;
+            while (binding_callbacks.length)
+                binding_callbacks.pop()();
+            // then, once components are updated, call
+            // afterUpdate functions. This may cause
+            // subsequent updates...
+            for (let i = 0; i < render_callbacks.length; i += 1) {
+                const callback = render_callbacks[i];
+                if (!seen_callbacks.has(callback)) {
+                    // ...so guard against infinite loops
+                    seen_callbacks.add(callback);
+                    callback();
+                }
+            }
+            render_callbacks.length = 0;
+        } while (dirty_components.length);
+        while (flush_callbacks.length) {
+            flush_callbacks.pop()();
+        }
+        update_scheduled = false;
+        flushing = false;
+        seen_callbacks.clear();
+    }
+    function update($$) {
+        if ($$.fragment !== null) {
+            $$.update();
+            run_all($$.before_update);
+            const dirty = $$.dirty;
+            $$.dirty = [-1];
+            $$.fragment && $$.fragment.p($$.ctx, dirty);
+            $$.after_update.forEach(add_render_callback);
+        }
+    }
+    const outroing = new Set();
+    let outros;
+    function group_outros() {
+        outros = {
+            r: 0,
+            c: [],
+            p: outros // parent group
+        };
+    }
+    function check_outros() {
+        if (!outros.r) {
+            run_all(outros.c);
+        }
+        outros = outros.p;
+    }
+    function transition_in(block, local) {
+        if (block && block.i) {
+            outroing.delete(block);
+            block.i(local);
+        }
+    }
+    function transition_out(block, local, detach, callback) {
+        if (block && block.o) {
+            if (outroing.has(block))
+                return;
+            outroing.add(block);
+            outros.c.push(() => {
+                outroing.delete(block);
+                if (callback) {
+                    if (detach)
+                        block.d(1);
+                    callback();
+                }
+            });
+            block.o(local);
+        }
+    }
+
+    const globals = (typeof window !== 'undefined'
+        ? window
+        : typeof globalThis !== 'undefined'
+            ? globalThis
+            : global);
+
+    function bind(component, name, callback) {
+        const index = component.$$.props[name];
+        if (index !== undefined) {
+            component.$$.bound[index] = callback;
+            callback(component.$$.ctx[index]);
+        }
+    }
+    function create_component(block) {
+        block && block.c();
+    }
+    function mount_component(component, target, anchor) {
+        const { fragment, on_mount, on_destroy, after_update } = component.$$;
+        fragment && fragment.m(target, anchor);
+        // onMount happens before the initial afterUpdate
+        add_render_callback(() => {
+            const new_on_destroy = on_mount.map(run).filter(is_function);
+            if (on_destroy) {
+                on_destroy.push(...new_on_destroy);
+            }
+            else {
+                // Edge case - component was destroyed immediately,
+                // most likely as a result of a binding initialising
+                run_all(new_on_destroy);
+            }
+            component.$$.on_mount = [];
+        });
+        after_update.forEach(add_render_callback);
+    }
+    function destroy_component(component, detaching) {
+        const $$ = component.$$;
+        if ($$.fragment !== null) {
+            run_all($$.on_destroy);
+            $$.fragment && $$.fragment.d(detaching);
+            // TODO null out other refs, including component.$$ (but need to
+            // preserve final state?)
+            $$.on_destroy = $$.fragment = null;
+            $$.ctx = [];
+        }
+    }
+    function make_dirty(component, i) {
+        if (component.$$.dirty[0] === -1) {
+            dirty_components.push(component);
+            schedule_update();
+            component.$$.dirty.fill(0);
+        }
+        component.$$.dirty[(i / 31) | 0] |= (1 << (i % 31));
+    }
+    function init(component, options, instance, create_fragment, not_equal, props, dirty = [-1]) {
+        const parent_component = current_component;
+        set_current_component(component);
+        const prop_values = options.props || {};
+        const $$ = component.$$ = {
+            fragment: null,
+            ctx: null,
+            // state
+            props,
+            update: noop,
+            not_equal,
+            bound: blank_object(),
+            // lifecycle
+            on_mount: [],
+            on_destroy: [],
+            before_update: [],
+            after_update: [],
+            context: new Map(parent_component ? parent_component.$$.context : []),
+            // everything else
+            callbacks: blank_object(),
+            dirty
+        };
+        let ready = false;
+        $$.ctx = instance
+            ? instance(component, prop_values, (i, ret, ...rest) => {
+                const value = rest.length ? rest[0] : ret;
+                if ($$.ctx && not_equal($$.ctx[i], $$.ctx[i] = value)) {
+                    if ($$.bound[i])
+                        $$.bound[i](value);
+                    if (ready)
+                        make_dirty(component, i);
+                }
+                return ret;
+            })
+            : [];
+        $$.update();
+        ready = true;
+        run_all($$.before_update);
+        // `false` as a special case of no DOM component
+        $$.fragment = create_fragment ? create_fragment($$.ctx) : false;
+        if (options.target) {
+            if (options.hydrate) {
+                const nodes = children(options.target);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                $$.fragment && $$.fragment.l(nodes);
+                nodes.forEach(detach);
+            }
+            else {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                $$.fragment && $$.fragment.c();
+            }
+            if (options.intro)
+                transition_in(component.$$.fragment);
+            mount_component(component, options.target, options.anchor);
+            flush();
+        }
+        set_current_component(parent_component);
+    }
+    class SvelteComponent {
+        $destroy() {
+            destroy_component(this, 1);
+            this.$destroy = noop;
+        }
+        $on(type, callback) {
+            const callbacks = (this.$$.callbacks[type] || (this.$$.callbacks[type] = []));
+            callbacks.push(callback);
+            return () => {
+                const index = callbacks.indexOf(callback);
+                if (index !== -1)
+                    callbacks.splice(index, 1);
+            };
+        }
+        $set() {
+            // overridden by instance, if it has props
+        }
+    }
+
+    function dispatch_dev(type, detail) {
+        document.dispatchEvent(custom_event(type, Object.assign({ version: '3.24.0' }, detail)));
+    }
+    function append_dev(target, node) {
+        dispatch_dev("SvelteDOMInsert", { target, node });
+        append(target, node);
+    }
+    function insert_dev(target, node, anchor) {
+        dispatch_dev("SvelteDOMInsert", { target, node, anchor });
+        insert(target, node, anchor);
+    }
+    function detach_dev(node) {
+        dispatch_dev("SvelteDOMRemove", { node });
+        detach(node);
+    }
+    function listen_dev(node, event, handler, options, has_prevent_default, has_stop_propagation) {
+        const modifiers = options === true ? ["capture"] : options ? Array.from(Object.keys(options)) : [];
+        if (has_prevent_default)
+            modifiers.push('preventDefault');
+        if (has_stop_propagation)
+            modifiers.push('stopPropagation');
+        dispatch_dev("SvelteDOMAddEventListener", { node, event, handler, modifiers });
+        const dispose = listen(node, event, handler, options);
+        return () => {
+            dispatch_dev("SvelteDOMRemoveEventListener", { node, event, handler, modifiers });
+            dispose();
+        };
+    }
+    function attr_dev(node, attribute, value) {
+        attr(node, attribute, value);
+        if (value == null)
+            dispatch_dev("SvelteDOMRemoveAttribute", { node, attribute });
+        else
+            dispatch_dev("SvelteDOMSetAttribute", { node, attribute, value });
+    }
+    function set_data_dev(text, data) {
+        data = '' + data;
+        if (text.wholeText === data)
+            return;
+        dispatch_dev("SvelteDOMSetData", { node: text, data });
+        text.data = data;
+    }
+    function validate_each_argument(arg) {
+        if (typeof arg !== 'string' && !(arg && typeof arg === 'object' && 'length' in arg)) {
+            let msg = '{#each} only iterates over array-like objects.';
+            if (typeof Symbol === 'function' && arg && Symbol.iterator in arg) {
+                msg += ' You can use a spread to convert this iterable into an array.';
+            }
+            throw new Error(msg);
+        }
+    }
+    function validate_slots(name, slot, keys) {
+        for (const slot_key of Object.keys(slot)) {
+            if (!~keys.indexOf(slot_key)) {
+                console.warn(`<${name}> received an unexpected slot "${slot_key}".`);
+            }
+        }
+    }
+    class SvelteComponentDev extends SvelteComponent {
+        constructor(options) {
+            if (!options || (!options.target && !options.$$inline)) {
+                throw new Error(`'target' is a required option`);
+            }
+            super();
+        }
+        $destroy() {
+            super.$destroy();
+            this.$destroy = () => {
+                console.warn(`Component was already destroyed`); // eslint-disable-line no-console
+            };
+        }
+        $capture_state() { }
+        $inject_state() { }
+    }
+
+    /* src\game\views\Nomination.svelte generated by Svelte v3.24.0 */
+    const file$7 = "src\\game\\views\\Nomination.svelte";
+
+    function create_fragment$7(ctx) {
+    	let main;
+    	let span2;
+    	let h1;
+    	let span0;
+    	let t1;
+    	let span1;
+    	let t2;
+    	let t3;
+    	let h2;
+    	let t5;
+    	let span4;
+    	let form;
+    	let input;
+    	let t6;
+    	let button;
+    	let t8;
+    	let span3;
+    	let t9;
+    	let bloodblaze;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			main = element("main");
+    			span2 = element("span");
+    			h1 = element("h1");
+    			span0 = element("span");
+    			span0.textContent = "BLOOD";
+    			t1 = space();
+    			span1 = element("span");
+    			t2 = text(/*blaze*/ ctx[0]);
+    			t3 = space();
+    			h2 = element("h2");
+    			h2.textContent = "A Devastating Bloodbath of Boundless Mortality";
+    			t5 = space();
+    			span4 = element("span");
+    			form = element("form");
+    			input = element("input");
+    			t6 = space();
+    			button = element("button");
+    			button.textContent = "GO";
+    			t8 = space();
+    			span3 = element("span");
+    			t9 = space();
+    			bloodblaze = element("bloodblaze");
+    			attr_dev(span0, "class", "_1 svelte-151gubb");
+    			add_location(span0, file$7, 38, 3, 1096);
+    			attr_dev(span1, "class", "_2 svelte-151gubb");
+    			add_location(span1, file$7, 39, 3, 1133);
+    			attr_dev(h1, "class", "svelte-151gubb");
+    			add_location(h1, file$7, 37, 2, 1086);
+    			attr_dev(h2, "class", "svelte-151gubb");
+    			add_location(h2, file$7, 41, 2, 1179);
+    			attr_dev(span2, "class", "title svelte-151gubb");
+    			add_location(span2, file$7, 36, 1, 1062);
+    			attr_dev(input, "autocomplete", "off");
+    			attr_dev(input, "placeholder", "Enter your name");
+    			attr_dev(input, "pattern", "[A-Za-z0-9 _]*");
+    			attr_dev(input, "maxlength", /*charLimit*/ ctx[2]);
+    			attr_dev(input, "class", "svelte-151gubb");
+    			add_location(input, file$7, 45, 3, 1330);
+    			attr_dev(button, "class", "svelte-151gubb");
+    			add_location(button, file$7, 50, 3, 1485);
+    			attr_dev(form, "type", "text");
+    			attr_dev(form, "action", "");
+    			add_location(form, file$7, 44, 2, 1273);
+    			add_location(span3, file$7, 52, 1, 1520);
+    			attr_dev(bloodblaze, "class", "svelte-151gubb");
+    			add_location(bloodblaze, file$7, 53, 1, 1530);
+    			attr_dev(span4, "class", "inner svelte-151gubb");
+    			add_location(span4, file$7, 43, 1, 1249);
+    			attr_dev(main, "class", "svelte-151gubb");
+    			add_location(main, file$7, 35, 0, 1053);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, main, anchor);
+    			append_dev(main, span2);
+    			append_dev(span2, h1);
+    			append_dev(h1, span0);
+    			append_dev(h1, t1);
+    			append_dev(h1, span1);
+    			append_dev(span1, t2);
+    			append_dev(span2, t3);
+    			append_dev(span2, h2);
+    			append_dev(main, t5);
+    			append_dev(main, span4);
+    			append_dev(span4, form);
+    			append_dev(form, input);
+    			append_dev(form, t6);
+    			append_dev(form, button);
+    			append_dev(span4, t8);
+    			append_dev(span4, span3);
+    			append_dev(span4, t9);
+    			append_dev(span4, bloodblaze);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(input, "keyup", sanitizeText, false, false, false),
+    					listen_dev(form, "submit", /*tryUsername*/ ctx[1], false, false, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*blaze*/ 1) set_data_dev(t2, /*blaze*/ ctx[0]);
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(main);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$7.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function sanitizeText(event) {
+    	event.target.value = event.target.value.replace(/[^A-Za-z0-9 _]/g, "").slice(0, CONSTANTS.USERNAME_CHARACTER_LIMIT);
+    }
+
+    function instance$7($$self, $$props, $$invalidate) {
+    	let { proceed } = $$props;
+    	let { blaze } = $$props;
+    	let { socket } = $$props;
+
+    	onMount(() => {
+    		socket.on("nomination", ([success, name]) => {
+    			if (success) {
+    				socket.removeAllListeners("nomination");
+    				proceed(name);
+    			}
+
+    			alert(success
+    			? `Welcome, ${name}!`
+    			: `Sorry, "${name}" is not available.`);
+    		});
+
+    		// To speed things up while testing:
+    		if (CONSTANTS.DEV_MODE) {
+    			socket.emit("nomination", Math.random().toString());
+    		}
+    	});
+
+    	function tryUsername(e) {
+    		e.preventDefault();
+    		const input = e.target.children[0];
+
+    		if (input.value) {
+    			socket.emit("nomination", input.value);
+    			input.value = "";
+    		}
+    	}
+
+    	const charLimit = CONSTANTS.USERNAME_CHARACTER_LIMIT;
+    	const writable_props = ["proceed", "blaze", "socket"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Nomination> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("Nomination", $$slots, []);
+
+    	$$self.$set = $$props => {
+    		if ("proceed" in $$props) $$invalidate(3, proceed = $$props.proceed);
+    		if ("blaze" in $$props) $$invalidate(0, blaze = $$props.blaze);
+    		if ("socket" in $$props) $$invalidate(4, socket = $$props.socket);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		onMount,
+    		proceed,
+    		blaze,
+    		socket,
+    		tryUsername,
+    		sanitizeText,
+    		charLimit
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("proceed" in $$props) $$invalidate(3, proceed = $$props.proceed);
+    		if ("blaze" in $$props) $$invalidate(0, blaze = $$props.blaze);
+    		if ("socket" in $$props) $$invalidate(4, socket = $$props.socket);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [blaze, tryUsername, charLimit, proceed, socket];
+    }
+
+    class Nomination extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$7, create_fragment$7, safe_not_equal, { proceed: 3, blaze: 0, socket: 4 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Nomination",
+    			options,
+    			id: create_fragment$7.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*proceed*/ ctx[3] === undefined && !("proceed" in props)) {
+    			console.warn("<Nomination> was created without expected prop 'proceed'");
+    		}
+
+    		if (/*blaze*/ ctx[0] === undefined && !("blaze" in props)) {
+    			console.warn("<Nomination> was created without expected prop 'blaze'");
+    		}
+
+    		if (/*socket*/ ctx[4] === undefined && !("socket" in props)) {
+    			console.warn("<Nomination> was created without expected prop 'socket'");
+    		}
+    	}
+
+    	get proceed() {
+    		throw new Error("<Nomination>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set proceed(value) {
+    		throw new Error("<Nomination>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get blaze() {
+    		throw new Error("<Nomination>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set blaze(value) {
+    		throw new Error("<Nomination>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get socket() {
+    		throw new Error("<Nomination>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set socket(value) {
+    		throw new Error("<Nomination>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\game\uielements\DirectionPad.svelte generated by Svelte v3.24.0 */
+    const file$6 = "src\\game\\uielements\\DirectionPad.svelte";
+
+    function create_fragment$6(ctx) {
+    	let canvas_1;
+
+    	const block = {
+    		c: function create() {
+    			canvas_1 = element("canvas");
+    			attr_dev(canvas_1, "class", "svelte-eupre8");
+    			add_location(canvas_1, file$6, 47, 0, 1423);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, canvas_1, anchor);
+    			/*canvas_1_binding*/ ctx[2](canvas_1);
+    		},
+    		p: noop,
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(canvas_1);
+    			/*canvas_1_binding*/ ctx[2](null);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$6.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$6($$self, $$props, $$invalidate) {
+    	let canvas;
+    	let W;
+    	let H;
+    	let ctx;
+    	const size = window.innerWidth / 2.5 / PHI;
+    	let { callback = () => 0 } = $$props;
+    	let angle = 0;
+
+    	onMount(() => {
+    		W = $$invalidate(0, canvas.width = H = $$invalidate(0, canvas.height = size, canvas), canvas);
+    		ctx = canvas.getContext("2d");
+
+    		// TODO: move to CSS
+    		$$invalidate(0, canvas.style.margin = "5px", canvas);
+
+    		$$invalidate(0, canvas.style.backgroundColor = "transparent", canvas);
+    		render();
+    		$$invalidate(0, canvas.ontouchstart = () => callback(angle, true), canvas);
+    		$$invalidate(0, canvas.ontouchmove = touchmove, canvas);
+    		$$invalidate(0, canvas.ontouchend = () => callback(angle, false), canvas);
+
+    		function touchmove(e) {
+    			const l = +canvas.offsetLeft;
+    			const t = +canvas.offsetTop;
+    			const x = e.targetTouches[0].clientX - l - W / 2;
+    			const y = e.targetTouches[0].clientY - t - H / 2;
+    			const a = Math.atan2(y, x);
+    			angle = a;
+    			render();
+    			callback(a, true);
+    		}
+    	});
+
+    	function render() {
+    		ctx.clearRect(0, 0, W, H);
+    		ctx.strokeStyle = "#fba";
+    		const r = 40;
+    		const [x, y] = [Math.cos(angle) * r + W / 2, Math.sin(angle) * r + H / 2];
+    		const [x2, y2] = [Math.cos(angle) * (r / 2) + W / 2, Math.sin(angle) * (r / 2) + H / 2];
+    		ctx.beginPath();
+    		ctx.arc(W / 2, H / 2, r, 0, 7);
+    		ctx.closePath();
+    		ctx.moveTo(x, y);
+    		ctx.lineTo(x2, y2);
+    		ctx.stroke();
+    		ctx.beginPath();
+    	}
+
+    	const writable_props = ["callback"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<DirectionPad> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("DirectionPad", $$slots, []);
+
+    	function canvas_1_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			canvas = $$value;
+    			$$invalidate(0, canvas);
+    		});
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("callback" in $$props) $$invalidate(1, callback = $$props.callback);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		onMount,
+    		canvas,
+    		W,
+    		H,
+    		ctx,
+    		size,
+    		callback,
+    		angle,
+    		render
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("canvas" in $$props) $$invalidate(0, canvas = $$props.canvas);
+    		if ("W" in $$props) W = $$props.W;
+    		if ("H" in $$props) H = $$props.H;
+    		if ("ctx" in $$props) ctx = $$props.ctx;
+    		if ("callback" in $$props) $$invalidate(1, callback = $$props.callback);
+    		if ("angle" in $$props) angle = $$props.angle;
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [canvas, callback, canvas_1_binding];
+    }
+
+    class DirectionPad extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$6, create_fragment$6, safe_not_equal, { callback: 1 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "DirectionPad",
+    			options,
+    			id: create_fragment$6.name
+    		});
+    	}
+
+    	get callback() {
+    		throw new Error("<DirectionPad>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set callback(value) {
+    		throw new Error("<DirectionPad>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\game\uielements\Joystick.svelte generated by Svelte v3.24.0 */
+    const file$5 = "src\\game\\uielements\\Joystick.svelte";
+
+    function create_fragment$5(ctx) {
+    	let div;
+    	let canvas_1;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			canvas_1 = element("canvas");
+    			attr_dev(canvas_1, "class", "svelte-18l9nl");
+    			add_location(canvas_1, file$5, 88, 4, 2707);
+    			attr_dev(div, "class", "svelte-18l9nl");
+    			add_location(div, file$5, 87, 0, 2674);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, canvas_1);
+    			/*canvas_1_binding*/ ctx[3](canvas_1);
+    			/*div_binding*/ ctx[4](div);
+    		},
+    		p: noop,
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			/*canvas_1_binding*/ ctx[3](null);
+    			/*div_binding*/ ctx[4](null);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$5.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    const canvasScale = 1.5;
+    const radius = 40;
+    const lineWidth = 8;
+
+    function instance$5($$self, $$props, $$invalidate) {
+    	let container;
+    	let canvas;
+    	let W;
+    	let H;
+    	let ctx;
+    	let point;
+    	const size = window.innerWidth / 2.5 / PHI;
+    	let { callback = () => 0 } = $$props;
+
+    	onMount(() => {
+    		$$invalidate(0, container.style.width = $$invalidate(0, container.style.height = Math.round(size) + "px", container), container);
+    		W = $$invalidate(1, canvas.width = H = $$invalidate(1, canvas.height = Math.round(size * canvasScale), canvas), canvas);
+    		const d = Math.floor(size - size * canvasScale) * 0.5;
+    		$$invalidate(1, canvas.style.left = $$invalidate(1, canvas.style.top = d + "px", canvas), canvas);
+    		ctx = canvas.getContext("2d");
+    		point = [W / 2, H / 2];
+    		render();
+    		$$invalidate(0, container.ontouchstart = touchstart, container);
+    		$$invalidate(0, container.ontouchmove = touchmove, container);
+    		$$invalidate(0, container.ontouchend = touchend, container);
+    		let startX = 0;
+    		let startY = 0;
+
+    		function touchstart(e) {
+    			startX = e.targetTouches[0].clientX;
+    			startY = e.targetTouches[0].clientY;
+    		}
+
+    		function touchmove(e) {
+    			const sensitivity = 0.75;
+    			const dx = (e.targetTouches[0].clientX - startX) * sensitivity;
+    			const dy = (e.targetTouches[0].clientY - startY) * sensitivity;
+
+    			/*
+    -- "restrict" it to a circle of radius W/2:
+    if sqrt(x**2 + y**2) > W/2 then
+        we need k such that
+        W/2 = sqrt((x*k)**2 + (y*k)**2)
+
+        (W/2)**2 = (x*k)**2 + (y*k)**2
+        (W/2)**2  = k**2 * (x**2 + y**2)
+        (W/2)**2  / (x**2 + y**2) = k**2
+        k = sqrt((W/2)**2 / (x**2 + y**2))
+    */
+    			const r = W / 2 - radius - lineWidth;
+
+    			const r2 = Math.pow(r, 2);
+    			const a = Math.pow(dx, 2) + Math.pow(dy, 2);
+    			const k = Math.sqrt(r2 / a);
+    			const [jx, jy] = a > r2 ? [dx * k, dy * k] : [dx, dy];
+    			point[0] = jx + W / 2;
+    			point[1] = jy + W / 2;
+    			render();
+    			const x = jx / r;
+    			const y = jy / r;
+    			callback(x, y);
+    		}
+
+    		function touchend() {
+    			point[0] = W / 2;
+    			point[1] = H / 2;
+    			render();
+    			callback(0, 0);
+    		}
+    	});
+
+    	function render() {
+    		ctx.clearRect(0, 0, W, H);
+    		ctx.strokeStyle = "black";
+    		ctx.lineWidth = lineWidth;
+    		ctx.fillStyle = "rgb(71, 61, 61)";
+    		ctx.beginPath();
+    		const [x, y] = point;
+    		ctx.arc(x, y, radius, 0, 7);
+    		ctx.closePath();
+    		ctx.stroke();
+    		ctx.fill();
+    		const X = x - W / 2;
+    		const Y = y - H / 2;
+    		const rot = 1.2 * Math.PI / 4; // 16
+
+    		$$invalidate(
+    			1,
+    			canvas.style.transform = `
+        perspective(200px) 
+        rotateY(${rot * X | 0}deg)
+        rotateX(${-rot * Y | 0}deg)`,
+    			canvas
+    		);
+    	}
+
+    	const writable_props = ["callback"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Joystick> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("Joystick", $$slots, []);
+
+    	function canvas_1_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			canvas = $$value;
+    			$$invalidate(1, canvas);
+    		});
+    	}
+
+    	function div_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			container = $$value;
+    			$$invalidate(0, container);
+    		});
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("callback" in $$props) $$invalidate(2, callback = $$props.callback);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		onMount,
+    		container,
+    		canvas,
+    		W,
+    		H,
+    		ctx,
+    		point,
+    		size,
+    		canvasScale,
+    		radius,
+    		lineWidth,
+    		callback,
+    		render
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("container" in $$props) $$invalidate(0, container = $$props.container);
+    		if ("canvas" in $$props) $$invalidate(1, canvas = $$props.canvas);
+    		if ("W" in $$props) W = $$props.W;
+    		if ("H" in $$props) H = $$props.H;
+    		if ("ctx" in $$props) ctx = $$props.ctx;
+    		if ("point" in $$props) point = $$props.point;
+    		if ("callback" in $$props) $$invalidate(2, callback = $$props.callback);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [container, canvas, callback, canvas_1_binding, div_binding];
+    }
+
+    class Joystick extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$5, create_fragment$5, safe_not_equal, { callback: 2 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Joystick",
+    			options,
+    			id: create_fragment$5.name
+    		});
+    	}
+
+    	get callback() {
+    		throw new Error("<Joystick>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set callback(value) {
+    		throw new Error("<Joystick>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    const DEV_SETTINGS = { enableClientSidePrediction: true,
+        showPredictedPlayer: true,
+        showServerPlayer: false,
+        showServerBullet: false,
+        showClientBullet: false,
+        showIdealClientBullet: true,
+        showClientPredictedBullet: true,
+        showExtrapolatedEnemyPositions: true,
+        showInterpolatedEnemyPositions: false,
+        showUninterpolatedEnemyPositions: false,
+        showWhatOtherClientsPredict: false,
+        showGameMetadeta: true
+    };
+
+    /* src\game\views\DevSwitches.svelte generated by Svelte v3.24.0 */
+
+    const { Object: Object_1 } = globals;
+    const file$4 = "src\\game\\views\\DevSwitches.svelte";
+
+    function get_each_context$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[4] = list[i];
+    	return child_ctx;
+    }
+
+    // (18:4) {#each DEV_SWITCHES as option}
+    function create_each_block$1(ctx) {
+    	let label;
+    	let input;
+    	let t0;
+    	let h4;
+    	let t1_value = /*option*/ ctx[4].split(camelSections).map(func).join(" ") + "";
+    	let t1;
+    	let t2;
+    	let mounted;
+    	let dispose;
+
+    	function input_change_handler() {
+    		/*input_change_handler*/ ctx[3].call(input, /*option*/ ctx[4]);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			label = element("label");
+    			input = element("input");
+    			t0 = space();
+    			h4 = element("h4");
+    			t1 = text(t1_value);
+    			t2 = space();
+    			attr_dev(input, "type", "checkbox");
+    			add_location(input, file$4, 19, 12, 656);
+    			attr_dev(h4, "class", "svelte-1p5603t");
+    			add_location(h4, file$4, 20, 12, 727);
+    			attr_dev(label, "class", "svelte-1p5603t");
+    			add_location(label, file$4, 18, 8, 635);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, label, anchor);
+    			append_dev(label, input);
+    			input.checked = /*DEV_SETTINGS*/ ctx[0][/*option*/ ctx[4]];
+    			append_dev(label, t0);
+    			append_dev(label, h4);
+    			append_dev(h4, t1);
+    			append_dev(label, t2);
+
+    			if (!mounted) {
+    				dispose = listen_dev(input, "change", input_change_handler);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+
+    			if (dirty & /*DEV_SETTINGS, DEV_SWITCHES*/ 5) {
+    				input.checked = /*DEV_SETTINGS*/ ctx[0][/*option*/ ctx[4]];
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(label);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$1.name,
+    		type: "each",
+    		source: "(18:4) {#each DEV_SWITCHES as option}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$4(ctx) {
+    	let button0;
+    	let t1;
+    	let div;
+    	let button1;
+    	let t3;
+    	let mounted;
+    	let dispose;
+    	let each_value = /*DEV_SWITCHES*/ ctx[2];
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			button0 = element("button");
+    			button0.textContent = "⚙️";
+    			t1 = space();
+    			div = element("div");
+    			button1 = element("button");
+    			button1.textContent = "back";
+    			t3 = space();
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr_dev(button0, "class", "settings-button svelte-1p5603t");
+    			add_location(button0, file$4, 8, 0, 366);
+    			add_location(button1, file$4, 13, 4, 519);
+    			attr_dev(div, "class", "settings-page svelte-1p5603t");
+    			toggle_class(div, "show", /*settingsPage*/ ctx[1].isOpen);
+    			add_location(div, file$4, 12, 0, 453);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button0, anchor);
+    			insert_dev(target, t1, anchor);
+    			insert_dev(target, div, anchor);
+    			append_dev(div, button1);
+    			append_dev(div, t3);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(
+    						button0,
+    						"click",
+    						function () {
+    							if (is_function(/*settingsPage*/ ctx[1].toggle)) /*settingsPage*/ ctx[1].toggle.apply(this, arguments);
+    						},
+    						false,
+    						false,
+    						false
+    					),
+    					listen_dev(
+    						button1,
+    						"click",
+    						function () {
+    							if (is_function(/*settingsPage*/ ctx[1].toggle)) /*settingsPage*/ ctx[1].toggle.apply(this, arguments);
+    						},
+    						false,
+    						false,
+    						false
+    					)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, [dirty]) {
+    			ctx = new_ctx;
+
+    			if (dirty & /*DEV_SWITCHES, camelSections, DEV_SETTINGS*/ 5) {
+    				each_value = /*DEV_SWITCHES*/ ctx[2];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$1(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*settingsPage*/ 2) {
+    				toggle_class(div, "show", /*settingsPage*/ ctx[1].isOpen);
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button0);
+    			if (detaching) detach_dev(t1);
+    			if (detaching) detach_dev(div);
+    			destroy_each(each_blocks, detaching);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$4.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    const camelSections = /([A-Z]+|[A-Z]?[a-z]+)(?=[A-Z]|\b)/;
+    const func = s => !s[0] ? s : s[0].toUpperCase() + s.slice(1);
+
+    function instance$4($$self, $$props, $$invalidate) {
+    	const DEV_SWITCHES = Object.keys(DEV_SETTINGS).filter(k => typeof DEV_SETTINGS[k] === "boolean");
+
+    	const settingsPage = {
+    		toggle() {
+    			$$invalidate(1, settingsPage.isOpen ^= 1, settingsPage);
+    		},
+    		isOpen: 0
+    	};
+
+    	const writable_props = [];
+
+    	Object_1.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<DevSwitches> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("DevSwitches", $$slots, []);
+
+    	function input_change_handler(option) {
+    		DEV_SETTINGS[option] = this.checked;
+    		$$invalidate(0, DEV_SETTINGS);
+    		$$invalidate(2, DEV_SWITCHES);
+    	}
+
+    	$$self.$capture_state = () => ({
+    		DEV_SETTINGS,
+    		DEV_SWITCHES,
+    		settingsPage,
+    		camelSections
+    	});
+
+    	return [DEV_SETTINGS, settingsPage, DEV_SWITCHES, input_change_handler];
+    }
+
+    class DevSwitches extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "DevSwitches",
+    			options,
+    			id: create_fragment$4.name
+    		});
+    	}
+    }
+
+    /* src\game\views\Score.svelte generated by Svelte v3.24.0 */
+    const file$3 = "src\\game\\views\\Score.svelte";
+
+    function create_fragment$3(ctx) {
+    	let h4;
+    	let t0;
+    	let t1;
+    	let t2;
+
+    	const block = {
+    		c: function create() {
+    			h4 = element("h4");
+    			t0 = text(/*name*/ ctx[0]);
+    			t1 = text(" - ");
+    			t2 = text(/*value*/ ctx[1]);
+    			attr_dev(h4, "class", "svelte-9w6kgf");
+    			add_location(h4, file$3, 20, 0, 523);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h4, anchor);
+    			append_dev(h4, t0);
+    			append_dev(h4, t1);
+    			append_dev(h4, t2);
+    			/*h4_binding*/ ctx[4](h4);
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*name*/ 1) set_data_dev(t0, /*name*/ ctx[0]);
+    			if (dirty & /*value*/ 2) set_data_dev(t2, /*value*/ ctx[1]);
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h4);
+    			/*h4_binding*/ ctx[4](null);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$3.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$3($$self, $$props, $$invalidate) {
+    	let { name } = $$props;
+    	let { value } = $$props;
+    	let { maximum } = $$props;
+    	let bar;
+    	let mounted = false;
+
+    	onMount(() => {
+    		$$invalidate(2, bar.style.background = `linear-gradient(to right, #39f ${Math.round(100 * value / maximum)}%, #111 0%)`, bar);
+    		$$invalidate(5, mounted = true);
+    	});
+
+    	const writable_props = ["name", "value", "maximum"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Score> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("Score", $$slots, []);
+
+    	function h4_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			bar = $$value;
+    			((($$invalidate(2, bar), $$invalidate(5, mounted)), $$invalidate(1, value)), $$invalidate(3, maximum));
+    		});
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("name" in $$props) $$invalidate(0, name = $$props.name);
+    		if ("value" in $$props) $$invalidate(1, value = $$props.value);
+    		if ("maximum" in $$props) $$invalidate(3, maximum = $$props.maximum);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		onMount,
+    		name,
+    		value,
+    		maximum,
+    		bar,
+    		mounted
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("name" in $$props) $$invalidate(0, name = $$props.name);
+    		if ("value" in $$props) $$invalidate(1, value = $$props.value);
+    		if ("maximum" in $$props) $$invalidate(3, maximum = $$props.maximum);
+    		if ("bar" in $$props) $$invalidate(2, bar = $$props.bar);
+    		if ("mounted" in $$props) $$invalidate(5, mounted = $$props.mounted);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*mounted, value, maximum*/ 42) {
+    			{
+    				if (mounted) {
+    					$$invalidate(2, bar.style.background = `linear-gradient(to right, #39f ${Math.round(100 * value / maximum)}%, #111 0%)`, bar);
+    				}
+    			}
+    		}
+    	};
+
+    	return [name, value, bar, maximum, h4_binding];
+    }
+
+    class Score extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { name: 0, value: 1, maximum: 3 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Score",
+    			options,
+    			id: create_fragment$3.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*name*/ ctx[0] === undefined && !("name" in props)) {
+    			console.warn("<Score> was created without expected prop 'name'");
+    		}
+
+    		if (/*value*/ ctx[1] === undefined && !("value" in props)) {
+    			console.warn("<Score> was created without expected prop 'value'");
+    		}
+
+    		if (/*maximum*/ ctx[3] === undefined && !("maximum" in props)) {
+    			console.warn("<Score> was created without expected prop 'maximum'");
+    		}
+    	}
+
+    	get name() {
+    		throw new Error("<Score>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set name(value) {
+    		throw new Error("<Score>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get value() {
+    		throw new Error("<Score>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set value(value) {
+    		throw new Error("<Score>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get maximum() {
+    		throw new Error("<Score>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set maximum(value) {
+    		throw new Error("<Score>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\game\views\Scoreboard.svelte generated by Svelte v3.24.0 */
+    const file$2 = "src\\game\\views\\Scoreboard.svelte";
+
+    function get_each_context(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[2] = list[i];
+    	return child_ctx;
+    }
+
+    // (11:4) {#each scores as score}
+    function create_each_block(ctx) {
+    	let score;
+    	let current;
+
+    	score = new Score({
+    			props: {
+    				name: /*score*/ ctx[2].name,
+    				value: /*score*/ ctx[2].value,
+    				maximum: /*scores*/ ctx[0][0]?.value || 0
+    			},
+    			$$inline: true
+    		});
+
+    	const block = {
+    		c: function create() {
+    			create_component(score.$$.fragment);
+    		},
+    		m: function mount(target, anchor) {
+    			mount_component(score, target, anchor);
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			const score_changes = {};
+    			if (dirty & /*scores*/ 1) score_changes.name = /*score*/ ctx[2].name;
+    			if (dirty & /*scores*/ 1) score_changes.value = /*score*/ ctx[2].value;
+    			if (dirty & /*scores*/ 1) score_changes.maximum = /*scores*/ ctx[0][0]?.value || 0;
+    			score.$set(score_changes);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(score.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(score.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			destroy_component(score, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block.name,
+    		type: "each",
+    		source: "(11:4) {#each scores as score}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$2(ctx) {
+    	let div;
+    	let current;
+    	let each_value = /*scores*/ ctx[0];
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    	}
+
+    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+    		each_blocks[i] = null;
+    	});
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr_dev(div, "class", "svelte-1rg865m");
+    			add_location(div, file$2, 8, 0, 270);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*scores*/ 1) {
+    				each_value = /*scores*/ ctx[0];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    						transition_in(each_blocks[i], 1);
+    					} else {
+    						each_blocks[i] = create_each_block(child_ctx);
+    						each_blocks[i].c();
+    						transition_in(each_blocks[i], 1);
+    						each_blocks[i].m(div, null);
+    					}
+    				}
+
+    				group_outros();
+
+    				for (i = each_value.length; i < each_blocks.length; i += 1) {
+    					out(i);
+    				}
+
+    				check_outros();
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+
+    			for (let i = 0; i < each_value.length; i += 1) {
+    				transition_in(each_blocks[i]);
+    			}
+
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			each_blocks = each_blocks.filter(Boolean);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				transition_out(each_blocks[i]);
+    			}
+
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$2.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$2($$self, $$props, $$invalidate) {
+    	let scores = [{ name: "12345678", value: 3 }, { name: "Bob", value: 2 }];
+
+    	const updateScoreboard = newScores => {
+    		$$invalidate(0, scores = newScores);
+    	};
+
+    	const writable_props = [];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Scoreboard> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("Scoreboard", $$slots, []);
+    	$$self.$capture_state = () => ({ Score, scores, updateScoreboard });
+
+    	$$self.$inject_state = $$props => {
+    		if ("scores" in $$props) $$invalidate(0, scores = $$props.scores);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [scores, updateScoreboard];
+    }
+
+    class Scoreboard extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { updateScoreboard: 1 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Scoreboard",
+    			options,
+    			id: create_fragment$2.name
+    		});
+    	}
+
+    	get updateScoreboard() {
+    		return this.$$.ctx[1];
+    	}
+
+    	set updateScoreboard(value) {
+    		throw new Error("<Scoreboard>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    class Bullet {
+        data;
+        receptionTime;
+        display;
+        constructor(data, time, display) {
+            this.data = data;
+            this.receptionTime = time;
+            this.display = display;
+        }
+    }
+
+    class Player {
+        data;
+        interpolationBuffer = [];
+        lastExtrapolatedPosition;
+        constructor(data) {
+            this.data = data;
+            this.lastExtrapolatedPosition = { x: data.x, y: data.y };
+        }
+    }
+
+    // import { CONSTANTS } from '../../../shared/constants'
+    class MyPlayer {
+        name;
+        predictedPosition;
+        controls;
+        lastTimeShooting = -1;
+        isPressingTrigger = false;
+        bullets = [];
+        constructor(data) {
+            this.name = data.name;
+            this.predictedPosition = data;
+            this.controls =
+                { x: 0,
+                    y: 0,
+                    angle: 0,
+                    messageNumber: 0,
+                    deltaTime: 0
+                };
+        }
+    }
+    class ClientState {
+        pendingInputs = [];
+        bullets = [];
+        structures = { [WallType.BRICK]: [],
+            [WallType.FENCE]: [],
+            [WallType.NON_NEWTONIAN]: []
+        };
+        players;
+        myPlayer;
+        lastGameTickMessageTime;
+        lastGameTickMessage;
+        constructor(username) {
+            this.players = { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) };
+            this.myPlayer = new MyPlayer(CONSTANTS.CREATE_PLAYER(username));
+            this.lastGameTickMessageTime = Date.now();
+            this.lastGameTickMessage =
+                { players: [],
+                    newBullets: []
+                    // , bullets: []
+                };
+        }
+        processGameTick(msg) {
+            const now = Date.now();
+            this.lastGameTickMessage = msg;
+            this.lastGameTickMessageTime = now;
+            this.myPlayer.bullets = this.myPlayer.bullets.filter(b => !msg.deletedBullets[b.data.id]);
+            this.bullets = this.bullets.filter(b => !msg.deletedBullets[b.data.id]);
+            const W = window.innerWidth;
+            for (const b of msg.newBullets) {
+                // These are the coodinates of the player's gun
+                // We have these x,y so we can show the bullet coming out of the player's gun
+                const player = this.players[b.shooter];
+                if (!player)
+                    break;
+                const p = player.data;
+                if (DEV_SETTINGS.showExtrapolatedEnemyPositions) {
+                    const display = { x: (player.lastExtrapolatedPosition.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * W,
+                        y: (player.lastExtrapolatedPosition.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * W
+                    };
+                    this.bullets.push(new Bullet(b, now, display));
+                }
+                else {
+                    const x = (p.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth;
+                    const y = (p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth;
+                    this.bullets.push(new Bullet(b, now, { x, y }));
+                }
+            }
+            for (const p of msg.players) {
+                // Create the player if it doesn't exist:
+                this.players[p.name] ||= new Player(p);
+                const player = this.players[p.name];
+                player.data = p;
+                if (p.name === this.myPlayer.name) {
+                    this.myPlayer.predictedPosition =
+                        { ...p, angle: this.myPlayer.controls.angle }; // We don't want the server's angle.
+                    if (CONSTANTS.DEV_MODE && !DEV_SETTINGS.enableClientSidePrediction)
+                        continue;
+                    for (let j = 0; j < this.pendingInputs.length;) {
+                        const input = this.pendingInputs[j];
+                        if (input.messageNumber <= p.lastProcessedInput) {
+                            // Already processed. Its effect is already taken into account into the world update
+                            // we just got, so we can drop it.
+                            this.pendingInputs.splice(j, 1);
+                        }
+                        else {
+                            // Not processed by the server yet. Re-apply it.
+                            CONSTANTS.MOVE_PLAYER(this.myPlayer.predictedPosition, input);
+                            j++;
+                        }
+                    }
+                }
+                else if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
+                    player.interpolationBuffer.push([now, p]);
+                }
+            }
+        }
+    }
+
+    const NETWORK_LATENCY = { value: 0,
+        beginRetrieving(socket) {
+            if (this.isRetrieving)
+                throw 'Please only call this function once.';
+            this.isRetrieving = true;
+            const go = () => {
+                const start = Date.now();
+                socket.volatile.emit("ping", () => {
+                    this.value = Date.now() - start; // Math.min(Date.now() - start, 400)
+                    socket.volatile.emit("networkLatency", this.value);
+                });
+            };
+            setInterval(go, 5000);
+            go();
+        },
+        isRetrieving: false };
+
+    // import { CONSTANTS } from "../../../shared/constants"
+    class ClientPredictedBullet {
+        timeCreated;
+        data;
+        endPoint;
+        constructor(p, joystick, walls) {
+            this.timeCreated = Date.now();
+            const [bullet, endPoint] = createBullet(p, joystick, Math.random() + ':' + p.name, walls);
+            this.data = bullet;
+            this.endPoint = endPoint;
+        }
+    }
+    function createBullet(p, joystick, id, walls) {
+        const speedX = CONSTANTS.BULLET_SPEED * Math.cos(p.angle) + joystick.x * CONSTANTS.PLAYER_SPEED;
+        const speedY = CONSTANTS.BULLET_SPEED * Math.sin(p.angle) + joystick.y * CONSTANTS.PLAYER_SPEED;
+        const x = p.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle);
+        const y = p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle);
+        const bigX = x + speedX * 20000; // Arbitrary amount to ensure the bullet leaves the area
+        const bigY = y + speedY * 20000; // and collides with at least the boundary wall.
+        // The four boundary walls ensure that expirationDistance is less than Infinity.
+        const bulletTrajectory = [p, { x: bigX, y: bigY }];
+        const [[endX, endY], expirationDistance, collidedWall] = walls.reduce(([pt, min, _], w) => {
+            const point = CONSTANTS.LINE_SEGMENT_INTERSECTION_POINT(w, bulletTrajectory);
+            if (!point)
+                return [pt, min, _];
+            const dist = distance(point[0], point[1], x, y);
+            return dist < min ? [point, dist, w] : [pt, min, _];
+        }, [[69, 420], Infinity, null]);
+        const bullet = { x, y, speedX, speedY, id, shooter: p.name, expirationDistance };
+        return [bullet, { x: endX, y: endY }];
+    }
+
+    // import { CONSTANTS } from "../../../shared/constants"
+    class InputProcessor {
+        state;
+        socket;
+        canSendIdleInput = true;
+        constructor(state, socket) {
+            this.state = state;
+            this.socket = socket;
+        }
+        processInputs(deltaTime, now) {
+            this.state.myPlayer.controls.deltaTime = deltaTime;
+            const { x: oldX, y: oldY } = this.state.myPlayer.predictedPosition;
+            CONSTANTS.MOVE_PLAYER(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls);
+            const { x: tempX, y: tempY } = this.state.myPlayer.predictedPosition;
+            const walls = this.state.structures;
+            const wallsPlayersCannotPass = walls[WallType.BRICK].concat(walls[WallType.FENCE]);
+            const [nextX, nextY] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(oldX, oldY, tempX, tempY, wallsPlayersCannotPass);
+            const { x: resetX, y: resetY } = this.state.myPlayer.controls;
+            let shouldResetControls = false;
+            if (tempX !== nextX || tempY !== nextY) {
+                // Player position after colliding with wall
+                this.state.myPlayer.predictedPosition.x = nextX;
+                this.state.myPlayer.predictedPosition.y = nextY;
+                // "Sanitized" controls after doing player-wall collisions (that the client sends the server):
+                const controllerX = (nextX - oldX) / (deltaTime * CONSTANTS.PLAYER_SPEED);
+                const controllerY = (nextY - oldY) / (deltaTime * CONSTANTS.PLAYER_SPEED);
+                // if c2 > 1, then it means the controller is telling us to move the
+                // player past it's maximum speed. So we need to find k that limits
+                // sqrt (controlsX ** 2, controlsY ** 2) to be at most 1.
+                const c2 = controllerX ** 2 + controllerY ** 2;
+                const k = Math.min(Math.sqrt(1 / c2), 1);
+                this.state.myPlayer.controls.x = controllerX * k;
+                this.state.myPlayer.controls.y = controllerY * k;
+                // We should reset the controls because running directly into the "tip" of a line segment can cause unpredictable movement.
+                shouldResetControls = true;
+            }
+            if (this.state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting)) {
+                this.state.myPlayer.lastTimeShooting = now;
+                const walls = this.state.structures;
+                const wallsBulletsCannotPass = walls[WallType.BRICK].concat(walls[WallType.NON_NEWTONIAN]);
+                const bullet = new ClientPredictedBullet(this.state.myPlayer.predictedPosition, this.state.myPlayer.controls, wallsBulletsCannotPass);
+                if (DEV_SETTINGS.enableClientSidePrediction) {
+                    this.state.myPlayer.bullets.push(bullet);
+                }
+                this.state.myPlayer.controls.requestedBullet = bullet.data;
+            }
+            const userIsNotIdle = this.state.myPlayer.controls.x !== 0 ||
+                this.state.myPlayer.controls.y !== 0 ||
+                this.state.myPlayer.isPressingTrigger;
+            if (userIsNotIdle || this.canSendIdleInput) {
+                this.sendInputsToServer(this.state.myPlayer.controls);
+                this.canSendIdleInput = false;
+                if (shouldResetControls) {
+                    this.state.myPlayer.controls.x = resetX;
+                    this.state.myPlayer.controls.y = resetY;
+                }
+            }
+            if (userIsNotIdle) {
+                this.canSendIdleInput = true;
+            }
+        }
+        moveJoystick(x, y) {
+            this.state.myPlayer.controls.x = x;
+            this.state.myPlayer.controls.y = y;
+        }
+        adjustAim(angle, active) {
+            // Assign state.players[username].angle for a minor
+            // convenience when shooting client predicted bullets:
+            this.state.myPlayer.controls.angle =
+                this.state.players[this.state.myPlayer.name].data.angle =
+                    this.state.myPlayer.predictedPosition.angle =
+                        angle;
+            this.state.myPlayer.isPressingTrigger = active;
+        }
+        sendInputsToServer(playerControls) {
+            // Save this input for later reconciliation:
+            this.state.pendingInputs.push({ ...playerControls });
+            this.socket.emit('controlsInput', playerControls);
+            playerControls.messageNumber++;
+            playerControls.requestedBullet = undefined;
+        }
+    }
+
+    // import { CONSTANTS } from "../../../shared/constants"
+    const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth;
+    class GameRenderer {
+        canvas;
+        ctx;
+        state;
+        constructor(canvas, state) {
+            this.canvas = canvas;
+            this.ctx = canvas.getContext('2d');
+            this.state = state;
+        }
+        render(now, renderDelta) {
+            const W = this.canvas.width;
+            const H = this.canvas.height;
+            this.ctx.clearRect(0, 0, W, H);
+            this.drawWalls(W, H);
+            const msgDelta = now - this.state.lastGameTickMessageTime;
+            for (const name in this.state.players) {
+                if (name === this.state.myPlayer.name)
+                    continue;
+                const p = this.state.players[name];
+                if (DEV_SETTINGS.showExtrapolatedEnemyPositions) {
+                    const data = this.getExtrapolatedPlayer(p, msgDelta, renderDelta);
+                    this.drawPlayer(data, now);
+                }
+                if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
+                    const data = CONSTANTS.INTERPOLATE_PLAYER_POSITION(p.data, now, p.interpolationBuffer);
+                    this.drawPlayer(data, now, 'blue');
+                }
+                if (DEV_SETTINGS.showUninterpolatedEnemyPositions) {
+                    this.drawPlayer(p.data, now, 'red');
+                }
+            }
+            if (DEV_SETTINGS.showServerPlayer) {
+                this.drawPlayer(this.state.players[this.state.myPlayer.name].data, now, 'purple');
+            }
+            // if (DEV_SETTINGS.showServerBullet)
+            // {
+            //     this.ctx.fillStyle = '#099'
+            //     for (const b of this.state.lastGameTickMessage.bullets)
+            //     {
+            //         this.circle(b.x * W, b.y * H, 2)
+            //     }
+            // }
+            if (DEV_SETTINGS.showPredictedPlayer) {
+                this.drawPlayer(this.state.myPlayer.predictedPosition, now);
+            }
+            if (DEV_SETTINGS.showWhatOtherClientsPredict) {
+                const data = this.getExtrapolatedPlayer(this.state.players[this.state.myPlayer.name], msgDelta, renderDelta);
+                this.drawPlayer(data, now, 'cyan');
+            }
+            if (DEV_SETTINGS.showClientBullet) {
+                this.ctx.fillStyle = '#770';
+                this.state.bullets = this.state.bullets.filter(b => {
+                    const age = now - b.receptionTime;
+                    const bx = b.data.x + b.data.speedX * age;
+                    const by = b.data.y + b.data.speedY * age;
+                    const x = bx * W;
+                    const y = by * H;
+                    this.circle(x, y, 2);
+                    return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
+                });
+            }
+            if (DEV_SETTINGS.showIdealClientBullet) {
+                this.ctx.fillStyle = '#00f';
+                this.state.bullets = this.state.bullets.filter(b => {
+                    if (b.data.shooter === this.state.myPlayer.name)
+                        return false;
+                    const age = now - b.receptionTime;
+                    const bx = b.data.x + b.data.speedX * age;
+                    const by = b.data.y + b.data.speedY * age;
+                    const x = bx * W;
+                    const y = by * H;
+                    const secondsToMerge = 0.5;
+                    const mergeRate = Math.min(now - b.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge;
+                    const x1 = b.display.x + age * b.data.speedX * W;
+                    const y1 = b.display.y + age * b.data.speedY * H;
+                    const dx = x - x1;
+                    const dy = y - y1;
+                    const X = x1 + dx * mergeRate;
+                    const Y = y1 + dy * mergeRate;
+                    const lag = -(this.state.players[b.data.shooter]?.data.latency || 0);
+                    const traveled = distance(b.data.x + b.data.speedX * lag, b.data.y + b.data.speedY * lag, X / W, Y / H);
+                    if (traveled >= b.data.expirationDistance)
+                        return false;
+                    this.circle(X, Y, 2);
+                    return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
+                });
+            }
+            if (DEV_SETTINGS.showClientPredictedBullet) {
+                this.state.myPlayer.bullets = this.state.myPlayer.bullets.filter(bullet => {
+                    const age = now - bullet.timeCreated;
+                    const b = bullet.data;
+                    const bx = b.x + b.speedX * age;
+                    const by = b.y + b.speedY * age;
+                    const x = bx * W;
+                    const y = by * H;
+                    const traveled = distance(b.x, b.y, bx, by);
+                    if (traveled >= b.expirationDistance)
+                        return false;
+                    this.ctx.fillStyle = '#c0c';
+                    this.circle(x, y, 2);
+                    // Hit debugger / Powerup
+                    // this.ctx.fillStyle = 'red'
+                    // this.circle(bullet.endPoint.x * W, bullet.endPoint.y * H, 2)
+                    return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
+                });
+            }
+        }
+        drawPlayer(p, now, color = '#333') {
+            const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height];
+            const playerGunSize = 2;
+            const bloodCooldown = 255;
+            const R = (now - p.lastTimeGettingShot);
+            const isGettingShot = R <= bloodCooldown;
+            this.ctx.fillStyle =
+                this.ctx.strokeStyle =
+                    isGettingShot ? `rgb(255,${R},${R})` : color;
+            if (p.name === this.state.myPlayer.name && isGettingShot) {
+                const wait = 50 + Math.random() * 200;
+                throttled(traumatize, wait, now);
+            }
+            this.circle(x, y, PLAYER_RADIUS, !isGettingShot);
+            const [X, Y] = [x + PLAYER_RADIUS * Math.cos(p.angle),
+                y + PLAYER_RADIUS * Math.sin(p.angle)
+            ];
+            this.circle(X, Y, playerGunSize);
+            this.ctx.fillStyle = '#40f';
+            this.ctx.fillText(p.name, x - 17, y - 17);
+        }
+        drawWalls(w, h) {
+            // this.ctx.lineWidth = 2
+            const wallColors = [['#0e8', WallType.NON_NEWTONIAN],
+                ['#44f', WallType.FENCE],
+                ['#410', WallType.BRICK]
+            ];
+            for (const [color, type] of wallColors) {
+                this.ctx.strokeStyle = color;
+                for (const [p1, p2] of this.state.structures[type]) {
+                    this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h);
+                }
+            }
+        }
+        circle(x, y, r, stroke) {
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, r, 0, 7);
+            this.ctx[stroke ? 'stroke' : 'fill']();
+            this.ctx.closePath();
+        }
+        line(x1, y1, x2, y2) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(x1, y1);
+            this.ctx.lineTo(x2, y2);
+            this.ctx.stroke();
+            this.ctx.closePath();
+        }
+        getExtrapolatedPlayer(p, msgDelta, renderDelta) {
+            // /
+            // // non-"smooth" version:
+            // const deltaTime = msgDelta + p.data.latency
+            // const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime)
+            // this.drawPlayer(data, now)
+            // "smooth" version:
+            /**
+             * Extrapolation smoothening:
+             * limit the distance between the next extrapolated player position
+             * and the previous so that the player goes at most `smoothSpeed`
+             */
+            const deltaTime = msgDelta + p.data.latency;
+            const { x: serverx, y: servery } = p.data;
+            const data = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(p.data, deltaTime);
+            const { x: lastx, y: lasty } = p.lastExtrapolatedPosition;
+            const dist = distance(data.x, data.y, lastx, lasty);
+            const speed = dist / renderDelta;
+            const smoothSpeed = 1.5;
+            if (speed > CONSTANTS.PLAYER_SPEED * smoothSpeed) {
+                const limiter = CONSTANTS.PLAYER_SPEED * smoothSpeed / speed;
+                const dx = data.x - lastx;
+                const dy = data.y - lasty;
+                data.x = lastx + dx * limiter;
+                data.y = lasty + dy * limiter;
+            }
+            p.lastExtrapolatedPosition = data;
+            const walls = this.state.structures;
+            const wallsPlayersCannotPass = walls[WallType.BRICK].concat(walls[WallType.FENCE]);
+            const [x, y] = CONSTANTS.GET_PLAYER_POSITION_AFTER_WALL_COLLISION(serverx, servery, data.x, data.y, wallsPlayersCannotPass);
+            return { ...data, x, y };
+        }
+    }
+    function traumatize() {
+        const a = document.body.classList;
+        const b = document.getElementById('bloodscreen').classList;
+        a.toggle('shake', !b.toggle('bleed'));
+        b.toggle('bleed2', !a.toggle('shake2'));
+    }
+
+    let isRunning = false;
+    function runClient(elements, state, socket) {
+        if (isRunning)
+            throw 'The client is already running.';
+        isRunning = true;
+        if (CONSTANTS.DEV_MODE) {
+            window.state = state;
+        }
+        elements.canvas.height = elements.canvas.width = window.innerWidth;
+        const renderer = new GameRenderer(elements.canvas, state);
+        socket.on('mapdata', segments => {
+            console.log('got the mapdata');
+            state.structures = segments;
+        });
+        socket.on('removedPlayer', name => { delete state.players[name]; });
+        socket.on('gameTick', msg => { state.processGameTick(msg); });
+        (function updateLoop(lastUpdate) {
+            const now = Date.now();
+            const lastTime = lastUpdate || now;
+            const deltaTime = now - lastTime;
+            requestAnimationFrame(() => updateLoop(now));
+            elements.inputs.processInputs(deltaTime, now);
+            renderer.render(now, deltaTime);
+            // const gameMetadata = 
+            //       `<br> pending requests: ${state.pendingInputs.length}`
+            //     + `<br> network latency: ${NETWORK_LATENCY.value}`
+            const scores = Object.values(state.players)
+                .sort((p1, p2) => p2.data.score - p1.data.score)
+                .map(p => ({ name: p.data.name, value: p.data.score }))
+                .slice(0, 5);
+            elements.updateScoreboard(scores);
+        })();
+    }
+
+    let runningBotId = 0;
+    function startBot() {
+        clearInterval(runningBotId);
+        const [stick, _, __, aim] = [...document.querySelector('.input-container').children];
+        if (!stick || !aim)
+            throw 'Something changed here that caused this to throw.';
+        // Start shooting
+        aim.ontouchstart();
+        stick.ontouchstart({ targetTouches: [{ clientX: 0, clientY: 0 }] });
+        stick.ontouchmove({ targetTouches: [{ clientX: 0, clientY: 100 }] });
+        let direction = 1;
+        runningBotId = window.setInterval(() => {
+            stick.ontouchmove({ targetTouches: [{ clientX: 0, clientY: 100 * (direction *= -1) }] });
+        }, 5000);
+    }
+    function endBot() {
+        clearTimeout(runningBotId);
+    }
+    Object.assign(window, { startBot, endBot });
+
+    /* src\game\views\GameClient.svelte generated by Svelte v3.24.0 */
+    const file$1 = "src\\game\\views\\GameClient.svelte";
+
+    // (29:4) {#if devMode}
+    function create_if_block$1(ctx) {
+    	let devswitches;
+    	let current;
+    	devswitches = new DevSwitches({ $$inline: true });
+
+    	const block = {
+    		c: function create() {
+    			create_component(devswitches.$$.fragment);
+    		},
+    		m: function mount(target, anchor) {
+    			mount_component(devswitches, target, anchor);
+    			current = true;
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(devswitches.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(devswitches.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			destroy_component(devswitches, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$1.name,
+    		type: "if",
+    		source: "(29:4) {#if devMode}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$1(ctx) {
+    	let center;
+    	let t0;
+    	let t1;
+    	let scoreboard;
+    	let updating_updateScoreboard;
+    	let t2;
+    	let canvas_1;
+    	let t3;
+    	let div;
+    	let joystick;
+    	let t4;
+    	let t5;
+    	let directionpad;
+    	let current;
+
+    	function scoreboard_updateScoreboard_binding(value) {
+    		/*scoreboard_updateScoreboard_binding*/ ctx[6].call(null, value);
+    	}
+
+    	let scoreboard_props = {};
+
+    	if (/*updateScoreboard*/ ctx[2] !== void 0) {
+    		scoreboard_props.updateScoreboard = /*updateScoreboard*/ ctx[2];
+    	}
+
+    	scoreboard = new Scoreboard({ props: scoreboard_props, $$inline: true });
+    	binding_callbacks.push(() => bind(scoreboard, "updateScoreboard", scoreboard_updateScoreboard_binding));
+
+    	joystick = new Joystick({
+    			props: {
+    				callback: /*inputs*/ ctx[3].moveJoystick.bind(/*inputs*/ ctx[3])
+    			},
+    			$$inline: true
+    		});
+
+    	let if_block = /*devMode*/ ctx[4] && create_if_block$1(ctx);
+
+    	directionpad = new DirectionPad({
+    			props: {
+    				callback: /*inputs*/ ctx[3].adjustAim.bind(/*inputs*/ ctx[3])
+    			},
+    			$$inline: true
+    		});
+
+    	const block = {
+    		c: function create() {
+    			center = element("center");
+    			t0 = text(/*username*/ ctx[0]);
+    			t1 = space();
+    			create_component(scoreboard.$$.fragment);
+    			t2 = space();
+    			canvas_1 = element("canvas");
+    			t3 = space();
+    			div = element("div");
+    			create_component(joystick.$$.fragment);
+    			t4 = space();
+    			if (if_block) if_block.c();
+    			t5 = space();
+    			create_component(directionpad.$$.fragment);
+    			attr_dev(center, "class", "svelte-157jzbb");
+    			add_location(center, file$1, 23, 0, 906);
+    			attr_dev(canvas_1, "class", "svelte-157jzbb");
+    			add_location(canvas_1, file$1, 25, 0, 972);
+    			attr_dev(div, "class", "input-container svelte-157jzbb");
+    			add_location(div, file$1, 26, 0, 1002);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, center, anchor);
+    			append_dev(center, t0);
+    			insert_dev(target, t1, anchor);
+    			mount_component(scoreboard, target, anchor);
+    			insert_dev(target, t2, anchor);
+    			insert_dev(target, canvas_1, anchor);
+    			/*canvas_1_binding*/ ctx[7](canvas_1);
+    			insert_dev(target, t3, anchor);
+    			insert_dev(target, div, anchor);
+    			mount_component(joystick, div, null);
+    			append_dev(div, t4);
+    			if (if_block) if_block.m(div, null);
+    			append_dev(div, t5);
+    			mount_component(directionpad, div, null);
+    			current = true;
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (!current || dirty & /*username*/ 1) set_data_dev(t0, /*username*/ ctx[0]);
+    			const scoreboard_changes = {};
+
+    			if (!updating_updateScoreboard && dirty & /*updateScoreboard*/ 4) {
+    				updating_updateScoreboard = true;
+    				scoreboard_changes.updateScoreboard = /*updateScoreboard*/ ctx[2];
+    				add_flush_callback(() => updating_updateScoreboard = false);
+    			}
+
+    			scoreboard.$set(scoreboard_changes);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(scoreboard.$$.fragment, local);
+    			transition_in(joystick.$$.fragment, local);
+    			transition_in(if_block);
+    			transition_in(directionpad.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(scoreboard.$$.fragment, local);
+    			transition_out(joystick.$$.fragment, local);
+    			transition_out(if_block);
+    			transition_out(directionpad.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(center);
+    			if (detaching) detach_dev(t1);
+    			destroy_component(scoreboard, detaching);
+    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(canvas_1);
+    			/*canvas_1_binding*/ ctx[7](null);
+    			if (detaching) detach_dev(t3);
+    			if (detaching) detach_dev(div);
+    			destroy_component(joystick);
+    			if (if_block) if_block.d();
+    			destroy_component(directionpad);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$1.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$1($$self, $$props, $$invalidate) {
+    	let { socket } = $$props;
+    	let { username } = $$props;
+    	NETWORK_LATENCY.beginRetrieving(socket);
+    	let canvas;
+    	let updateScoreboard;
+    	const state = new ClientState(username);
+    	const inputs = new InputProcessor(state, socket);
+    	onMount(() => runClient({ inputs, canvas, updateScoreboard }, state, socket));
+    	const devMode = CONSTANTS.DEV_MODE;
+    	const writable_props = ["socket", "username"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<GameClient> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("GameClient", $$slots, []);
+
+    	function scoreboard_updateScoreboard_binding(value) {
+    		updateScoreboard = value;
+    		$$invalidate(2, updateScoreboard);
+    	}
+
+    	function canvas_1_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			canvas = $$value;
+    			$$invalidate(1, canvas);
+    		});
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("socket" in $$props) $$invalidate(5, socket = $$props.socket);
+    		if ("username" in $$props) $$invalidate(0, username = $$props.username);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		onMount,
+    		SvelteComponent: SvelteComponentDev,
+    		DirectionPad,
+    		Joystick,
+    		DevSwitches,
+    		Scoreboard,
+    		ClientState,
+    		NETWORK_LATENCY,
+    		InputProcessor,
+    		runClient,
+    		socket,
+    		username,
+    		canvas,
+    		updateScoreboard,
+    		state,
+    		inputs,
+    		devMode
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("socket" in $$props) $$invalidate(5, socket = $$props.socket);
+    		if ("username" in $$props) $$invalidate(0, username = $$props.username);
+    		if ("canvas" in $$props) $$invalidate(1, canvas = $$props.canvas);
+    		if ("updateScoreboard" in $$props) $$invalidate(2, updateScoreboard = $$props.updateScoreboard);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [
+    		username,
+    		canvas,
+    		updateScoreboard,
+    		inputs,
+    		devMode,
+    		socket,
+    		scoreboard_updateScoreboard_binding,
+    		canvas_1_binding
+    	];
+    }
+
+    class GameClient extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { socket: 5, username: 0 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "GameClient",
+    			options,
+    			id: create_fragment$1.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*socket*/ ctx[5] === undefined && !("socket" in props)) {
+    			console.warn("<GameClient> was created without expected prop 'socket'");
+    		}
+
+    		if (/*username*/ ctx[0] === undefined && !("username" in props)) {
+    			console.warn("<GameClient> was created without expected prop 'username'");
+    		}
+    	}
+
+    	get socket() {
+    		throw new Error("<GameClient>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set socket(value) {
+    		throw new Error("<GameClient>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get username() {
+    		throw new Error("<GameClient>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set username(value) {
+    		throw new Error("<GameClient>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\App.svelte generated by Svelte v3.24.0 */
+
+    const { console: console_1 } = globals;
+    const file = "src\\App.svelte";
+
+    // (18:0) {:else}
+    function create_else_block(ctx) {
+    	let gameclient;
+    	let current;
+
+    	gameclient = new GameClient({
+    			props: {
+    				socket: /*socket*/ ctx[2],
+    				username: /*username*/ ctx[1]
+    			},
+    			$$inline: true
+    		});
+
+    	const block = {
+    		c: function create() {
+    			create_component(gameclient.$$.fragment);
+    		},
+    		m: function mount(target, anchor) {
+    			mount_component(gameclient, target, anchor);
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			const gameclient_changes = {};
+    			if (dirty & /*username*/ 2) gameclient_changes.username = /*username*/ ctx[1];
+    			gameclient.$set(gameclient_changes);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(gameclient.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(gameclient.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			destroy_component(gameclient, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(18:0) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (16:0) {#if username.length === 0}
+    function create_if_block_1(ctx) {
+    	let nomination;
+    	let current;
+
+    	nomination = new Nomination({
+    			props: {
+    				proceed: /*proceed*/ ctx[3],
+    				socket: /*socket*/ ctx[2],
+    				blaze: /*blaze*/ ctx[0]
+    			},
+    			$$inline: true
+    		});
+
+    	const block = {
+    		c: function create() {
+    			create_component(nomination.$$.fragment);
+    		},
+    		m: function mount(target, anchor) {
+    			mount_component(nomination, target, anchor);
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			const nomination_changes = {};
+    			if (dirty & /*blaze*/ 1) nomination_changes.blaze = /*blaze*/ ctx[0];
+    			nomination.$set(nomination_changes);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(nomination.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(nomination.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			destroy_component(nomination, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1.name,
+    		type: "if",
+    		source: "(16:0) {#if username.length === 0}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (21:0) {#if devMode}
+    function create_if_block(ctx) {
+    	let div;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			attr_dev(div, "id", "debug-window");
+    			attr_dev(div, "class", "svelte-yuxzpj");
+    			add_location(div, file, 21, 1, 666);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(21:0) {#if devMode}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment(ctx) {
+    	let div;
+    	let t0;
+    	let current_block_type_index;
+    	let if_block0;
+    	let t1;
+    	let if_block1_anchor;
+    	let current;
+    	const if_block_creators = [create_if_block_1, create_else_block];
+    	const if_blocks = [];
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*username*/ ctx[1].length === 0) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index = select_block_type(ctx);
+    	if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    	let if_block1 = /*devMode*/ ctx[4] && create_if_block(ctx);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			t0 = space();
+    			if_block0.c();
+    			t1 = space();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
+    			attr_dev(div, "id", "bloodscreen");
+    			attr_dev(div, "class", "svelte-yuxzpj");
+    			add_location(div, file, 14, 0, 496);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			insert_dev(target, t0, anchor);
+    			if_blocks[current_block_type_index].m(target, anchor);
+    			insert_dev(target, t1, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert_dev(target, if_block1_anchor, anchor);
+    			current = true;
+    		},
+    		p: function update(ctx, [dirty]) {
+    			let previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type(ctx);
+
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(ctx, dirty);
+    			} else {
+    				group_outros();
+
+    				transition_out(if_blocks[previous_block_index], 1, 1, () => {
+    					if_blocks[previous_block_index] = null;
+    				});
+
+    				check_outros();
+    				if_block0 = if_blocks[current_block_type_index];
+
+    				if (!if_block0) {
+    					if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block0.c();
+    				}
+
+    				transition_in(if_block0, 1);
+    				if_block0.m(t1.parentNode, t1);
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(if_block0);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(if_block0);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(t0);
+    			if_blocks[current_block_type_index].d(detaching);
+    			if (detaching) detach_dev(t1);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach_dev(if_block1_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance($$self, $$props, $$invalidate) {
+    	let { blaze } = $$props;
+
+    	// @ts-ignore
+    	const socket = io({
+    		transports: ["websocket"],
+    		upgrade: false
+    	});
+
+    	let username = "";
+
+    	function proceed(name) {
+    		$$invalidate(1, username = name);
+    		console.log("Welcome to the game,", name + "!");
+    	}
+
+    	const devMode = CONSTANTS.DEV_MODE; // It's not defined outside of script tags 🤷
+    	const writable_props = ["blaze"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<App> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("App", $$slots, []);
+
+    	$$self.$set = $$props => {
+    		if ("blaze" in $$props) $$invalidate(0, blaze = $$props.blaze);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		blaze,
+    		Nomination,
+    		GameClient,
+    		socket,
+    		username,
+    		proceed,
+    		devMode
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("blaze" in $$props) $$invalidate(0, blaze = $$props.blaze);
+    		if ("username" in $$props) $$invalidate(1, username = $$props.username);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [blaze, username, socket, proceed, devMode];
+    }
+
+    class App extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance, create_fragment, safe_not_equal, { blaze: 0 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "App",
+    			options,
+    			id: create_fragment.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*blaze*/ ctx[0] === undefined && !("blaze" in props)) {
+    			console_1.warn("<App> was created without expected prop 'blaze'");
+    		}
+    	}
+
+    	get blaze() {
+    		throw new Error("<App>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set blaze(value) {
+    		throw new Error("<App>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    // import '../../shared/QuadTree'
+    // import '../../shared/constants'
+    // import '../../shared/helpers'
+    // import '../../shared/typehelpers'
+    // import '../../shared/types'
+    const app = new App({
+        target: document.body,
+        props: {
+            blaze: 'Blaze'
+        }
+    });
+
+    return app;
+
+}());
 //# sourceMappingURL=bundle.js.map

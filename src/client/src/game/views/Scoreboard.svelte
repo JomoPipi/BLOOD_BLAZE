@@ -35,8 +35,9 @@
     // }
 
     div {
+        width: calc(100% - 1em);
         position: absolute;
-        right: .5em;
+        padding: .5em;
         bottom: .5em;
     }
 </style>
