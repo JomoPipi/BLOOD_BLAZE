@@ -23,12 +23,14 @@ app.use(express.static(staticPath))
 console.log('FPS =', CONSTANTS.FPS)
 console.log('GAME_TICK =',CONSTANTS.GAME_TICK)
 
-const game = new Game()
-game.structures.generateRandomMap(
+const DEFAULT_MAP_CONFIG = 
     { [WallType.BRICK]: 3
     , [WallType.FENCE]: 3
     , [WallType.NON_NEWTONIAN]: 2
-    })
+    }
+
+const game = new Game()
+game.structures.generateRandomMap(DEFAULT_MAP_CONFIG)
 
 io.on('connection', socket => {
 
@@ -44,7 +46,48 @@ io.on('connection', socket => {
         if (username) game.removePlayer(username, io)
     })
 
+    const SECRET_ADMIN_KEY = 'admin-ronald:SECRET_PASSWORD'
+    /**
+     * Enter the following into the client dev console to open the admin panel:
+     * tryUsername({ preventDefault: ()=>0, target: { children: [{ value: SECRET_ADMIN_KEY }] } })
+     */
+
+    socket.on('command_randomize_map' as any, () => {
+        console.log('yoyoyo, hello???')
+        game.structures.generateRandomMap(DEFAULT_MAP_CONFIG)
+        io.emit('mapdata', game.structures.segments)
+    })
+
     socket.on('nomination', name => {
+
+        if (name === SECRET_ADMIN_KEY)
+        {
+            // You're in the admin control system now
+            socket.emit('error' as any, `
+            <div class="container">
+                <button 
+                    onclick="socket.emit('command_randomize_map', {}), console.log('yo, fuck')">
+                    
+                    RANDOMIZE MAP
+                </button>
+            </div>
+            
+            <style>
+                .container {
+                    border: 2px solid orange;
+                    background: white;
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    z-index: 9999;
+                }
+            </style>`)
+
+            return;
+        }
+
         const accepted = game.addPlayer(name)
 
         socket.emit('nomination', [accepted, name])
@@ -53,7 +96,7 @@ io.on('connection', socket => {
 
         socket.removeAllListeners('nomination')
 
-        socket.emit('mapdata', game.structures.segments)
+        sendMapData()
 
         console.log('accepted new user:', name)
 
@@ -63,6 +106,10 @@ io.on('connection', socket => {
         
         socket.on("networkLatency", game.setPlayerLag(username))
     })
+
+    function sendMapData() {
+        socket.emit('mapdata', game.structures.segments)
+    }
 })
 
 let lastGameLoop = Date.now()

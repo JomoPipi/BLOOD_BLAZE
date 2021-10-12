@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "echo \"hello world!\" ",
-    "_build": "tsc && cd src/client && ls ./src/bots && npx rollup -c",
+    "_build": "tsc && cd src/client && ls ./src/bots && npx rollup -c | bash ./scripts/copy_shared.sh",
     "test": "jest",
     "setup": "npm install && cd src/client && npm install && cd ../..",
     "dev-client": "cd src/client && npx rollup -c -w",

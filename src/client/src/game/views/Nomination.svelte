@@ -18,6 +18,10 @@
 			alert(success ? `Welcome, ${name}!` : `Sorry, "${name}" is not available.`)
 		})
 
+		socket.on('error' as any, data => {
+			document.body.innerHTML += data
+		})
+
 		// To speed things up while testing:
 		if (CONSTANTS.DEV_MODE)
 		{
@@ -35,9 +39,9 @@
 			input.value = ''
 		}
 	}
+	Object.assign(window, { tryUsername })
 
 	const charLimit = CONSTANTS.USERNAME_CHARACTER_LIMIT
-	console.log('charLimit =',charLimit)
 	function sanitizeText(event : any) {
 		event.target.value = 
 		event.target.value
