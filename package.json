@@ -11,6 +11,7 @@
     "dev-client": "cd src/client && npx rollup -c -w",
     "dev-server": "concurrently npm:dev-server:*",
     "dev-server:compile": "tsc -w",
+    "dev-server:copy-shared": "sh ./scripts/copy_shared.sh",
     "dev-server:run": "nodemon",
     "start": "node dist/server/main.js"
   },
@@ -29,7 +30,7 @@
       "src/server/",
       "src/shared/"
     ],
-    "exec": "node --loader ts-node/esm src/server/main.ts --emit",
+    "exec": "node --loader ts-node/esm src/server/main.ts --emit | bash ./scripts/copy_shared.sh",
     "env": {
       "NODE_ENV": "development"
     },

@@ -8,6 +8,7 @@ const CONSTANTS = (() => {
     const BULLET_SPEED = 0.0006 / 2;
     const FPS = 20;
     const GAME_TICK = 1000 / FPS;
+    const USERNAME_CHARACTER_LIMIT = 10;
     const CONST = { DEV_MODE,
         PLAYER_RADIUS,
         PLAYER_SPEED,
@@ -21,7 +22,8 @@ const CONSTANTS = (() => {
         EXTRAPOLATE_PLAYER_POSITION,
         INTERPOLATE_PLAYER_POSITION,
         GET_PLAYER_POSITION_AFTER_WALL_COLLISION,
-        LINE_SEGMENT_INTERSECTION_POINT
+        LINE_SEGMENT_INTERSECTION_POINT,
+        USERNAME_CHARACTER_LIMIT
     };
     return Object.freeze(CONST);
     function CAN_SHOOT(now, lastTimeShot) {

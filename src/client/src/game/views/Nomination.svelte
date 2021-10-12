@@ -6,6 +6,8 @@
 	export let blaze : string
 	export let socket : ClientSocket
 
+	let nameInput : HTMLInputElement
+
 	onMount(() => {
 		socket.on('nomination', ([success, name]) => {
 			if (success)
@@ -34,13 +36,14 @@
 		}
 	}
 
+	const charLimit = CONSTANTS.USERNAME_CHARACTER_LIMIT
+	console.log('charLimit =',charLimit)
 	function sanitizeText(event : any) {
 		event.target.value = 
 		event.target.value
 			.replace(/[^A-Za-z0-9 _]/g, '')
-			.slice(0, CONSTANTS.USERNAME_CHARACTER_LIMIT)
+			.slice(0, charLimit)
 	}
-	const charLimit = CONSTANTS.USERNAME_CHARACTER_LIMIT
 </script>
 
 <main>
@@ -57,6 +60,7 @@
 				placeholder="Enter your name" 
 				pattern="[A-Za-z0-9 _]*"
 				maxlength={charLimit}
+				bind:this={nameInput}
 				on:keyup={sanitizeText}/>
 			<button> GO </button>
 		</form>
