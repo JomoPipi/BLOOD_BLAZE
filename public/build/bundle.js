@@ -107,6 +107,9 @@ var app = (function () {
     function children(element) {
         return Array.from(element.childNodes);
     }
+    function set_style(node, key, value, important) {
+        node.style.setProperty(key, value, important ? 'important' : '');
+    }
     function toggle_class(element, name, toggle) {
         element.classList[toggle ? 'add' : 'remove'](name);
     }
@@ -3021,7 +3024,39 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file = "src\\App.svelte";
 
-    // (18:0) {:else}
+    // (16:0) {#if !isMobile}
+    function create_if_block_2(ctx) {
+    	let h1;
+
+    	const block = {
+    		c: function create() {
+    			h1 = element("h1");
+    			h1.textContent = "Sorry, only mobile devices are supported at the moment!";
+    			set_style(h1, "color", "white");
+    			set_style(h1, "background", "black");
+    			set_style(h1, "text-align", "center");
+    			add_location(h1, file, 16, 1, 575);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h1, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h1);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2.name,
+    		type: "if",
+    		source: "(16:0) {#if !isMobile}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (23:0) {:else}
     function create_else_block(ctx) {
     	let gameclient;
     	let current;
@@ -3065,14 +3100,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(18:0) {:else}",
+    		source: "(23:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (16:0) {#if username.length === 0}
+    // (21:0) {#if username.length === 0}
     function create_if_block_1(ctx) {
     	let nomination;
     	let current;
@@ -3117,14 +3152,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(16:0) {#if username.length === 0}",
+    		source: "(21:0) {#if username.length === 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (21:0) {#if devMode}
+    // (26:0) {#if devMode}
     function create_if_block(ctx) {
     	let div;
 
@@ -3133,7 +3168,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "id", "debug-window");
     			attr_dev(div, "class", "svelte-12em62w");
-    			add_location(div, file, 21, 1, 666);
+    			add_location(div, file, 26, 1, 878);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -3147,7 +3182,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(21:0) {#if devMode}",
+    		source: "(26:0) {#if devMode}",
     		ctx
     	});
 
@@ -3155,13 +3190,15 @@ var app = (function () {
     }
 
     function create_fragment(ctx) {
-    	let div;
     	let t0;
-    	let current_block_type_index;
-    	let if_block0;
+    	let div;
     	let t1;
-    	let if_block1_anchor;
+    	let current_block_type_index;
+    	let if_block1;
+    	let t2;
+    	let if_block2_anchor;
     	let current;
+    	let if_block0 = !/*isMobile*/ ctx[5] && create_if_block_2(ctx);
     	const if_block_creators = [create_if_block_1, create_else_block];
     	const if_blocks = [];
 
@@ -3171,31 +3208,35 @@ var app = (function () {
     	}
 
     	current_block_type_index = select_block_type(ctx);
-    	if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-    	let if_block1 = /*devMode*/ ctx[4] && create_if_block(ctx);
+    	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    	let if_block2 = /*devMode*/ ctx[4] && create_if_block(ctx);
 
     	const block = {
     		c: function create() {
-    			div = element("div");
+    			if (if_block0) if_block0.c();
     			t0 = space();
-    			if_block0.c();
+    			div = element("div");
     			t1 = space();
-    			if (if_block1) if_block1.c();
-    			if_block1_anchor = empty();
+    			if_block1.c();
+    			t2 = space();
+    			if (if_block2) if_block2.c();
+    			if_block2_anchor = empty();
     			attr_dev(div, "id", "bloodscreen");
     			attr_dev(div, "class", "svelte-12em62w");
-    			add_location(div, file, 14, 0, 496);
+    			add_location(div, file, 19, 0, 708);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
+    			if (if_block0) if_block0.m(target, anchor);
     			insert_dev(target, t0, anchor);
-    			if_blocks[current_block_type_index].m(target, anchor);
+    			insert_dev(target, div, anchor);
     			insert_dev(target, t1, anchor);
-    			if (if_block1) if_block1.m(target, anchor);
-    			insert_dev(target, if_block1_anchor, anchor);
+    			if_blocks[current_block_type_index].m(target, anchor);
+    			insert_dev(target, t2, anchor);
+    			if (if_block2) if_block2.m(target, anchor);
+    			insert_dev(target, if_block2_anchor, anchor);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
@@ -3212,33 +3253,35 @@ var app = (function () {
     				});
 
     				check_outros();
-    				if_block0 = if_blocks[current_block_type_index];
+    				if_block1 = if_blocks[current_block_type_index];
 
-    				if (!if_block0) {
-    					if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-    					if_block0.c();
+    				if (!if_block1) {
+    					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block1.c();
     				}
 
-    				transition_in(if_block0, 1);
-    				if_block0.m(t1.parentNode, t1);
+    				transition_in(if_block1, 1);
+    				if_block1.m(t2.parentNode, t2);
     			}
     		},
     		i: function intro(local) {
     			if (current) return;
-    			transition_in(if_block0);
+    			transition_in(if_block1);
     			current = true;
     		},
     		o: function outro(local) {
-    			transition_out(if_block0);
+    			transition_out(if_block1);
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (if_block0) if_block0.d(detaching);
     			if (detaching) detach_dev(t0);
-    			if_blocks[current_block_type_index].d(detaching);
+    			if (detaching) detach_dev(div);
     			if (detaching) detach_dev(t1);
-    			if (if_block1) if_block1.d(detaching);
-    			if (detaching) detach_dev(if_block1_anchor);
+    			if_blocks[current_block_type_index].d(detaching);
+    			if (detaching) detach_dev(t2);
+    			if (if_block2) if_block2.d(detaching);
+    			if (detaching) detach_dev(if_block2_anchor);
     		}
     	};
 
@@ -3270,6 +3313,7 @@ var app = (function () {
     	}
 
     	const devMode = CONSTANTS.DEV_MODE; // It's not defined outside of script tags 🤷
+    	const isMobile = (/Mobi|Android/i).test(navigator.userAgent);
     	const writable_props = ["blaze"];
 
     	Object.keys($$props).forEach(key => {
@@ -3290,7 +3334,8 @@ var app = (function () {
     		socket,
     		username,
     		proceed,
-    		devMode
+    		devMode,
+    		isMobile
     	});
 
     	$$self.$inject_state = $$props => {
@@ -3302,7 +3347,7 @@ var app = (function () {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [blaze, username, socket, proceed, devMode];
+    	return [blaze, username, socket, proceed, devMode, isMobile];
     }
 
     class App extends SvelteComponentDev {

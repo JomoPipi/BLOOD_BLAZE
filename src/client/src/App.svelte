@@ -15,7 +15,13 @@
 
     const devMode = CONSTANTS.DEV_MODE // It's not defined outside of script tags 🤷
 
+	const isMobile = /Mobi|Android/i.test(navigator.userAgent)
+
 </script>
+
+{#if !isMobile}
+	<h1 style="color:white;background:black;text-align:center;"> Sorry, only mobile devices are supported at the moment! </h1>
+{/if}
 
 <div id="bloodscreen"></div>
 {#if username.length === 0}
