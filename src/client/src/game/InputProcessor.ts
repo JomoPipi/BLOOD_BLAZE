@@ -3,6 +3,7 @@
 import { ClientPredictedBullet } from "./ClientPredictedBullet"
 import type { ClientState } from "./ClientState"
 import { DEV_SETTINGS } from "./DEV_SETTINGS"
+import { gunshot } from "./SoundEngine"
 
 export class InputProcessor {
     private state : ClientState
@@ -52,6 +53,8 @@ export class InputProcessor {
 
         if (this.state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting))
         {
+            // Shoot a bullet
+            gunshot()
             this.state.myPlayer.lastTimeShooting = now
             
             const walls = this.state.structures

@@ -11,6 +11,18 @@
             on:click={socket.emit('command_randomize_map', {})}>
             RANDOMIZE MAP
         </button>
+
+        <div class="begging">
+            <h4>
+                about me: <a href="https://ronald-ronaldmcorona.vercel.app" target="_blank">https://ronald-ronaldmcorona.vercel.app</a>        
+            </h4>
+            <form action="https://www.paypal.com/donate" method="post" target="_top">
+                <input type="hidden" name="hosted_button_id" value="NH4KDT52XGUTN" />
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                <img alt="" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+            </form>
+        </div>
+        
         <DevSwitches/>
     </div>
 </PageButton>
@@ -22,5 +34,8 @@
         flex-direction: column;
         justify-content: space-around;
         height: 50%;
+    }
+    .begging {
+        text-align:center;
     }
 </style>

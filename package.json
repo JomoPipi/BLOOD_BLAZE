@@ -16,7 +16,7 @@
     "start": "node dist/server/main.js"
   },
   "engines": {
-    "node": "14.x"
+    "node": "14.16.0"
   },
   "nodemonConfig": {
     "restartable": "rs",

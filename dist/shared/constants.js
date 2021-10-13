@@ -1,12 +1,12 @@
 "use strict";
 const CONSTANTS = (() => {
-    const DEV_MODE = true;
+    const DEV_MODE = false;
     const PLAYER_RADIUS = 0.02;
     const PLAYER_SPEED = 0.0002;
     // const PLAYER_SPEED = 0.00015
     const BULLET_COOLDOWN = 80; // 200
     const BULLET_SPEED = 0.0006 / 2;
-    const FPS = 20 / 10;
+    const FPS = 20;
     const GAME_TICK = 1000 / FPS;
     const USERNAME_CHARACTER_LIMIT = 10;
     const CONST = { DEV_MODE,

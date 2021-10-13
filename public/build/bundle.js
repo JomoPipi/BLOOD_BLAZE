@@ -2140,6 +2140,21 @@ var app = (function () {
         return [bullet, { x: endX, y: endY }];
     }
 
+    const audioContext = new AudioContext();
+    const volume = audioContext.createGain();
+    volume.connect(audioContext.destination);
+    volume.gain.value = 0.25;
+    function gunshot() {
+        const osc = audioContext.createOscillator();
+        const now = audioContext.currentTime;
+        const duration = 0.01;
+        osc.start(now);
+        osc.connect(volume);
+        osc.frequency.setValueAtTime(5000, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + duration);
+        osc.stop(now + duration);
+    }
+
     // import { CONSTANTS } from "../../../shared/constants"
     class InputProcessor {
         state;
@@ -2177,6 +2192,8 @@ var app = (function () {
                 shouldResetControls = true;
             }
             if (this.state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting)) {
+                // Shoot a bullet
+                gunshot();
                 this.state.myPlayer.lastTimeShooting = now;
                 const walls = this.state.structures;
                 const wallsBulletsCannotPass = walls[WallType.BRICK].concat(walls[WallType.NON_NEWTONIAN]);
@@ -2479,9 +2496,23 @@ var app = (function () {
 
     // (7:0) <PageButton btnText={'⚙️'}>
     function create_default_slot(ctx) {
-    	let div;
+    	let div1;
     	let button;
     	let t1;
+    	let div0;
+    	let h4;
+    	let t2;
+    	let a;
+    	let t4;
+    	let form;
+    	let input0;
+    	let t5;
+    	let input1;
+    	let input1_src_value;
+    	let t6;
+    	let img;
+    	let img_src_value;
+    	let t7;
     	let devswitches;
     	let current;
     	let mounted;
@@ -2490,20 +2521,70 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div = element("div");
+    			div1 = element("div");
     			button = element("button");
     			button.textContent = "RANDOMIZE MAP";
     			t1 = space();
+    			div0 = element("div");
+    			h4 = element("h4");
+    			t2 = text("about me: ");
+    			a = element("a");
+    			a.textContent = "https://ronald-ronaldmcorona.vercel.app";
+    			t4 = space();
+    			form = element("form");
+    			input0 = element("input");
+    			t5 = space();
+    			input1 = element("input");
+    			t6 = space();
+    			img = element("img");
+    			t7 = space();
     			create_component(devswitches.$$.fragment);
     			add_location(button, file$2, 8, 8, 270);
-    			attr_dev(div, "class", "svelte-14277dv");
-    			add_location(div, file$2, 7, 4, 255);
+    			attr_dev(a, "href", "https://ronald-ronaldmcorona.vercel.app");
+    			attr_dev(a, "target", "_blank");
+    			add_location(a, file$2, 15, 26, 469);
+    			add_location(h4, file$2, 14, 12, 437);
+    			attr_dev(input0, "type", "hidden");
+    			attr_dev(input0, "name", "hosted_button_id");
+    			input0.value = "NH4KDT52XGUTN";
+    			add_location(input0, file$2, 18, 16, 710);
+    			attr_dev(input1, "type", "image");
+    			if (input1.src !== (input1_src_value = "https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif")) attr_dev(input1, "src", input1_src_value);
+    			attr_dev(input1, "name", "submit");
+    			attr_dev(input1, "title", "PayPal - The safer, easier way to pay online!");
+    			attr_dev(input1, "alt", "Donate with PayPal button");
+    			add_location(input1, file$2, 19, 16, 797);
+    			attr_dev(img, "alt", "");
+    			if (img.src !== (img_src_value = "https://www.paypal.com/en_US/i/scr/pixel.gif")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "width", "1");
+    			attr_dev(img, "height", "1");
+    			add_location(img, file$2, 20, 16, 1003);
+    			attr_dev(form, "action", "https://www.paypal.com/donate");
+    			attr_dev(form, "method", "post");
+    			attr_dev(form, "target", "_top");
+    			add_location(form, file$2, 17, 12, 619);
+    			attr_dev(div0, "class", "begging svelte-1o6zavn");
+    			add_location(div0, file$2, 13, 8, 402);
+    			attr_dev(div1, "class", "svelte-1o6zavn");
+    			add_location(div1, file$2, 7, 4, 255);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, button);
-    			append_dev(div, t1);
-    			mount_component(devswitches, div, null);
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, button);
+    			append_dev(div1, t1);
+    			append_dev(div1, div0);
+    			append_dev(div0, h4);
+    			append_dev(h4, t2);
+    			append_dev(h4, a);
+    			append_dev(div0, t4);
+    			append_dev(div0, form);
+    			append_dev(form, input0);
+    			append_dev(form, t5);
+    			append_dev(form, input1);
+    			append_dev(form, t6);
+    			append_dev(form, img);
+    			append_dev(div1, t7);
+    			mount_component(devswitches, div1, null);
     			current = true;
 
     			if (!mounted) {
@@ -2534,7 +2615,7 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(div1);
     			destroy_component(devswitches);
     			mounted = false;
     			dispose();
@@ -3051,7 +3132,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "id", "debug-window");
-    			attr_dev(div, "class", "svelte-yuxzpj");
+    			attr_dev(div, "class", "svelte-12em62w");
     			add_location(div, file, 21, 1, 666);
     		},
     		m: function mount(target, anchor) {
@@ -3102,7 +3183,7 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			if_block1_anchor = empty();
     			attr_dev(div, "id", "bloodscreen");
-    			attr_dev(div, "class", "svelte-yuxzpj");
+    			attr_dev(div, "class", "svelte-12em62w");
     			add_location(div, file, 14, 0, 496);
     		},
     		l: function claim(nodes) {

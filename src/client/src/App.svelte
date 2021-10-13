@@ -50,6 +50,6 @@
 		background-color: transparent;
 		pointer-events: none;
 		color: black;
-		z-index: 99999
+		z-index: 9999;
 	}
 </style>
