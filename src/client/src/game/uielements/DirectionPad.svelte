@@ -57,7 +57,7 @@
     }
 </script>
 
-<canvas bind:this={canvas}></canvas>
+<canvas id=mobile-game-trigger bind:this={canvas}></canvas>
 
 <style lang="scss">
     canvas {

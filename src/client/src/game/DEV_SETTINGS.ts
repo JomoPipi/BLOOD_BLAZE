@@ -3,7 +3,7 @@ export const DEV_SETTINGS =
     { enableClientSidePrediction: true
     , showPredictedPlayer: true
     , showServerPlayer: false
-    , showServerBullet: false
+    // , showServerBullet: false
     , showClientBullet: false
     , showIdealClientBullet: true
     , showClientPredictedBullet: true

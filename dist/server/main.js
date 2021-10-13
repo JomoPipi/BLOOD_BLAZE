@@ -48,8 +48,7 @@ io.on('connection', socket => {
             socket.emit('error', `
             <div class="container">
                 <button 
-                    onclick="socket.emit('command_randomize_map', {}), console.log('yo, fuck')">
-                    
+                    onclick="socket.emit('command_randomize_map', {})">
                     RANDOMIZE MAP
                 </button>
             </div>

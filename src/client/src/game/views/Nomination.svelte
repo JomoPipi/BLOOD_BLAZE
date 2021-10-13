@@ -89,54 +89,6 @@
 		flex-direction: column;
 		justify-content: center;
 	}
-	h1 {
-		$col: #ff3e00;
-		color: $col;
-		text-transform: uppercase;
-		font-size: 4em;
-		letter-spacing: 0.2em;
-		font-weight: 600;
-		// border: 1px solid rgb(189, 185, 84);
-		animation: border-glow 3s infinite;
-
-		text-align: center;
-		font-size: 6em;
-		//   color: $col;
-		letter-spacing: -3px;
-		font-weight: 700;
-		text-transform: uppercase;
-		animation: breathe 1s alternate infinite;
-		text-shadow: 0px 0px 5px $col, 0px 0px 7px $col;
-		margin-bottom: 0;
-
-		._1 {
-			animation: blur 3s ease-out infinite;
-		}
-
-		._2 {
-			animation: blur 3s ease-out infinite;
-			animation-delay: 0.5s;
-		}
-	}
-
-	@keyframes breathe {
-		from {
-			filter: hue-rotate(0);
-		}
-		to {
-			filter: hue-rotate(-18deg);
-		}
-	}	
-	
-	@keyframes breathe2 {
-		from {
-			filter: invert(0);
-		}
-		to {
-			filter: invert(0.5);
-		}
-	}
-	
 	@keyframes blur {
 		from {
 			$col: #ff3e00;
@@ -160,7 +112,53 @@
 			0px -10px 100px rgb(238, 78, 185);
 		}
 	}
+	@keyframes breathe {
+		from {
+			filter: hue-rotate(0);
+		}
+		to {
+			filter: hue-rotate(-18deg);
+		}
+	}	
 	
+	@keyframes breathe2 {
+		from {
+			filter: invert(0);
+		}
+		to {
+			filter: invert(0.5);
+		}
+	}
+	
+	h1 {
+		$col: #ff3e00;
+		color: $col;
+		text-transform: uppercase;
+		font-size: 4em;
+		letter-spacing: 0.2em;
+		font-weight: 600;
+		// border: 1px solid rgb(189, 185, 84);
+		animation: border-glow 3s infinite;
+
+		text-align: center;
+		font-size: 6em;
+		letter-spacing: -3px;
+		font-weight: 700;
+		text-transform: uppercase;
+		animation: breathe 1s alternate infinite;
+		text-shadow: 0px 0px 5px $col, 0px 0px 7px $col;
+		margin-bottom: 0;
+
+		._1 {
+			animation: blur 3s ease-out infinite;
+		}
+
+		._2 {
+			animation: blur 3s ease-out infinite;
+			animation-delay: 0.5s;
+		}
+	}
+
 	h2 {
 		color: rgb(129, 80, 65);
 		font-style: italic;

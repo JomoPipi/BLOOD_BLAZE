@@ -108,7 +108,7 @@
     }
 </script>
 
-<div bind:this={container}>
+<div id=mobile-game-joystick bind:this={container}>
     <canvas bind:this={canvas}></canvas>
 </div>
 

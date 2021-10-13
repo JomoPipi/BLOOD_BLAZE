@@ -10,6 +10,7 @@
     import { InputProcessor } from "../InputProcessor"
     import { runClient } from "../runClient";
 	import '../../bots/A'
+import PlayerMenu from "./PlayerMenu.svelte";
 
     export let socket : ClientSocket
     export let username : string
@@ -24,7 +25,7 @@
 
     onMount(() => runClient({ inputs, canvas, updateScoreboard }, state, socket))
     
-    const devMode = CONSTANTS.DEV_MODE
+    // const devMode = CONSTANTS.DEV_MODE
 </script>
 
 
@@ -33,7 +34,8 @@
 <canvas bind:this={canvas}/>
 <div class="input-container">
     <Joystick callback={inputs.moveJoystick.bind(inputs)}/>
-    {#if devMode} <DevSwitches/> {/if}
+    <PlayerMenu {socket}/>
+    <!-- {#if devMode} <DevSwitches/> {/if} -->
     <DirectionPad callback={inputs.adjustAim.bind(inputs)}/>
 </div>
 

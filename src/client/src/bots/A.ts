@@ -7,9 +7,8 @@ function startBot() {
 
     clearInterval(runningBotId)
 
-    const [stick, _, __, aim] = 
-    [...document.querySelector('.input-container')!.children] as any[]
-
+    const stick = document.getElementById('mobile-game-joystick') as any
+    const aim = document.getElementById('mobile-game-trigger') as any
     if (!stick || !aim) throw 'Something changed here that caused this to throw.'
 
     // Start shooting
