@@ -1,6 +1,7 @@
 
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { SoundEngine } from "../SoundEngine";
 
 	export let proceed : (name : string) => void
 	export let blaze : string
@@ -42,7 +43,13 @@
 	Object.assign(window, { tryUsername })
 
 	const charLimit = CONSTANTS.USERNAME_CHARACTER_LIMIT
+	let firstTime = true
 	function sanitizeText(event : any) {
+		if (firstTime)
+		{
+			firstTime = false
+			SoundEngine.initialize()
+		}
 		event.target.value = 
 		event.target.value
 			.replace(/[^A-Za-z0-9 _]/g, '')
@@ -168,11 +175,7 @@
 	.inner {
 		margin: 1em 0px;
 	}
-	.form {
-		background: red;
-		padding: 1em 0px;
-		margin: 1em;
-	}
+
 	input, button {
 		font-size: 1.25rem;
 		height: 50px;

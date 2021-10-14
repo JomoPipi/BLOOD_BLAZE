@@ -1,8 +1,29 @@
 
-const audioContext = new AudioContext()
-const volume = audioContext.createGain()
+let audioContext : AudioContext
+let volume : GainNode
+
+const injurySamples = [...Array(29)]
+    
+function initialize() {
+    audioContext = new AudioContext()
+    volume = audioContext.createGain()
     volume.connect(audioContext.destination)
-    volume.gain.value = 0.25
+    volume.gain.value = 0.5
+
+    injurySamples
+        .forEach((_, i) => {
+            const request = new XMLHttpRequest()
+            request.open("GET", `../../../../public/sounds/bullet-injury/${i}.wav`)
+            request.responseType = 'arraybuffer'
+            request.onload = function() {
+                const undecodedAudio = request.response
+                audioContext.decodeAudioData(undecodedAudio, data => {
+                    injurySamples[i] = data
+                })
+            }
+            request.send()
+        })
+}
 
 function gunshot() {
     const osc = audioContext.createOscillator()
@@ -19,21 +40,6 @@ function gunshot() {
     osc.stop(now + duration)
 }
 
-const injurySamples = [...Array(29)]
-injurySamples
-    .forEach((_, i) => {
-        const request = new XMLHttpRequest()
-        request.open("GET", `../../../../public/sounds/bullet-injury/${i}.wav`)
-        request.responseType = 'arraybuffer'
-        request.onload = function() {
-            const undecodedAudio = request.response
-            audioContext.decodeAudioData(undecodedAudio, data => {
-                injurySamples[i] = data
-            })
-        }
-        request.send()
-    })
-    
 function injury() {
     const buff = audioContext.createBufferSource()
     const now = audioContext.currentTime
@@ -42,4 +48,4 @@ function injury() {
     buff.start(now)
 }
 
-export const SoundEngine = { gunshot, injury }
+export const SoundEngine = { gunshot, injury, initialize }
