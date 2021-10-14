@@ -1,7 +1,7 @@
 
 // import { CONSTANTS } from "../../shared/constants.js"
-import { Bullet } from "./_bullet.js"
-import { Player } from "./_player.js"
+import { Bullet } from "./bullet.js"
+import { Player } from "./player.js"
 import { Walls } from "./Walls.js"
 
 const epsilon = 1e-3
@@ -13,7 +13,12 @@ export class Game {
     private bullets : Bullet[] = []
     private newBullets : Bullet[] = []
     private deletedBullets : Record<number, true> = {}
+    private io : ServerSocket
     structures = new Walls()
+
+    constructor(io : ServerSocket) {
+        this.io = io
+    }
 
     addPlayer(name : string) {
         if (this.playerExists(name)) return false
@@ -23,13 +28,13 @@ export class Game {
         return true
     }
 
-    removePlayer(name : string, io : ServerSocket) {
+    removePlayer(name : string) {
         if (!this.playerExists(name)) throw 'Do not try to remove players that don\'t exist.'
 
         this.players = this.players.filter(p => p.data.name !== name)
         delete this.getPlayerByName[name]
 
-        io.emit('removedPlayer', name)
+        this.io.emit('removedPlayer', name)
     }
     
     applyPlayerInputs(username : string) {
@@ -62,7 +67,8 @@ export class Game {
             p.data.angle = clientControls.angle
             p.data.lastProcessedInput = clientControls.messageNumber
 
-            if (clientControls.requestedBullet && CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting))
+            if (clientControls.requestedBullet && 
+                CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting, p.data))
             { 
                 // TODO: && isValidBullet(p, clientControls.requestedBullet)))
                 this.addBullet(p, clientControls.requestedBullet)
@@ -176,18 +182,32 @@ export class Game {
         const radius = CONSTANTS.PLAYER_RADIUS + maxBulletSpeed * timeDelta
         for (const player of this.players)
         {
+            if (player.data.isImmune)
+            {
+                if (now > player.lastImmunity + 3000)
+                {
+                    player.data.isImmune = false
+                }
+                continue
+            }
             const points = bulletQT.getPointsInCircle({ ...player.data, r: radius })
             for (const bullet of points)
             {
                 const [bx, by, newbx, newby, dt, shooter] = collisionArgs[bullet.id]!
-                const collidesWith = makeCollisionFunc(bx, by, newbx, newby)
+                const bulletCollidesWith = makeCollisionFunc(bx, by, newbx, newby)
                 const extrapolated = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(player.data, dt)
-                if (shooter !== player.data.name && collidesWith(extrapolated))
+                if (shooter !== player.data.name && bulletCollidesWith(extrapolated))
                 {
+                    // Record the last time the player was shot
                     player.data.lastTimeGettingShot = now
-                    if (this.getPlayerByName[shooter])
+                    // Add a point to the shooter for landing a hit
+                    const offender = this.getPlayerByName[shooter]
+                    offender && offender.data.score++
+                    // Damage Transaction
+                    if (--player.data.health <= 0)
                     {
-                        this.getPlayerByName[shooter]!.data.score++
+                        offender && (offender.data.score += player.data.score / 4.0 | 0)
+                        this.kill(player, now)
                     }
                     this.deletedBullets[bullet.id] = true
                     continue
@@ -208,6 +228,14 @@ export class Game {
         this.newBullets = []
         this.deletedBullets = {}
         return message
+    }
+
+    private kill(p : Player, now : number) {
+        p.data.score /= 2.0
+        p.data.x = p.data.y = 0.5
+        p.data.health = CONSTANTS.PLAYER_BASE_HEALTH
+        p.data.isImmune = true
+        p.lastImmunity = now
     }
 
     private addBullet(p : Player, bulletData : SocketBullet) {

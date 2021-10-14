@@ -1,6 +1,6 @@
 // import { CONSTANTS } from "../../shared/constants.js"
-import { Bullet } from "./_bullet.js";
-import { Player } from "./_player.js";
+import { Bullet } from "./bullet.js";
+import { Player } from "./player.js";
 import { Walls } from "./Walls.js";
 const epsilon = 1e-3;
 const maxBulletSpeed = CONSTANTS.BULLET_SPEED + CONSTANTS.PLAYER_SPEED;
@@ -10,7 +10,11 @@ export class Game {
     bullets = [];
     newBullets = [];
     deletedBullets = {};
+    io;
     structures = new Walls();
+    constructor(io) {
+        this.io = io;
+    }
     addPlayer(name) {
         if (this.playerExists(name))
             return false;
@@ -19,12 +23,12 @@ export class Game {
         this.getPlayerByName[name] = player;
         return true;
     }
-    removePlayer(name, io) {
+    removePlayer(name) {
         if (!this.playerExists(name))
             throw 'Do not try to remove players that don\'t exist.';
         this.players = this.players.filter(p => p.data.name !== name);
         delete this.getPlayerByName[name];
-        io.emit('removedPlayer', name);
+        this.io.emit('removedPlayer', name);
     }
     applyPlayerInputs(username) {
         return (clientControls) => {
@@ -53,7 +57,8 @@ export class Game {
             p.data.controls = { x: controllerX, y: controllerY };
             p.data.angle = clientControls.angle;
             p.data.lastProcessedInput = clientControls.messageNumber;
-            if (clientControls.requestedBullet && CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting)) {
+            if (clientControls.requestedBullet &&
+                CONSTANTS.CAN_SHOOT(now, p.lastTimeShooting, p.data)) {
                 // TODO: && isValidBullet(p, clientControls.requestedBullet)))
                 this.addBullet(p, clientControls.requestedBullet);
             }
@@ -138,15 +143,27 @@ export class Game {
         });
         const radius = CONSTANTS.PLAYER_RADIUS + maxBulletSpeed * timeDelta;
         for (const player of this.players) {
+            if (player.data.isImmune) {
+                if (now > player.lastImmunity + 3000) {
+                    player.data.isImmune = false;
+                }
+                continue;
+            }
             const points = bulletQT.getPointsInCircle({ ...player.data, r: radius });
             for (const bullet of points) {
                 const [bx, by, newbx, newby, dt, shooter] = collisionArgs[bullet.id];
-                const collidesWith = makeCollisionFunc(bx, by, newbx, newby);
+                const bulletCollidesWith = makeCollisionFunc(bx, by, newbx, newby);
                 const extrapolated = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(player.data, dt);
-                if (shooter !== player.data.name && collidesWith(extrapolated)) {
+                if (shooter !== player.data.name && bulletCollidesWith(extrapolated)) {
+                    // Record the last time the player was shot
                     player.data.lastTimeGettingShot = now;
-                    if (this.getPlayerByName[shooter]) {
-                        this.getPlayerByName[shooter].data.score++;
+                    // Add a point to the shooter for landing a hit
+                    const offender = this.getPlayerByName[shooter];
+                    offender && offender.data.score++;
+                    // Damage Transaction
+                    if (--player.data.health <= 0) {
+                        offender && (offender.data.score += player.data.score / 4.0 | 0);
+                        this.kill(player, now);
                     }
                     this.deletedBullets[bullet.id] = true;
                     continue;
@@ -164,6 +181,13 @@ export class Game {
         this.newBullets = [];
         this.deletedBullets = {};
         return message;
+    }
+    kill(p, now) {
+        p.data.score /= 2.0;
+        p.data.x = p.data.y = 0.5;
+        p.data.health = CONSTANTS.PLAYER_BASE_HEALTH;
+        p.data.isImmune = true;
+        p.lastImmunity = now;
     }
     addBullet(p, bulletData) {
         const bullet = new Bullet(p.data, bulletData);
@@ -201,4 +225,4 @@ function makeCollisionFunc(bx, by, newbx, newby) {
     };
     return collidesWith;
 }
-//# sourceMappingURL=_game.js.map
+//# sourceMappingURL=game.js.map

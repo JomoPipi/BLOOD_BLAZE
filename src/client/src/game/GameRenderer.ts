@@ -156,16 +156,19 @@ export class GameRenderer {
 
     drawPlayer(p : SocketPlayer, now : number, color = '#333') {
         const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height]
-        const playerGunSize = 2
         const bloodCooldown = 255
         const R = (now - p.lastTimeGettingShot)
+        const B = Math.sin(now / 90) * 128 + 128 | 0
         const isGettingShot = R <= bloodCooldown
+        
+        // Draw Body
         this.ctx.fillStyle =
         this.ctx.strokeStyle =
-        isGettingShot ? `rgb(255,${R},${R})` : color
-        
-        this.circle(x, y, PLAYER_RADIUS, !isGettingShot)
+            p.isImmune ? `rgb(255,255,${B})` :
+            isGettingShot ? `rgb(255,${R},${R})` : color
+        this.circle(x, y, PLAYER_RADIUS, !isGettingShot && !p.isImmune)
 
+        // Draw Special Effects
         if (p.name === this.state.myPlayer.name && isGettingShot)
         {
             if (p.lastTimeGettingShot !== this.lastTimeGettingShot)
@@ -190,12 +193,21 @@ export class GameRenderer {
         this.ctx.lineWidth = 6
         this.line(x1,y1,x2,y2)
         this.ctx.lineWidth = 2
-        // this.circle(X, Y, playerGunSize)
             
-
-        // Print Username
+        // Draw Username
         this.ctx.fillStyle = '#40f'
-        this.ctx.fillText(p.name, x - 17, y - 17)
+        this.ctx.fillText(p.name, x - (p.name.length * 2), y - 21)
+
+        // Draw Health
+        const barWidth = 20
+        const a = barWidth / 2
+        this.ctx.strokeStyle = 'cyan' // 'red'
+        this.line(x - a, y - 16, x + a, y - 16)
+        this.ctx.strokeStyle = 'purple' // 'green'
+        this.line(x - a, y - 16
+            , x - a + (p.health / CONSTANTS.PLAYER_BASE_HEALTH) * barWidth
+            , y - 16)
+        
     }
 
     drawWalls(w : number, h : number) {

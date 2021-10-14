@@ -6,7 +6,7 @@ import { Server } from "../../node_modules/socket.io/dist/index.js"; // "socket.
 import '../shared/constants.js';
 import '../shared/helpers.js';
 import '../shared/QuadTree.js';
-import { Game } from './game/_game.js';
+import { Game } from './game/game.js';
 // import { CONSTANTS } from '../shared/constants.js'
 // Understanding just 1% of something brings you closer to understanding 100% of it.
 const app = express();
@@ -21,7 +21,7 @@ const DEFAULT_MAP_CONFIG = { [WallType.BRICK]: 3,
     [WallType.FENCE]: 3,
     [WallType.NON_NEWTONIAN]: 2
 };
-const game = new Game();
+const game = new Game(io);
 game.structures.generateRandomMap(DEFAULT_MAP_CONFIG);
 console.log('yo yo yo yo!!!');
 io.on('connection', socket => {
@@ -32,7 +32,7 @@ io.on('connection', socket => {
         console.log(`user ${username} disconnected!`);
         // console.log('a user disconnected')
         if (username)
-            game.removePlayer(username, io);
+            game.removePlayer(username);
     });
     const SECRET_ADMIN_KEY = 'admin-ronald:SECRET_PASSWORD';
     /**

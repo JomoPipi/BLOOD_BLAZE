@@ -2,8 +2,10 @@
 export class Player {
     data;
     lastTimeShooting = 0;
+    lastImmunity;
     constructor(name) {
         this.data = CONSTANTS.CREATE_PLAYER(name);
+        this.lastImmunity = Date.now();
     }
 }
-//# sourceMappingURL=_player.js.map
+//# sourceMappingURL=player.js.map

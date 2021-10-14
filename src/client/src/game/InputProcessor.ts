@@ -51,7 +51,10 @@ export class InputProcessor {
             shouldResetControls = true
         }
 
-        if (this.state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting))
+        if (this.state.myPlayer.isPressingTrigger &&
+            CONSTANTS.CAN_SHOOT(now, 
+                this.state.myPlayer.lastTimeShooting, 
+                this.state.players[this.state.myPlayer.name]!.data))
         {
             // Shoot a bullet
             SoundEngine.gunshot()
@@ -105,7 +108,10 @@ export class InputProcessor {
         this.state.players[this.state.myPlayer.name]!.data.angle =
         this.state.myPlayer.predictedPosition.angle = 
             angle
-
+        if (this.state.players[this.state.myPlayer.name]!.data.isImmune)
+        {
+            return; // No shooting when you're immune!
+        }
         this.state.myPlayer.isPressingTrigger = active
     }
 

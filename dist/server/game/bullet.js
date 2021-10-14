@@ -17,4 +17,4 @@ export class Bullet {
         this.data.y = this.data.y + this.data.speedY * timeDelta;
     }
 }
-//# sourceMappingURL=_bullet.js.map
+//# sourceMappingURL=bullet.js.map

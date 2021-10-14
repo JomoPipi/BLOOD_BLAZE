@@ -85,6 +85,8 @@ type SocketPlayer = {
   lastProcessedInput : number
   controls : Point
   latency : number
+  health : number
+  isImmune : boolean
   // isSpeaking : boolean
 }
 

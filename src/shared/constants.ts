@@ -3,6 +3,7 @@ const CONSTANTS = (() => {
 
     const DEV_MODE = false
 
+    const PLAYER_BASE_HEALTH = 20
     const PLAYER_RADIUS = 0.02
     const PLAYER_SPEED = 0.0002
     // const PLAYER_SPEED = 0.00015
@@ -20,6 +21,7 @@ const CONSTANTS = (() => {
 
     const CONST = 
         { DEV_MODE
+        , PLAYER_BASE_HEALTH
         , PLAYER_RADIUS
         , PLAYER_SPEED
         , BULLET_COOLDOWN
@@ -39,8 +41,8 @@ const CONSTANTS = (() => {
     return Object.freeze(CONST)
 
 
-    function CAN_SHOOT(now : number, lastTimeShot : number) {
-        return now - lastTimeShot > BULLET_COOLDOWN
+    function CAN_SHOOT(now : number, lastTimeShot : number, p : SocketPlayer) {
+        return !p.isImmune && now - lastTimeShot > BULLET_COOLDOWN
     }
 
     function MOVE_PLAYER(p : Point, controls : PlayerControlsMessage) : void {
@@ -65,6 +67,8 @@ const CONSTANTS = (() => {
             , lastProcessedInput: -1
             , controls: { x : 0, y : 0 }
             , latency: 0
+            , health: PLAYER_BASE_HEALTH
+            , isImmune: true
             })
     }
 

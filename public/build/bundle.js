@@ -797,7 +797,7 @@ var app = (function () {
     			canvas_1 = element("canvas");
     			attr_dev(canvas_1, "id", "mobile-game-trigger");
     			attr_dev(canvas_1, "class", "svelte-eupre8");
-    			add_location(canvas_1, file$8, 48, 0, 1458);
+    			add_location(canvas_1, file$8, 48, 0, 1461);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -862,7 +862,7 @@ var app = (function () {
 
     	function render() {
     		ctx.clearRect(0, 0, W, H);
-    		ctx.strokeStyle = "rgb(160, 51, 0)";
+    		ctx.strokeStyle = "rgb(225, 198, 228)";
     		ctx.lineWidth = 2;
     		const r = 40;
     		const [x, y] = [Math.cos(angle) * r + W / 2, Math.sin(angle) * r + H / 2];
@@ -957,10 +957,10 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			canvas_1 = element("canvas");
-    			attr_dev(canvas_1, "class", "svelte-olvfja");
+    			attr_dev(canvas_1, "class", "svelte-9dbomt");
     			add_location(canvas_1, file$7, 88, 4, 2731);
     			attr_dev(div, "id", "mobile-game-joystick");
-    			attr_dev(div, "class", "svelte-olvfja");
+    			attr_dev(div, "class", "svelte-9dbomt");
     			add_location(div, file$7, 87, 0, 2674);
     		},
     		l: function claim(nodes) {
@@ -2233,7 +2233,8 @@ var app = (function () {
                 // We should reset the controls because running directly into the "tip" of a line segment can cause unpredictable movement.
                 shouldResetControls = true;
             }
-            if (this.state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting)) {
+            if (this.state.myPlayer.isPressingTrigger &&
+                CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting, this.state.players[this.state.myPlayer.name].data)) {
                 // Shoot a bullet
                 SoundEngine.gunshot();
                 this.state.myPlayer.lastTimeShooting = now;
@@ -2271,6 +2272,9 @@ var app = (function () {
                 this.state.players[this.state.myPlayer.name].data.angle =
                     this.state.myPlayer.predictedPosition.angle =
                         angle;
+            if (this.state.players[this.state.myPlayer.name].data.isImmune) {
+                return; // No shooting when you're immune!
+            }
             this.state.myPlayer.isPressingTrigger = active;
         }
         sendInputsToServer(playerControls) {
@@ -2398,11 +2402,15 @@ var app = (function () {
             const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height];
             const bloodCooldown = 255;
             const R = (now - p.lastTimeGettingShot);
+            const B = Math.sin(now / 90) * 128 + 128 | 0;
             const isGettingShot = R <= bloodCooldown;
+            // Draw Body
             this.ctx.fillStyle =
                 this.ctx.strokeStyle =
-                    isGettingShot ? `rgb(255,${R},${R})` : color;
-            this.circle(x, y, PLAYER_RADIUS, !isGettingShot);
+                    p.isImmune ? `rgb(255,255,${B})` :
+                        isGettingShot ? `rgb(255,${R},${R})` : color;
+            this.circle(x, y, PLAYER_RADIUS, !isGettingShot && !p.isImmune);
+            // Draw Special Effects
             if (p.name === this.state.myPlayer.name && isGettingShot) {
                 if (p.lastTimeGettingShot !== this.lastTimeGettingShot) {
                     this.lastTimeGettingShot = p.lastTimeGettingShot;
@@ -2423,10 +2431,16 @@ var app = (function () {
             this.ctx.lineWidth = 6;
             this.line(x1, y1, x2, y2);
             this.ctx.lineWidth = 2;
-            // this.circle(X, Y, playerGunSize)
-            // Print Username
+            // Draw Username
             this.ctx.fillStyle = '#40f';
-            this.ctx.fillText(p.name, x - 17, y - 17);
+            this.ctx.fillText(p.name, x - (p.name.length * 2), y - 21);
+            // Draw Health
+            const barWidth = 20;
+            const a = barWidth / 2;
+            this.ctx.strokeStyle = 'cyan'; // 'red'
+            this.line(x - a, y - 16, x + a, y - 16);
+            this.ctx.strokeStyle = 'purple'; // 'green'
+            this.line(x - a, y - 16, x - a + (p.health / CONSTANTS.PLAYER_BASE_HEALTH) * barWidth, y - 16);
         }
         drawWalls(w, h) {
             this.ctx.lineWidth = 2;
