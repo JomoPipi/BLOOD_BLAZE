@@ -206,7 +206,7 @@ export class Game {
                     // Damage Transaction
                     if (--player.data.health <= 0)
                     {
-                        offender && (offender.data.score += player.data.score / 4.0 | 0)
+                        offender && (offender.data.score += Math.ceil(player.data.score / 4.0))
                         this.kill(player, now)
                     }
                     this.deletedBullets[bullet.id] = true
@@ -231,7 +231,7 @@ export class Game {
     }
 
     private kill(p : Player, now : number) {
-        p.data.score /= 2.0
+        p.data.score = Math.floor(p.data.score / 2)
         p.data.x = p.data.y = 0.5
         p.data.health = CONSTANTS.PLAYER_BASE_HEALTH
         p.data.isImmune = true
