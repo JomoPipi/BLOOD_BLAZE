@@ -11,7 +11,7 @@ const CONSTANTS = (() => {
     const BULLET_SPEED = 0.0006 / 1.5;
     const FPS = 20;
     const GAME_TICK = 1000 / FPS;
-    const USERNAME_CHARACTER_LIMIT = 10;
+    const USERNAME_CHARACTER_LIMIT = 12;
     const CONST = { DEV_MODE,
         PLAYER_BASE_HEALTH,
         PLAYER_RADIUS,

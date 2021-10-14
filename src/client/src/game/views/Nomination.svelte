@@ -68,19 +68,22 @@
 	<span class="inner">
 		<form type="text" action="" on:submit={tryUsername}>
 			<input autocomplete="off" 
-				placeholder="Enter your name" 
+				placeholder="Enter something here..." 
 				pattern="[A-Za-z0-9 _]*"
 				maxlength={charLimit}
 				bind:this={nameInput}
 				on:keyup={sanitizeText}/>
 			<button> GO </button>
+			<h3> last update - 10/14/2021 </h3>
 		</form>
 	<span/>
 	<bloodblaze/>
 </main>
 
 <style lang="scss">
-	
+	h3 {
+		color: rgb(129, 80, 65);
+	}
 	main {
 		text-align: center;
 		margin: 0 auto;
@@ -167,9 +170,8 @@
 	}
 
 	h2 {
-		color: rgb(129, 80, 65);
+		color:black;
 		font-style: italic;
-		animation: 2s breathe2 alternate infinite;
 		padding: 1em 0px;
 	}
 	.inner {
