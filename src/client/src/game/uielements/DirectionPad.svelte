@@ -40,7 +40,7 @@
 
     function render() {
         ctx.clearRect(0,0,W,H)
-        ctx.strokeStyle = 'rgb(204, 99, 0)'
+        ctx.strokeStyle = 'rgb(160, 51, 0)'
         ctx.lineWidth = 2
         
         const r = 40

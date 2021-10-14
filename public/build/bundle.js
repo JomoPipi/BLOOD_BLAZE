@@ -862,7 +862,7 @@ var app = (function () {
 
     	function render() {
     		ctx.clearRect(0, 0, W, H);
-    		ctx.strokeStyle = "rgb(204, 99, 0)";
+    		ctx.strokeStyle = "rgb(160, 51, 0)";
     		ctx.lineWidth = 2;
     		const r = 40;
     		const [x, y] = [Math.cos(angle) * r + W / 2, Math.sin(angle) * r + H / 2];
@@ -957,10 +957,10 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			canvas_1 = element("canvas");
-    			attr_dev(canvas_1, "class", "svelte-1wi20ng");
+    			attr_dev(canvas_1, "class", "svelte-olvfja");
     			add_location(canvas_1, file$7, 88, 4, 2731);
     			attr_dev(div, "id", "mobile-game-joystick");
-    			attr_dev(div, "class", "svelte-1wi20ng");
+    			attr_dev(div, "class", "svelte-olvfja");
     			add_location(div, file$7, 87, 0, 2674);
     		},
     		l: function claim(nodes) {
@@ -2300,40 +2300,7 @@ var app = (function () {
             this.ctx.clearRect(0, 0, W, H);
             this.drawWalls(W, H);
             const msgDelta = now - this.state.lastGameTickMessageTime;
-            for (const name in this.state.players) {
-                if (name === this.state.myPlayer.name)
-                    continue;
-                const p = this.state.players[name];
-                if (DEV_SETTINGS.showExtrapolatedEnemyPositions) {
-                    const data = this.getExtrapolatedPlayer(p, msgDelta, renderDelta);
-                    this.drawPlayer(data, now);
-                }
-                if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
-                    const data = CONSTANTS.INTERPOLATE_PLAYER_POSITION(p.data, now, p.interpolationBuffer);
-                    this.drawPlayer(data, now, 'blue');
-                }
-                if (DEV_SETTINGS.showUninterpolatedEnemyPositions) {
-                    this.drawPlayer(p.data, now, 'red');
-                }
-            }
-            if (DEV_SETTINGS.showServerPlayer) {
-                this.drawPlayer(this.state.players[this.state.myPlayer.name].data, now, 'purple');
-            }
-            // if (DEV_SETTINGS.showServerBullet)
-            // {
-            //     this.ctx.fillStyle = '#099'
-            //     for (const b of this.state.lastGameTickMessage.bullets)
-            //     {
-            //         this.circle(b.x * W, b.y * H, 2)
-            //     }
-            // }
-            if (DEV_SETTINGS.showPredictedPlayer) {
-                this.drawPlayer(this.state.myPlayer.predictedPosition, now);
-            }
-            if (DEV_SETTINGS.showWhatOtherClientsPredict) {
-                const data = this.getExtrapolatedPlayer(this.state.players[this.state.myPlayer.name], msgDelta, renderDelta);
-                this.drawPlayer(data, now, 'cyan');
-            }
+            // BULLETS
             if (DEV_SETTINGS.showClientBullet) {
                 this.ctx.fillStyle = '#770';
                 this.state.bullets = this.state.bullets.filter(b => {
@@ -2391,16 +2358,51 @@ var app = (function () {
                     return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
                 });
             }
+            // PLAYERS
+            for (const name in this.state.players) {
+                if (name === this.state.myPlayer.name)
+                    continue;
+                const p = this.state.players[name];
+                if (DEV_SETTINGS.showExtrapolatedEnemyPositions) {
+                    const data = this.getExtrapolatedPlayer(p, msgDelta, renderDelta);
+                    this.drawPlayer(data, now);
+                }
+                if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
+                    const data = CONSTANTS.INTERPOLATE_PLAYER_POSITION(p.data, now, p.interpolationBuffer);
+                    this.drawPlayer(data, now, 'blue');
+                }
+                if (DEV_SETTINGS.showUninterpolatedEnemyPositions) {
+                    this.drawPlayer(p.data, now, 'red');
+                }
+            }
+            if (DEV_SETTINGS.showServerPlayer) {
+                this.drawPlayer(this.state.players[this.state.myPlayer.name].data, now, 'purple');
+            }
+            // if (DEV_SETTINGS.showServerBullet)
+            // {
+            //     this.ctx.fillStyle = '#099'
+            //     for (const b of this.state.lastGameTickMessage.bullets)
+            //     {
+            //         this.circle(b.x * W, b.y * H, 2)
+            //     }
+            // }
+            if (DEV_SETTINGS.showPredictedPlayer) {
+                this.drawPlayer(this.state.myPlayer.predictedPosition, now);
+            }
+            if (DEV_SETTINGS.showWhatOtherClientsPredict) {
+                const data = this.getExtrapolatedPlayer(this.state.players[this.state.myPlayer.name], msgDelta, renderDelta);
+                this.drawPlayer(data, now, 'cyan');
+            }
         }
         drawPlayer(p, now, color = '#333') {
             const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height];
-            const playerGunSize = 2;
             const bloodCooldown = 255;
             const R = (now - p.lastTimeGettingShot);
             const isGettingShot = R <= bloodCooldown;
             this.ctx.fillStyle =
                 this.ctx.strokeStyle =
                     isGettingShot ? `rgb(255,${R},${R})` : color;
+            this.circle(x, y, PLAYER_RADIUS, !isGettingShot);
             if (p.name === this.state.myPlayer.name && isGettingShot) {
                 if (p.lastTimeGettingShot !== this.lastTimeGettingShot) {
                     this.lastTimeGettingShot = p.lastTimeGettingShot;
@@ -2409,11 +2411,20 @@ var app = (function () {
                 const wait = 50 + Math.random() * 200;
                 throttled(traumatize, wait, now);
             }
-            this.circle(x, y, PLAYER_RADIUS, !isGettingShot);
-            const [X, Y] = [x + PLAYER_RADIUS * Math.cos(p.angle),
-                y + PLAYER_RADIUS * Math.sin(p.angle)
+            // Draw Gun:
+            const dx = Math.cos(p.angle);
+            const dy = Math.sin(p.angle);
+            const barrel = 1.8;
+            const [x1, y1, x2, y2] = [x + PLAYER_RADIUS * dx,
+                y + PLAYER_RADIUS * dy,
+                x + PLAYER_RADIUS * dx * barrel,
+                y + PLAYER_RADIUS * dy * barrel
             ];
-            this.circle(X, Y, playerGunSize);
+            this.ctx.lineWidth = 6;
+            this.line(x1, y1, x2, y2);
+            this.ctx.lineWidth = 2;
+            // this.circle(X, Y, playerGunSize)
+            // Print Username
             this.ctx.fillStyle = '#40f';
             this.ctx.fillText(p.name, x - 17, y - 17);
         }

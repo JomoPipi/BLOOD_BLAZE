@@ -29,56 +29,8 @@ export class GameRenderer {
         this.drawWalls(W, H)
 
         const msgDelta = now - this.state.lastGameTickMessageTime
-        for (const name in this.state.players)
-        {   
-            if (name === this.state.myPlayer.name) continue
-            const p = this.state.players[name]!
-            
-            if (DEV_SETTINGS.showExtrapolatedEnemyPositions)
-            {
-                const data = this.getExtrapolatedPlayer(p, msgDelta, renderDelta)
-                this.drawPlayer(data, now)
-            }
 
-            if (DEV_SETTINGS.showInterpolatedEnemyPositions)
-            {
-                const data = CONSTANTS.INTERPOLATE_PLAYER_POSITION(p.data, now, p.interpolationBuffer)
-                this.drawPlayer(data, now, 'blue')
-            }
-
-            if (DEV_SETTINGS.showUninterpolatedEnemyPositions)
-            {
-                this.drawPlayer(p.data, now, 'red')
-            }
-        }
-
-        
-
-        if (DEV_SETTINGS.showServerPlayer)
-        {
-            this.drawPlayer(this.state.players[this.state.myPlayer.name]!.data, now, 'purple')
-        }
-    
-        // if (DEV_SETTINGS.showServerBullet)
-        // {
-        //     this.ctx.fillStyle = '#099'
-        //     for (const b of this.state.lastGameTickMessage.bullets)
-        //     {
-        //         this.circle(b.x * W, b.y * H, 2)
-        //     }
-        // }
-    
-        if (DEV_SETTINGS.showPredictedPlayer)
-        {
-            this.drawPlayer(this.state.myPlayer.predictedPosition, now)
-        }
-        
-        if (DEV_SETTINGS.showWhatOtherClientsPredict)
-        {
-            const data = this.getExtrapolatedPlayer(this.state.players[this.state.myPlayer.name]!, msgDelta, renderDelta)
-            this.drawPlayer(data, now, 'cyan')
-        }
-        
+        // BULLETS
         if (DEV_SETTINGS.showClientBullet)
         {
             this.ctx.fillStyle = '#770' 
@@ -149,6 +101,57 @@ export class GameRenderer {
                 return 0 <= bx && bx <= 1  &&  0 <= by && by <= 1
             })
         }
+
+        // PLAYERS
+        for (const name in this.state.players)
+        {   
+            if (name === this.state.myPlayer.name) continue
+            const p = this.state.players[name]!
+            
+            if (DEV_SETTINGS.showExtrapolatedEnemyPositions)
+            {
+                const data = this.getExtrapolatedPlayer(p, msgDelta, renderDelta)
+                this.drawPlayer(data, now)
+            }
+
+            if (DEV_SETTINGS.showInterpolatedEnemyPositions)
+            {
+                const data = CONSTANTS.INTERPOLATE_PLAYER_POSITION(p.data, now, p.interpolationBuffer)
+                this.drawPlayer(data, now, 'blue')
+            }
+
+            if (DEV_SETTINGS.showUninterpolatedEnemyPositions)
+            {
+                this.drawPlayer(p.data, now, 'red')
+            }
+        }
+
+        
+
+        if (DEV_SETTINGS.showServerPlayer)
+        {
+            this.drawPlayer(this.state.players[this.state.myPlayer.name]!.data, now, 'purple')
+        }
+    
+        // if (DEV_SETTINGS.showServerBullet)
+        // {
+        //     this.ctx.fillStyle = '#099'
+        //     for (const b of this.state.lastGameTickMessage.bullets)
+        //     {
+        //         this.circle(b.x * W, b.y * H, 2)
+        //     }
+        // }
+    
+        if (DEV_SETTINGS.showPredictedPlayer)
+        {
+            this.drawPlayer(this.state.myPlayer.predictedPosition, now)
+        }
+        
+        if (DEV_SETTINGS.showWhatOtherClientsPredict)
+        {
+            const data = this.getExtrapolatedPlayer(this.state.players[this.state.myPlayer.name]!, msgDelta, renderDelta)
+            this.drawPlayer(data, now, 'cyan')
+        }
     }
 
     drawPlayer(p : SocketPlayer, now : number, color = '#333') {
@@ -161,6 +164,8 @@ export class GameRenderer {
         this.ctx.strokeStyle =
         isGettingShot ? `rgb(255,${R},${R})` : color
         
+        this.circle(x, y, PLAYER_RADIUS, !isGettingShot)
+
         if (p.name === this.state.myPlayer.name && isGettingShot)
         {
             if (p.lastTimeGettingShot !== this.lastTimeGettingShot)
@@ -172,13 +177,23 @@ export class GameRenderer {
             throttled(traumatize, wait, now)
         }
         
-        this.circle(x, y, PLAYER_RADIUS, !isGettingShot)
-        
-        const [X, Y] = 
-            [ x + PLAYER_RADIUS * Math.cos(p.angle)
-            , y + PLAYER_RADIUS * Math.sin(p.angle)
+        // Draw Gun:
+        const dx = Math.cos(p.angle)
+        const dy = Math.sin(p.angle)
+        const barrel = 1.8
+        const [x1, y1, x2, y2] = 
+            [ x + PLAYER_RADIUS * dx
+            , y + PLAYER_RADIUS * dy
+            , x + PLAYER_RADIUS * dx * barrel
+            , y + PLAYER_RADIUS * dy * barrel
             ]
-        this.circle(X, Y, playerGunSize)
+        this.ctx.lineWidth = 6
+        this.line(x1,y1,x2,y2)
+        this.ctx.lineWidth = 2
+        // this.circle(X, Y, playerGunSize)
+            
+
+        // Print Username
         this.ctx.fillStyle = '#40f'
         this.ctx.fillText(p.name, x - 17, y - 17)
     }

@@ -114,7 +114,7 @@
 
 <style lang="scss">
     div {
-        border: 2px solid rgb(204, 99, 0);
+        border: 2px solid rgb(160, 51, 0);
         position: relative;
         border-radius: 50%;
         flex-shrink: 0;
