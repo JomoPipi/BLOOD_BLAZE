@@ -40,13 +40,14 @@
 
     function render() {
         ctx.clearRect(0,0,W,H)
-        ctx.strokeStyle = '#fba'
+        ctx.strokeStyle = 'rgb(204, 99, 0)'
+        ctx.lineWidth = 2
         
         const r = 40
         const [x,y] = [Math.cos(angle) * r + W/2, Math.sin(angle) * r + H/2]
         const [x2,y2] = 
-            [ Math.cos(angle) * (r/2) + W/2
-            , Math.sin(angle) * (r/2) + H/2]
+            [ Math.cos(angle) * (r/4) + W/2
+            , Math.sin(angle) * (r/4) + H/2]
         ctx.beginPath()
         ctx.arc(W/2, H/2, r, 0, 7)
         ctx.closePath()

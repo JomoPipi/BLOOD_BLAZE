@@ -744,7 +744,7 @@ var app = (function () {
     			canvas_1 = element("canvas");
     			attr_dev(canvas_1, "id", "mobile-game-trigger");
     			attr_dev(canvas_1, "class", "svelte-eupre8");
-    			add_location(canvas_1, file$8, 47, 0, 1423);
+    			add_location(canvas_1, file$8, 48, 0, 1458);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -809,10 +809,11 @@ var app = (function () {
 
     	function render() {
     		ctx.clearRect(0, 0, W, H);
-    		ctx.strokeStyle = "#fba";
+    		ctx.strokeStyle = "rgb(204, 99, 0)";
+    		ctx.lineWidth = 2;
     		const r = 40;
     		const [x, y] = [Math.cos(angle) * r + W / 2, Math.sin(angle) * r + H / 2];
-    		const [x2, y2] = [Math.cos(angle) * (r / 2) + W / 2, Math.sin(angle) * (r / 2) + H / 2];
+    		const [x2, y2] = [Math.cos(angle) * (r / 4) + W / 2, Math.sin(angle) * (r / 4) + H / 2];
     		ctx.beginPath();
     		ctx.arc(W / 2, H / 2, r, 0, 7);
     		ctx.closePath();
@@ -903,10 +904,10 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			canvas_1 = element("canvas");
-    			attr_dev(canvas_1, "class", "svelte-18l9nl");
+    			attr_dev(canvas_1, "class", "svelte-1wi20ng");
     			add_location(canvas_1, file$7, 88, 4, 2731);
     			attr_dev(div, "id", "mobile-game-joystick");
-    			attr_dev(div, "class", "svelte-18l9nl");
+    			attr_dev(div, "class", "svelte-1wi20ng");
     			add_location(div, file$7, 87, 0, 2674);
     		},
     		l: function claim(nodes) {
@@ -2150,13 +2151,38 @@ var app = (function () {
     function gunshot() {
         const osc = audioContext.createOscillator();
         const now = audioContext.currentTime;
-        const duration = 0.01;
+        const duration = 0.01 * (1 + Math.random());
         osc.start(now);
         osc.connect(volume);
-        osc.frequency.setValueAtTime(5000, now);
-        osc.frequency.exponentialRampToValueAtTime(100, now + duration);
+        osc.frequency.setValueAtTime(4000 + Math.random() * 4000 | 0, now);
+        osc.frequency.exponentialRampToValueAtTime(40, now + duration);
+        // Bubbly sound:
+        // osc.frequency.setValueAtTime(40, now)
+        // osc.frequency.exponentialRampToValueAtTime(3000 + Math.random() * 3000 | 0, now + duration)
         osc.stop(now + duration);
     }
+    const injurySamples = [...Array(29)];
+    injurySamples
+        .forEach((_, i) => {
+        const request = new XMLHttpRequest();
+        request.open("GET", `../../../../public/sounds/bullet-injury/${i}.wav`);
+        request.responseType = 'arraybuffer';
+        request.onload = function () {
+            const undecodedAudio = request.response;
+            audioContext.decodeAudioData(undecodedAudio, data => {
+                injurySamples[i] = data;
+            });
+        };
+        request.send();
+    });
+    function injury() {
+        const buff = audioContext.createBufferSource();
+        const now = audioContext.currentTime;
+        buff.buffer = injurySamples[Math.random() * injurySamples.length | 0];
+        buff.connect(volume);
+        buff.start(now);
+    }
+    const SoundEngine = { gunshot, injury };
 
     // import { CONSTANTS } from "../../../shared/constants"
     class InputProcessor {
@@ -2196,7 +2222,7 @@ var app = (function () {
             }
             if (this.state.myPlayer.isPressingTrigger && CONSTANTS.CAN_SHOOT(now, this.state.myPlayer.lastTimeShooting)) {
                 // Shoot a bullet
-                gunshot();
+                SoundEngine.gunshot();
                 this.state.myPlayer.lastTimeShooting = now;
                 const walls = this.state.structures;
                 const wallsBulletsCannotPass = walls[WallType.BRICK].concat(walls[WallType.NON_NEWTONIAN]);
@@ -2249,6 +2275,7 @@ var app = (function () {
         canvas;
         ctx;
         state;
+        lastTimeGettingShot = -1;
         constructor(canvas, state) {
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
@@ -2362,6 +2389,10 @@ var app = (function () {
                 this.ctx.strokeStyle =
                     isGettingShot ? `rgb(255,${R},${R})` : color;
             if (p.name === this.state.myPlayer.name && isGettingShot) {
+                if (p.lastTimeGettingShot !== this.lastTimeGettingShot) {
+                    this.lastTimeGettingShot = p.lastTimeGettingShot;
+                    SoundEngine.injury();
+                }
                 const wait = 50 + Math.random() * 200;
                 throttled(traumatize, wait, now);
             }
@@ -2374,7 +2405,7 @@ var app = (function () {
             this.ctx.fillText(p.name, x - 17, y - 17);
         }
         drawWalls(w, h) {
-            // this.ctx.lineWidth = 2
+            this.ctx.lineWidth = 2;
             const wallColors = [['#0e8', WallType.NON_NEWTONIAN],
                 ['#44f', WallType.FENCE],
                 ['#410', WallType.BRICK]

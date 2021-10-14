@@ -2,6 +2,7 @@
 import { DEV_SETTINGS } from "./DEV_SETTINGS"
 import type { ClientState } from './ClientState'
 import type { Player } from "./Player"
+import { SoundEngine } from "./SoundEngine"
 // import { CONSTANTS } from "../../../shared/constants"
 
 const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth
@@ -10,6 +11,7 @@ export class GameRenderer {
     private readonly canvas
     private readonly ctx
     private readonly state
+    private lastTimeGettingShot = -1
 
     constructor(canvas : HTMLCanvasElement, state : ClientState) {
         this.canvas = canvas
@@ -49,6 +51,8 @@ export class GameRenderer {
                 this.drawPlayer(p.data, now, 'red')
             }
         }
+
+        
 
         if (DEV_SETTINGS.showServerPlayer)
         {
@@ -159,6 +163,11 @@ export class GameRenderer {
         
         if (p.name === this.state.myPlayer.name && isGettingShot)
         {
+            if (p.lastTimeGettingShot !== this.lastTimeGettingShot)
+            {
+                this.lastTimeGettingShot = p.lastTimeGettingShot
+                SoundEngine.injury()
+            }
             const wait = 50 + Math.random() * 200
             throttled(traumatize, wait, now)
         }
@@ -175,7 +184,7 @@ export class GameRenderer {
     }
 
     drawWalls(w : number, h : number) {
-        // this.ctx.lineWidth = 2
+        this.ctx.lineWidth = 2
         const wallColors =
             [ ['#0e8', WallType.NON_NEWTONIAN]
             , ['#44f', WallType.FENCE]

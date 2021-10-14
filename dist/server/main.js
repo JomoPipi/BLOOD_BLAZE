@@ -23,12 +23,14 @@ const DEFAULT_MAP_CONFIG = { [WallType.BRICK]: 3,
 };
 const game = new Game();
 game.structures.generateRandomMap(DEFAULT_MAP_CONFIG);
+console.log('yo yo yo yo!!!');
 io.on('connection', socket => {
     let username = '';
-    console.log('a user connected');
+    console.log('a user connected!');
     socket.on("ping", cb => cb());
     socket.on('disconnect', () => {
-        console.log('a user disconnected');
+        console.log(`user ${username} disconnected!`);
+        // console.log('a user disconnected')
         if (username)
             game.removePlayer(username, io);
     });
@@ -47,7 +49,7 @@ io.on('connection', socket => {
             // You're in the admin control system now
             socket.emit('error', `
             <div class="container">
-                <button 
+                <button
                     onclick="socket.emit('command_randomize_map', {})">
                     RANDOMIZE MAP
                 </button>
