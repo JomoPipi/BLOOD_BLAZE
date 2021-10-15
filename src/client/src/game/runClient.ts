@@ -22,7 +22,7 @@ export function runClient(elements : ClientElements, state : ClientState, socket
         (window as any).state = state
     }
 
-    elements.canvas.height = elements.canvas.width = window.innerWidth
+    elements.canvas.height = elements.canvas.width = Math.min(window.innerHeight, window.innerWidth)
 
     const renderer = new GameRenderer(elements.canvas, state)
 

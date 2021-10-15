@@ -10,10 +10,11 @@
     import { InputProcessor } from "../InputProcessor"
     import { runClient } from "../runClient";
 	import '../../bots/A'
-import PlayerMenu from "./PlayerMenu.svelte";
+    import PlayerMenu from "./PlayerMenu.svelte";
 
     export let socket : ClientSocket
     export let username : string
+    export let isMobile : boolean
 
     NETWORK_LATENCY.beginRetrieving(socket)
 
@@ -29,16 +30,17 @@ import PlayerMenu from "./PlayerMenu.svelte";
 </script>
 
 
-<center>{username}</center>
-<Scoreboard bind:updateScoreboard/>
-<canvas bind:this={canvas}/>
-<div class="input-container">
-    <Joystick callback={inputs.moveJoystick.bind(inputs)}/>
-    <PlayerMenu {socket}/>
-    <!-- {#if devMode} <DevSwitches/> {/if} -->
-    <DirectionPad callback={inputs.adjustAim.bind(inputs)}/>
-</div>
-
+<center>{username}
+    <Scoreboard bind:updateScoreboard/>
+    <canvas bind:this={canvas}/>
+</center>
+{#if isMobile}
+    <div class="input-container">
+        <Joystick callback={inputs.moveJoystick.bind(inputs)}/>
+        <PlayerMenu {socket}/>
+        <DirectionPad callback={inputs.adjustAim.bind(inputs)}/>
+    </div>
+{/if}
 
 <style lang="scss">
     canvas {
@@ -50,7 +52,7 @@ import PlayerMenu from "./PlayerMenu.svelte";
     }
     .input-container {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-evenly;
         align-items: center;
         margin: 0;
         padding: 0 2rem;

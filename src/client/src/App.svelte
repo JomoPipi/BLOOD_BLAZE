@@ -19,15 +19,15 @@
 
 </script>
 
-{#if !isMobile}
+<!-- {#if !isMobile}
 	<h1 style="color:white;background:black;text-align:center;"> Sorry, only mobile devices are supported at the moment! </h1>
-{/if}
+{/if} -->
 
 <div id="bloodscreen"></div>
 {#if username.length === 0}
 	<Nomination {proceed} {socket} {blaze}/>
 {:else}
-	<GameClient {socket} {username}/>
+	<GameClient {socket} {username} {isMobile}/>
 {/if}
 {#if devMode}
 	<div id="debug-window"></div>

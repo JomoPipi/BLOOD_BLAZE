@@ -7,7 +7,7 @@
     let H : number
     let ctx : CanvasRenderingContext2D
     
-    const size = window.innerWidth / 2.5 / PHI
+    const size = Math.min(window.innerHeight, window.innerWidth) / 2.5 / PHI
     export let callback : (angle : number, active : boolean) => void = () => 0
     let angle : number = 0
 

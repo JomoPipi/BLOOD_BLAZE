@@ -9,7 +9,7 @@
     let ctx : CanvasRenderingContext2D
     let point : [number, number]
 
-    const size = window.innerWidth / 2.5 / PHI
+    const size = Math.min(window.innerHeight, window.innerWidth) / 2.5 / PHI
     const canvasScale = 1.5
 
     const radius = 40
