@@ -161,8 +161,10 @@ export class Game {
                     const offender = this.getPlayerByName[shooter];
                     offender && offender.data.score++;
                     // Damage Transaction
+                    const h = CONSTANTS.PLAYER_BASE_HEALTH;
                     if (--player.data.health <= 0) {
-                        offender && (offender.data.score += Math.ceil(player.data.score / 4.0));
+                        offender && (offender.data.score += Math.ceil(player.data.score / 8.0),
+                            offender.data.health += Math.min(h, h / 2 + offender.data.health));
                         this.kill(player, now);
                     }
                     this.deletedBullets[bullet.id] = true;

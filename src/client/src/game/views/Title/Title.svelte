@@ -1,7 +1,8 @@
 
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { SoundEngine } from "../SoundEngine";
+	import { SoundEngine } from "../../SoundEngine"
+	import BoundlessMortality from './BoundlessMortality.svelte'
 
 	export let proceed : (name : string) => void
 	export let blaze : string
@@ -55,20 +56,19 @@
 			.replace(/[^A-Za-z0-9 _]/g, '')
 			.slice(0, charLimit)
 	}
+
 </script>
 
 <main>
-	<span class="title">
-		<h1> 
-			<span class="_1"> BLOOD </span> 
-			<span class="_2"> {blaze} </span>
-		</h1>
-		<h2> A Devastating Bloodbath of Boundless Mortality </h2>
-	</span>
-	<span class="inner">
+	<h1> 
+		<span class="_1"> BLOOD </span> 
+		<span class="_2"> {blaze} </span>
+	</h1>
+	<div>
+		<BoundlessMortality/>
 		<form type="text" action="" on:submit={tryUsername}>
 			<input autocomplete="off" 
-				placeholder="Enter something here..." 
+				placeholder="Enter a username..." 
 				pattern="[A-Za-z0-9 _]*"
 				maxlength={charLimit}
 				bind:this={nameInput}
@@ -76,7 +76,7 @@
 			<button> GO </button>
 			<h3> last update - 10/14/2021 </h3>
 		</form>
-	<span/>
+	</div>
 	<bloodblaze/>
 </main>
 
@@ -85,20 +85,18 @@
 		color: rgb(129, 80, 65);
 	}
 	main {
-		text-align: center;
-		margin: 0 auto;
-		width: 100%;
-		height: 100%;
-		display: grid;
-		grid-template-rows: 61% 39%;
-		box-sizing: border-box;
-	}
-
-	.title {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
+		text-align: center;
+		padding: 0;
 	}
+
 	@keyframes blur {
 		from {
 			$col: #ff3e00;
@@ -141,7 +139,7 @@
 	}
 	
 	h1 {
-		$col: #ff3e00;
+		$col: rgb(255, 0, 0);
 		color: $col;
 		text-transform: uppercase;
 		font-size: 4em;
@@ -157,7 +155,7 @@
 		text-transform: uppercase;
 		animation: breathe 1s alternate infinite;
 		text-shadow: 0px 0px 5px $col, 0px 0px 7px $col;
-		margin-bottom: 0;
+		margin: 0;
 
 		._1 {
 			animation: blur 3s ease-out infinite;
@@ -169,32 +167,26 @@
 		}
 	}
 
-	h2 {
-		color:black;
-		font-style: italic;
-		padding: 1em 0px;
-	}
-	.inner {
-		margin: 1em 0px;
-	}
-
 	input, button {
 		font-size: 1.25rem;
 		height: 50px;
 		
 		&::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-			color: rgb(189, 185, 84);
+			color: rgba(189, 185, 84, 0.712);
 			opacity: 1; /* Firefox */
 		}
 	}
 	input {
 		background-color: rgb(33, 16, 16);
 		color: rgb(252, 246, 82);
+		border-radius: 10px;
 	}
 	button {
 		border-radius: 5px;
 		background: radial-gradient(rgb(85, 72, 0),rgb(29, 0, 0));
-		color: rgb(252, 246, 82);
+		color: rgb(252, 198, 82);
+		width: 50px;
+
 	}
 	bloodblaze {
 		z-index: -1;

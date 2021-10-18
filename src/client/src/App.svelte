@@ -1,7 +1,7 @@
 
 <script lang="ts">
 	export let blaze : string
-	import Nomination from './game/views/Nomination.svelte'
+	import Title from './game/views/Title/Title.svelte'
 	import GameClient from './game/views/GameClient.svelte'
 
 	// @ts-ignore
@@ -25,7 +25,7 @@
 
 <div id="bloodscreen"></div>
 {#if username.length === 0}
-	<Nomination {proceed} {socket} {blaze}/>
+	<Title {proceed} {socket} {blaze}/>
 {:else}
 	<GameClient {socket} {username} {isMobile}/>
 {/if}
