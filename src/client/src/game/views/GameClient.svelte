@@ -1,9 +1,8 @@
 
 <script lang="typescript">
-    import { onMount, SvelteComponent } from "svelte"
+    import { onMount } from "svelte"
     import DirectionPad from "../uielements/DirectionPad.svelte"
     import Joystick from "../uielements/Joystick.svelte"
-    import DevSwitches from './DevSwitches.svelte'
     import Scoreboard from "./Scoreboard.svelte"
     import { ClientState } from '../ClientState'
     import { NETWORK_LATENCY } from "../NETWORK_LATENCY"
@@ -11,7 +10,7 @@
     import { runClient } from "../runClient";
 	import '../../bots/A'
     import PlayerMenu from "./PlayerMenu.svelte";
-
+    import { activateDesktopSupport } from '../activateDesktopSupport'
     export let socket : ClientSocket
     export let username : string
     export let isMobile : boolean
@@ -24,9 +23,19 @@
     const state = new ClientState(username)
     const inputs = new InputProcessor(state, socket)
 
-    onMount(() => runClient({ inputs, canvas, updateScoreboard }, state, socket))
+    onMount(() => {
+        runClient({ inputs, canvas, updateScoreboard }, state, socket)
     
-    // const devMode = CONSTANTS.DEV_MODE
+        if (!isMobile)
+        {
+            activateDesktopSupport(
+                inputs.moveJoystick.bind(inputs),
+                inputs.adjustAim.bind(inputs),
+                state.players[username]!,
+                canvas)
+        }
+    })
+    
 </script>
 
 

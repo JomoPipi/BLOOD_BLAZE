@@ -38,6 +38,8 @@ export class ClientState {
     myPlayer : MyPlayer
     lastGameTickMessageTime : number
     lastGameTickMessage : Omit<GameTickMessage, 'deletedBullets'>
+    width = 100
+    height = 100
 
     constructor(username : string) {
         this.players = { [username]: new Player(CONSTANTS.CREATE_PLAYER(username)) }
@@ -59,7 +61,6 @@ export class ClientState {
         this.myPlayer.bullets = this.myPlayer.bullets.filter(b => !msg.deletedBullets[b.data.id])
         this.bullets = this.bullets.filter(b => !msg.deletedBullets[b.data.id])
     
-        const W = window.innerWidth
         for (const b of msg.newBullets)
         {
             // These are the coodinates of the player's gun
@@ -70,15 +71,15 @@ export class ClientState {
             if (DEV_SETTINGS.showExtrapolatedEnemyPositions)
             {
                 const display = 
-                    { x: (player.lastExtrapolatedPosition.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * W
-                    , y: (player.lastExtrapolatedPosition.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * W
+                    { x: (player.lastExtrapolatedPosition.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * this.width
+                    , y: (player.lastExtrapolatedPosition.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * this.height
                     }
                 this.bullets.push(new Bullet(b, now, display))
             }
             else
             {
-                const x = (p.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * window.innerWidth
-                const y = (p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * window.innerWidth
+                const x = (p.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * this.width
+                const y = (p.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * this.height
                 this.bullets.push(new Bullet(b, now, { x, y }))
             }
         }

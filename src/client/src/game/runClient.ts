@@ -1,9 +1,7 @@
-// import { CONSTANTS } from "../../../shared/constants"
+
 import type { ClientState } from "./ClientState"
-import { DEV_SETTINGS } from "./DEV_SETTINGS"
 import { GameRenderer } from "./GameRenderer"
 import type { InputProcessor } from "./InputProcessor"
-import { NETWORK_LATENCY } from "./NETWORK_LATENCY"
 
 type ClientElements = { 
     inputs : InputProcessor
@@ -22,7 +20,11 @@ export function runClient(elements : ClientElements, state : ClientState, socket
         (window as any).state = state
     }
 
-    elements.canvas.height = elements.canvas.width = Math.min(window.innerHeight, window.innerWidth)
+    elements.canvas.height =
+    elements.canvas.width =
+    state.width =
+    state.height =
+        Math.min(window.innerHeight, window.innerWidth)
 
     const renderer = new GameRenderer(elements.canvas, state)
 

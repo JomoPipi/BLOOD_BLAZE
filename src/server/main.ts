@@ -31,7 +31,7 @@ const DEFAULT_MAP_CONFIG =
 
 const game = new Game(io)
 game.structures.generateRandomMap(DEFAULT_MAP_CONFIG)
-console.log('yo yo yo yo!!!')
+
 io.on('connection', socket => {
 
     let username = ''
@@ -52,7 +52,6 @@ io.on('connection', socket => {
      */
 
     socket.on('command_randomize_map' as any, () => {
-        console.log('yoyoyo, hello???')
         game.structures.generateRandomMap(DEFAULT_MAP_CONFIG)
         io.emit('mapdata', game.structures.segments)
     })

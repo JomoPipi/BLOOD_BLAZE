@@ -23,7 +23,6 @@ const DEFAULT_MAP_CONFIG = { [WallType.BRICK]: 3,
 };
 const game = new Game(io);
 game.structures.generateRandomMap(DEFAULT_MAP_CONFIG);
-console.log('yo yo yo yo!!!');
 io.on('connection', socket => {
     let username = '';
     console.log('a user connected!');
@@ -40,7 +39,6 @@ io.on('connection', socket => {
      * tryUsername({ preventDefault: ()=>0, target: { children: [{ value: SECRET_ADMIN_KEY }] } })
      */
     socket.on('command_randomize_map', () => {
-        console.log('yoyoyo, hello???');
         game.structures.generateRandomMap(DEFAULT_MAP_CONFIG);
         io.emit('mapdata', game.structures.segments);
     });
