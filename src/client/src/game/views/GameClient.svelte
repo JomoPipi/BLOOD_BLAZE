@@ -3,7 +3,7 @@
     import { onMount, SvelteComponent } from "svelte"
     import DirectionPad from "../uielements/DirectionPad.svelte"
     import Joystick from "../uielements/Joystick.svelte"
-    import DevSwitches from './GameClient/DevSwitches.svelte'
+    import DevSwitches from './DevSwitches.svelte'
     import Scoreboard from "./Scoreboard.svelte"
     import { ClientState } from '../ClientState'
     import { NETWORK_LATENCY } from "../NETWORK_LATENCY"

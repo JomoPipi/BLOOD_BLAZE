@@ -209,7 +209,7 @@ export class Game {
                     {
                         offender && (
                             offender.data.score += Math.ceil(player.data.score / 8.0),
-                            offender.data.health += Math.min(h, h / 2 + offender.data.health)
+                            offender.data.health = Math.min(h, offender.data.health + h/2)
                             )
                         this.kill(player, now)
                     }
