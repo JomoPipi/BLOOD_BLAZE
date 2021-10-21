@@ -146,7 +146,7 @@ export class GameRenderer {
     
         if (DEV_SETTINGS.showPredictedPlayer)
         {
-            this.drawPlayer(this.state.myPlayer.predictedPosition, now)
+            this.drawPlayer(this.state.myPlayer.predictedPosition, now, '#730')
         }
         
         if (DEV_SETTINGS.showWhatOtherClientsPredict)
@@ -156,7 +156,7 @@ export class GameRenderer {
         }
     }
 
-    drawPlayer(p : SocketPlayer, now : number, color = '#333') {
+    drawPlayer(p : SocketPlayer, now : number, color = '#037') {
         const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height]
         const bloodCooldown = 255
         const R = (now - p.lastTimeGettingShot)

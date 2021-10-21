@@ -10,7 +10,6 @@
     import type { ClientState } from '../../ClientState';
         
     export let socket : ClientSocket
-    export let username : string
 
     export let canvas : HTMLCanvasElement
     export let updateScoreboard : (a : any) => void
@@ -23,10 +22,8 @@
 </script>
 
 
-<center>{username}
     <Scoreboard bind:updateScoreboard/>
     <canvas bind:this={canvas}/>
-</center>
 
 <div class="input-container">
     <Joystick callback={inputs.moveJoystick.bind(inputs)}/>
@@ -40,9 +37,7 @@
         background: rgb(255, 255, 255);
         filter: invert(1);
     }
-    center {
-        color: white;
-    }
+
     .input-container {
         display: flex;
         justify-content: space-evenly;

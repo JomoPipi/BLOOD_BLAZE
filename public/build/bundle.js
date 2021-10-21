@@ -884,7 +884,7 @@ var app = (function () {
     			t0 = text(/*name*/ ctx[0]);
     			t1 = text(" - ");
     			t2 = text(/*value*/ ctx[1]);
-    			attr_dev(h4, "class", "svelte-9w6kgf");
+    			attr_dev(h4, "class", "svelte-12do9e9");
     			add_location(h4, file$9, 20, 0, 523);
     		},
     		l: function claim(nodes) {
@@ -1127,7 +1127,7 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", "svelte-1rg865m");
+    			attr_dev(div, "class", "svelte-6arfi");
     			add_location(div, file$8, 8, 0, 270);
     		},
     		l: function claim(nodes) {
@@ -2476,14 +2476,14 @@ var app = (function () {
             //     }
             // }
             if (DEV_SETTINGS.showPredictedPlayer) {
-                this.drawPlayer(this.state.myPlayer.predictedPosition, now);
+                this.drawPlayer(this.state.myPlayer.predictedPosition, now, '#730');
             }
             if (DEV_SETTINGS.showWhatOtherClientsPredict) {
                 const data = this.getExtrapolatedPlayer(this.state.players[this.state.myPlayer.name], msgDelta, renderDelta);
                 this.drawPlayer(data, now, 'cyan');
             }
         }
-        drawPlayer(p, now, color = '#333') {
+        drawPlayer(p, now, color = '#037') {
             const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height];
             const bloodCooldown = 255;
             const R = (now - p.lastTimeGettingShot);
@@ -2625,8 +2625,7 @@ var app = (function () {
             //     + `<br> network latency: ${NETWORK_LATENCY.value}`
             const scores = Object.values(state.players)
                 .sort((p1, p2) => p2.data.score - p1.data.score)
-                .map(p => ({ name: p.data.name, value: p.data.score }))
-                .slice(0, 5);
+                .map(p => ({ name: p.data.name, value: p.data.score }));
             elements.updateScoreboard(scores);
         })();
     }
@@ -2635,24 +2634,21 @@ var app = (function () {
     const file$2 = "src\\game\\views\\GameClient\\Mobile.svelte";
 
     function create_fragment$3(ctx) {
-    	let center;
-    	let t0;
-    	let t1;
     	let scoreboard;
     	let updating_updateScoreboard;
-    	let t2;
+    	let t0;
     	let canvas_1;
-    	let t3;
+    	let t1;
     	let div;
     	let joystick;
-    	let t4;
+    	let t2;
     	let playermenu;
-    	let t5;
+    	let t3;
     	let directionpad;
     	let current;
 
     	function scoreboard_updateScoreboard_binding(value) {
-    		/*scoreboard_updateScoreboard_binding*/ ctx[6].call(null, value);
+    		/*scoreboard_updateScoreboard_binding*/ ctx[5].call(null, value);
     	}
 
     	let scoreboard_props = {};
@@ -2666,7 +2662,7 @@ var app = (function () {
 
     	joystick = new Joystick({
     			props: {
-    				callback: /*inputs*/ ctx[4].moveJoystick.bind(/*inputs*/ ctx[4])
+    				callback: /*inputs*/ ctx[3].moveJoystick.bind(/*inputs*/ ctx[3])
     			},
     			$$inline: true
     		});
@@ -2678,55 +2674,46 @@ var app = (function () {
 
     	directionpad = new DirectionPad({
     			props: {
-    				callback: /*inputs*/ ctx[4].adjustAim.bind(/*inputs*/ ctx[4])
+    				callback: /*inputs*/ ctx[3].adjustAim.bind(/*inputs*/ ctx[3])
     			},
     			$$inline: true
     		});
 
     	const block = {
     		c: function create() {
-    			center = element("center");
-    			t0 = text(/*username*/ ctx[3]);
-    			t1 = space();
     			create_component(scoreboard.$$.fragment);
-    			t2 = space();
+    			t0 = space();
     			canvas_1 = element("canvas");
-    			t3 = space();
+    			t1 = space();
     			div = element("div");
     			create_component(joystick.$$.fragment);
-    			t4 = space();
+    			t2 = space();
     			create_component(playermenu.$$.fragment);
-    			t5 = space();
+    			t3 = space();
     			create_component(directionpad.$$.fragment);
-    			attr_dev(canvas_1, "class", "svelte-w51t2q");
-    			add_location(canvas_1, file$2, 23, 4, 668);
-    			attr_dev(center, "class", "svelte-w51t2q");
-    			add_location(center, file$2, 21, 0, 603);
-    			attr_dev(div, "class", "input-container svelte-w51t2q");
-    			add_location(div, file$2, 26, 0, 711);
+    			attr_dev(canvas_1, "class", "svelte-1nq23nq");
+    			add_location(canvas_1, file$2, 21, 4, 626);
+    			attr_dev(div, "class", "input-container svelte-1nq23nq");
+    			add_location(div, file$2, 23, 0, 658);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, center, anchor);
-    			append_dev(center, t0);
-    			append_dev(center, t1);
-    			mount_component(scoreboard, center, null);
-    			append_dev(center, t2);
-    			append_dev(center, canvas_1);
-    			/*canvas_1_binding*/ ctx[7](canvas_1);
-    			insert_dev(target, t3, anchor);
+    			mount_component(scoreboard, target, anchor);
+    			insert_dev(target, t0, anchor);
+    			insert_dev(target, canvas_1, anchor);
+    			/*canvas_1_binding*/ ctx[6](canvas_1);
+    			insert_dev(target, t1, anchor);
     			insert_dev(target, div, anchor);
     			mount_component(joystick, div, null);
-    			append_dev(div, t4);
+    			append_dev(div, t2);
     			mount_component(playermenu, div, null);
-    			append_dev(div, t5);
+    			append_dev(div, t3);
     			mount_component(directionpad, div, null);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			if (!current || dirty & /*username*/ 8) set_data_dev(t0, /*username*/ ctx[3]);
     			const scoreboard_changes = {};
 
     			if (!updating_updateScoreboard && dirty & /*updateScoreboard*/ 2) {
@@ -2737,13 +2724,13 @@ var app = (function () {
 
     			scoreboard.$set(scoreboard_changes);
     			const joystick_changes = {};
-    			if (dirty & /*inputs*/ 16) joystick_changes.callback = /*inputs*/ ctx[4].moveJoystick.bind(/*inputs*/ ctx[4]);
+    			if (dirty & /*inputs*/ 8) joystick_changes.callback = /*inputs*/ ctx[3].moveJoystick.bind(/*inputs*/ ctx[3]);
     			joystick.$set(joystick_changes);
     			const playermenu_changes = {};
     			if (dirty & /*socket*/ 4) playermenu_changes.socket = /*socket*/ ctx[2];
     			playermenu.$set(playermenu_changes);
     			const directionpad_changes = {};
-    			if (dirty & /*inputs*/ 16) directionpad_changes.callback = /*inputs*/ ctx[4].adjustAim.bind(/*inputs*/ ctx[4]);
+    			if (dirty & /*inputs*/ 8) directionpad_changes.callback = /*inputs*/ ctx[3].adjustAim.bind(/*inputs*/ ctx[3]);
     			directionpad.$set(directionpad_changes);
     		},
     		i: function intro(local) {
@@ -2762,10 +2749,11 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(center);
-    			destroy_component(scoreboard);
-    			/*canvas_1_binding*/ ctx[7](null);
-    			if (detaching) detach_dev(t3);
+    			destroy_component(scoreboard, detaching);
+    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(canvas_1);
+    			/*canvas_1_binding*/ ctx[6](null);
+    			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(div);
     			destroy_component(joystick);
     			destroy_component(playermenu);
@@ -2788,7 +2776,6 @@ var app = (function () {
     	
     	
     	let { socket } = $$props;
-    	let { username } = $$props;
     	let { canvas } = $$props;
     	let { updateScoreboard } = $$props;
     	let { inputs } = $$props;
@@ -2798,7 +2785,7 @@ var app = (function () {
     		runClient({ inputs, canvas, updateScoreboard }, state, socket);
     	});
 
-    	const writable_props = ["socket", "username", "canvas", "updateScoreboard", "inputs", "state"];
+    	const writable_props = ["socket", "canvas", "updateScoreboard", "inputs", "state"];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Mobile> was created with unknown prop '${key}'`);
@@ -2821,11 +2808,10 @@ var app = (function () {
 
     	$$self.$set = $$props => {
     		if ("socket" in $$props) $$invalidate(2, socket = $$props.socket);
-    		if ("username" in $$props) $$invalidate(3, username = $$props.username);
     		if ("canvas" in $$props) $$invalidate(0, canvas = $$props.canvas);
     		if ("updateScoreboard" in $$props) $$invalidate(1, updateScoreboard = $$props.updateScoreboard);
-    		if ("inputs" in $$props) $$invalidate(4, inputs = $$props.inputs);
-    		if ("state" in $$props) $$invalidate(5, state = $$props.state);
+    		if ("inputs" in $$props) $$invalidate(3, inputs = $$props.inputs);
+    		if ("state" in $$props) $$invalidate(4, state = $$props.state);
     	};
 
     	$$self.$capture_state = () => ({
@@ -2836,7 +2822,6 @@ var app = (function () {
     		onMount,
     		runClient,
     		socket,
-    		username,
     		canvas,
     		updateScoreboard,
     		inputs,
@@ -2845,11 +2830,10 @@ var app = (function () {
 
     	$$self.$inject_state = $$props => {
     		if ("socket" in $$props) $$invalidate(2, socket = $$props.socket);
-    		if ("username" in $$props) $$invalidate(3, username = $$props.username);
     		if ("canvas" in $$props) $$invalidate(0, canvas = $$props.canvas);
     		if ("updateScoreboard" in $$props) $$invalidate(1, updateScoreboard = $$props.updateScoreboard);
-    		if ("inputs" in $$props) $$invalidate(4, inputs = $$props.inputs);
-    		if ("state" in $$props) $$invalidate(5, state = $$props.state);
+    		if ("inputs" in $$props) $$invalidate(3, inputs = $$props.inputs);
+    		if ("state" in $$props) $$invalidate(4, state = $$props.state);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -2860,7 +2844,6 @@ var app = (function () {
     		canvas,
     		updateScoreboard,
     		socket,
-    		username,
     		inputs,
     		state,
     		scoreboard_updateScoreboard_binding,
@@ -2874,11 +2857,10 @@ var app = (function () {
 
     		init(this, options, instance$3, create_fragment$3, safe_not_equal, {
     			socket: 2,
-    			username: 3,
     			canvas: 0,
     			updateScoreboard: 1,
-    			inputs: 4,
-    			state: 5
+    			inputs: 3,
+    			state: 4
     		});
 
     		dispatch_dev("SvelteRegisterComponent", {
@@ -2895,10 +2877,6 @@ var app = (function () {
     			console.warn("<Mobile> was created without expected prop 'socket'");
     		}
 
-    		if (/*username*/ ctx[3] === undefined && !("username" in props)) {
-    			console.warn("<Mobile> was created without expected prop 'username'");
-    		}
-
     		if (/*canvas*/ ctx[0] === undefined && !("canvas" in props)) {
     			console.warn("<Mobile> was created without expected prop 'canvas'");
     		}
@@ -2907,11 +2885,11 @@ var app = (function () {
     			console.warn("<Mobile> was created without expected prop 'updateScoreboard'");
     		}
 
-    		if (/*inputs*/ ctx[4] === undefined && !("inputs" in props)) {
+    		if (/*inputs*/ ctx[3] === undefined && !("inputs" in props)) {
     			console.warn("<Mobile> was created without expected prop 'inputs'");
     		}
 
-    		if (/*state*/ ctx[5] === undefined && !("state" in props)) {
+    		if (/*state*/ ctx[4] === undefined && !("state" in props)) {
     			console.warn("<Mobile> was created without expected prop 'state'");
     		}
     	}
@@ -2921,14 +2899,6 @@ var app = (function () {
     	}
 
     	set socket(value) {
-    		throw new Error("<Mobile>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get username() {
-    		throw new Error("<Mobile>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set username(value) {
     		throw new Error("<Mobile>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
@@ -2962,6 +2932,322 @@ var app = (function () {
 
     	set state(value) {
     		throw new Error("<Mobile>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    function activateDesktopSupport(moveJoystick, moveAim, playerData, canvas) {
+        // AIMING STUFF //
+        document.onmousedown =
+            document.onmouseup =
+                document.onmousemove =
+                    triggerAim;
+        function triggerAim(e) {
+            const my = e.offsetY;
+            const mx = e.offsetX;
+            const H = canvas.height;
+            const W = canvas.width;
+            const y = playerData.data.y;
+            const x = playerData.data.x;
+            const dy = my - H * y;
+            const dx = mx - W * x;
+            const angle = Math.atan2(dy, dx);
+            const isPressing = e.buttons === 1;
+            moveAim(angle, isPressing);
+        }
+        // END AIMING STUFF //
+        // JOYSTICK STUFF //    
+        const DIRECTION_MAP = { arrowleft: 0, arrowup: 1, arrowright: 2, arrowdown: 3,
+            a: 0, w: 1, d: 2, s: 3
+        };
+        const DIRECTIONS = [[-1, 0], [0, -1], [1, 0], [0, 1]];
+        const PRESSING = [false, false, false, false];
+        document.onkeydown = e => {
+            const d = DIRECTION_MAP[e.key.toLowerCase()];
+            if (PRESSING[d])
+                return;
+            PRESSING[d] = true;
+            updateAim();
+        };
+        document.onkeyup = e => {
+            const d = DIRECTION_MAP[e.key.toLowerCase()];
+            PRESSING[d] = false;
+            updateAim();
+        };
+        function updateAim() {
+            const add = ([x1, y1], [x2, y2]) => [x1 + x2, y1 + y2];
+            const [x, y] = PRESSING.reduce((a, v, i) => v ? add(a, DIRECTIONS[i]) : a, [0, 0]);
+            const dist = Math.sqrt(x * x + y * y);
+            const normalizedX = x / dist || 0;
+            const normalizedY = y / dist || 0;
+            moveJoystick(normalizedX, normalizedY);
+        }
+        // END JOYSTICK STUFF //
+    }
+
+    /* src\game\views\GameClient\Desktop.svelte generated by Svelte v3.24.0 */
+    const file$1 = "src\\game\\views\\GameClient\\Desktop.svelte";
+
+    function create_fragment$2(ctx) {
+    	let scoreboard;
+    	let updating_updateScoreboard;
+    	let t0;
+    	let canvas_1;
+    	let t1;
+    	let div;
+    	let playermenu;
+    	let current;
+
+    	function scoreboard_updateScoreboard_binding(value) {
+    		/*scoreboard_updateScoreboard_binding*/ ctx[5].call(null, value);
+    	}
+
+    	let scoreboard_props = {};
+
+    	if (/*updateScoreboard*/ ctx[1] !== void 0) {
+    		scoreboard_props.updateScoreboard = /*updateScoreboard*/ ctx[1];
+    	}
+
+    	scoreboard = new Scoreboard({ props: scoreboard_props, $$inline: true });
+    	binding_callbacks.push(() => bind(scoreboard, "updateScoreboard", scoreboard_updateScoreboard_binding));
+
+    	playermenu = new PlayerMenu({
+    			props: { socket: /*socket*/ ctx[2] },
+    			$$inline: true
+    		});
+
+    	const block = {
+    		c: function create() {
+    			create_component(scoreboard.$$.fragment);
+    			t0 = space();
+    			canvas_1 = element("canvas");
+    			t1 = space();
+    			div = element("div");
+    			create_component(playermenu.$$.fragment);
+    			attr_dev(canvas_1, "class", "svelte-1nq23nq");
+    			add_location(canvas_1, file$1, 20, 0, 703);
+    			attr_dev(div, "class", "input-container svelte-1nq23nq");
+    			add_location(div, file$1, 22, 0, 735);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			mount_component(scoreboard, target, anchor);
+    			insert_dev(target, t0, anchor);
+    			insert_dev(target, canvas_1, anchor);
+    			/*canvas_1_binding*/ ctx[6](canvas_1);
+    			insert_dev(target, t1, anchor);
+    			insert_dev(target, div, anchor);
+    			mount_component(playermenu, div, null);
+    			current = true;
+    		},
+    		p: function update(ctx, [dirty]) {
+    			const scoreboard_changes = {};
+
+    			if (!updating_updateScoreboard && dirty & /*updateScoreboard*/ 2) {
+    				updating_updateScoreboard = true;
+    				scoreboard_changes.updateScoreboard = /*updateScoreboard*/ ctx[1];
+    				add_flush_callback(() => updating_updateScoreboard = false);
+    			}
+
+    			scoreboard.$set(scoreboard_changes);
+    			const playermenu_changes = {};
+    			if (dirty & /*socket*/ 4) playermenu_changes.socket = /*socket*/ ctx[2];
+    			playermenu.$set(playermenu_changes);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(scoreboard.$$.fragment, local);
+    			transition_in(playermenu.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(scoreboard.$$.fragment, local);
+    			transition_out(playermenu.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			destroy_component(scoreboard, detaching);
+    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(canvas_1);
+    			/*canvas_1_binding*/ ctx[6](null);
+    			if (detaching) detach_dev(t1);
+    			if (detaching) detach_dev(div);
+    			destroy_component(playermenu);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$2.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$2($$self, $$props, $$invalidate) {
+    	
+    	
+    	let { socket } = $$props;
+    	let { canvas } = $$props;
+    	let { updateScoreboard } = $$props;
+    	let { inputs } = $$props;
+    	let { state } = $$props;
+
+    	onMount(() => {
+    		runClient({ inputs, canvas, updateScoreboard }, state, socket);
+    		activateDesktopSupport(inputs.moveJoystick.bind(inputs), inputs.adjustAim.bind(inputs), state.players[state.myPlayer.name], canvas);
+    	});
+
+    	const writable_props = ["socket", "canvas", "updateScoreboard", "inputs", "state"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Desktop> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("Desktop", $$slots, []);
+
+    	function scoreboard_updateScoreboard_binding(value) {
+    		updateScoreboard = value;
+    		$$invalidate(1, updateScoreboard);
+    	}
+
+    	function canvas_1_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			canvas = $$value;
+    			$$invalidate(0, canvas);
+    		});
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("socket" in $$props) $$invalidate(2, socket = $$props.socket);
+    		if ("canvas" in $$props) $$invalidate(0, canvas = $$props.canvas);
+    		if ("updateScoreboard" in $$props) $$invalidate(1, updateScoreboard = $$props.updateScoreboard);
+    		if ("inputs" in $$props) $$invalidate(3, inputs = $$props.inputs);
+    		if ("state" in $$props) $$invalidate(4, state = $$props.state);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		Scoreboard,
+    		PlayerMenu,
+    		onMount,
+    		runClient,
+    		activateDesktopSupport,
+    		socket,
+    		canvas,
+    		updateScoreboard,
+    		inputs,
+    		state
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("socket" in $$props) $$invalidate(2, socket = $$props.socket);
+    		if ("canvas" in $$props) $$invalidate(0, canvas = $$props.canvas);
+    		if ("updateScoreboard" in $$props) $$invalidate(1, updateScoreboard = $$props.updateScoreboard);
+    		if ("inputs" in $$props) $$invalidate(3, inputs = $$props.inputs);
+    		if ("state" in $$props) $$invalidate(4, state = $$props.state);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [
+    		canvas,
+    		updateScoreboard,
+    		socket,
+    		inputs,
+    		state,
+    		scoreboard_updateScoreboard_binding,
+    		canvas_1_binding
+    	];
+    }
+
+    class Desktop extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
+    			socket: 2,
+    			canvas: 0,
+    			updateScoreboard: 1,
+    			inputs: 3,
+    			state: 4
+    		});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Desktop",
+    			options,
+    			id: create_fragment$2.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*socket*/ ctx[2] === undefined && !("socket" in props)) {
+    			console.warn("<Desktop> was created without expected prop 'socket'");
+    		}
+
+    		if (/*canvas*/ ctx[0] === undefined && !("canvas" in props)) {
+    			console.warn("<Desktop> was created without expected prop 'canvas'");
+    		}
+
+    		if (/*updateScoreboard*/ ctx[1] === undefined && !("updateScoreboard" in props)) {
+    			console.warn("<Desktop> was created without expected prop 'updateScoreboard'");
+    		}
+
+    		if (/*inputs*/ ctx[3] === undefined && !("inputs" in props)) {
+    			console.warn("<Desktop> was created without expected prop 'inputs'");
+    		}
+
+    		if (/*state*/ ctx[4] === undefined && !("state" in props)) {
+    			console.warn("<Desktop> was created without expected prop 'state'");
+    		}
+    	}
+
+    	get socket() {
+    		throw new Error("<Desktop>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set socket(value) {
+    		throw new Error("<Desktop>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get canvas() {
+    		throw new Error("<Desktop>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set canvas(value) {
+    		throw new Error("<Desktop>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get updateScoreboard() {
+    		throw new Error("<Desktop>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set updateScoreboard(value) {
+    		throw new Error("<Desktop>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get inputs() {
+    		throw new Error("<Desktop>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set inputs(value) {
+    		throw new Error("<Desktop>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get state() {
+    		throw new Error("<Desktop>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set state(value) {
+    		throw new Error("<Desktop>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
 
@@ -3244,354 +3530,9 @@ var app = (function () {
     }
     Object.assign(window, { startBot, endBot });
 
-    function activateDesktopSupport(moveJoystick, moveAim, playerData, canvas) {
-        // AIMING STUFF //
-        document.onmousedown =
-            document.onmouseup =
-                document.onmousemove =
-                    triggerAim;
-        function triggerAim(e) {
-            const my = e.offsetY;
-            const mx = e.offsetX;
-            const H = canvas.height;
-            const W = canvas.width;
-            const y = playerData.data.y;
-            const x = playerData.data.x;
-            const dy = my - H * y;
-            const dx = mx - W * x;
-            const angle = Math.atan2(dy, dx);
-            const isPressing = e.buttons === 1;
-            moveAim(angle, isPressing);
-        }
-        // END AIMING STUFF //
-        // JOYSTICK STUFF //    
-        const DIRECTION_MAP = { arrowleft: 0, arrowup: 1, arrowright: 2, arrowdown: 3,
-            a: 0, w: 1, d: 2, s: 3
-        };
-        const DIRECTIONS = [[-1, 0], [0, -1], [1, 0], [0, 1]];
-        const PRESSING = [false, false, false, false];
-        document.onkeydown = e => {
-            const d = DIRECTION_MAP[e.key.toLowerCase()];
-            if (PRESSING[d])
-                return;
-            PRESSING[d] = true;
-            updateAim();
-        };
-        document.onkeyup = e => {
-            const d = DIRECTION_MAP[e.key.toLowerCase()];
-            PRESSING[d] = false;
-            updateAim();
-        };
-        function updateAim() {
-            const add = ([x1, y1], [x2, y2]) => [x1 + x2, y1 + y2];
-            const [x, y] = PRESSING.reduce((a, v, i) => v ? add(a, DIRECTIONS[i]) : a, [0, 0]);
-            const dist = Math.sqrt(x * x + y * y);
-            const normalizedX = x / dist || 0;
-            const normalizedY = y / dist || 0;
-            moveJoystick(normalizedX, normalizedY);
-        }
-        // END JOYSTICK STUFF //
-    }
-
-    /* src\game\views\GameClient\Desktop.svelte generated by Svelte v3.24.0 */
-    const file$1 = "src\\game\\views\\GameClient\\Desktop.svelte";
-
-    function create_fragment$2(ctx) {
-    	let center;
-    	let t0;
-    	let t1;
-    	let scoreboard;
-    	let updating_updateScoreboard;
-    	let t2;
-    	let canvas_1;
-    	let t3;
-    	let div;
-    	let playermenu;
-    	let current;
-
-    	function scoreboard_updateScoreboard_binding(value) {
-    		/*scoreboard_updateScoreboard_binding*/ ctx[6].call(null, value);
-    	}
-
-    	let scoreboard_props = {};
-
-    	if (/*updateScoreboard*/ ctx[1] !== void 0) {
-    		scoreboard_props.updateScoreboard = /*updateScoreboard*/ ctx[1];
-    	}
-
-    	scoreboard = new Scoreboard({ props: scoreboard_props, $$inline: true });
-    	binding_callbacks.push(() => bind(scoreboard, "updateScoreboard", scoreboard_updateScoreboard_binding));
-
-    	playermenu = new PlayerMenu({
-    			props: { socket: /*socket*/ ctx[2] },
-    			$$inline: true
-    		});
-
-    	const block = {
-    		c: function create() {
-    			center = element("center");
-    			t0 = text(/*username*/ ctx[3]);
-    			t1 = space();
-    			create_component(scoreboard.$$.fragment);
-    			t2 = space();
-    			canvas_1 = element("canvas");
-    			t3 = space();
-    			div = element("div");
-    			create_component(playermenu.$$.fragment);
-    			attr_dev(canvas_1, "class", "svelte-w51t2q");
-    			add_location(canvas_1, file$1, 23, 4, 744);
-    			attr_dev(center, "class", "svelte-w51t2q");
-    			add_location(center, file$1, 21, 0, 679);
-    			attr_dev(div, "class", "input-container svelte-w51t2q");
-    			add_location(div, file$1, 26, 0, 787);
-    		},
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, center, anchor);
-    			append_dev(center, t0);
-    			append_dev(center, t1);
-    			mount_component(scoreboard, center, null);
-    			append_dev(center, t2);
-    			append_dev(center, canvas_1);
-    			/*canvas_1_binding*/ ctx[7](canvas_1);
-    			insert_dev(target, t3, anchor);
-    			insert_dev(target, div, anchor);
-    			mount_component(playermenu, div, null);
-    			current = true;
-    		},
-    		p: function update(ctx, [dirty]) {
-    			if (!current || dirty & /*username*/ 8) set_data_dev(t0, /*username*/ ctx[3]);
-    			const scoreboard_changes = {};
-
-    			if (!updating_updateScoreboard && dirty & /*updateScoreboard*/ 2) {
-    				updating_updateScoreboard = true;
-    				scoreboard_changes.updateScoreboard = /*updateScoreboard*/ ctx[1];
-    				add_flush_callback(() => updating_updateScoreboard = false);
-    			}
-
-    			scoreboard.$set(scoreboard_changes);
-    			const playermenu_changes = {};
-    			if (dirty & /*socket*/ 4) playermenu_changes.socket = /*socket*/ ctx[2];
-    			playermenu.$set(playermenu_changes);
-    		},
-    		i: function intro(local) {
-    			if (current) return;
-    			transition_in(scoreboard.$$.fragment, local);
-    			transition_in(playermenu.$$.fragment, local);
-    			current = true;
-    		},
-    		o: function outro(local) {
-    			transition_out(scoreboard.$$.fragment, local);
-    			transition_out(playermenu.$$.fragment, local);
-    			current = false;
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(center);
-    			destroy_component(scoreboard);
-    			/*canvas_1_binding*/ ctx[7](null);
-    			if (detaching) detach_dev(t3);
-    			if (detaching) detach_dev(div);
-    			destroy_component(playermenu);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_fragment$2.name,
-    		type: "component",
-    		source: "",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    function instance$2($$self, $$props, $$invalidate) {
-    	
-    	
-    	let { socket } = $$props;
-    	let { username } = $$props;
-    	let { canvas } = $$props;
-    	let { updateScoreboard } = $$props;
-    	let { inputs } = $$props;
-    	let { state } = $$props;
-
-    	onMount(() => {
-    		runClient({ inputs, canvas, updateScoreboard }, state, socket);
-    		activateDesktopSupport(inputs.moveJoystick.bind(inputs), inputs.adjustAim.bind(inputs), state.players[username], canvas);
-    	});
-
-    	const writable_props = ["socket", "username", "canvas", "updateScoreboard", "inputs", "state"];
-
-    	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Desktop> was created with unknown prop '${key}'`);
-    	});
-
-    	let { $$slots = {}, $$scope } = $$props;
-    	validate_slots("Desktop", $$slots, []);
-
-    	function scoreboard_updateScoreboard_binding(value) {
-    		updateScoreboard = value;
-    		$$invalidate(1, updateScoreboard);
-    	}
-
-    	function canvas_1_binding($$value) {
-    		binding_callbacks[$$value ? "unshift" : "push"](() => {
-    			canvas = $$value;
-    			$$invalidate(0, canvas);
-    		});
-    	}
-
-    	$$self.$set = $$props => {
-    		if ("socket" in $$props) $$invalidate(2, socket = $$props.socket);
-    		if ("username" in $$props) $$invalidate(3, username = $$props.username);
-    		if ("canvas" in $$props) $$invalidate(0, canvas = $$props.canvas);
-    		if ("updateScoreboard" in $$props) $$invalidate(1, updateScoreboard = $$props.updateScoreboard);
-    		if ("inputs" in $$props) $$invalidate(4, inputs = $$props.inputs);
-    		if ("state" in $$props) $$invalidate(5, state = $$props.state);
-    	};
-
-    	$$self.$capture_state = () => ({
-    		Scoreboard,
-    		PlayerMenu,
-    		onMount,
-    		runClient,
-    		activateDesktopSupport,
-    		socket,
-    		username,
-    		canvas,
-    		updateScoreboard,
-    		inputs,
-    		state
-    	});
-
-    	$$self.$inject_state = $$props => {
-    		if ("socket" in $$props) $$invalidate(2, socket = $$props.socket);
-    		if ("username" in $$props) $$invalidate(3, username = $$props.username);
-    		if ("canvas" in $$props) $$invalidate(0, canvas = $$props.canvas);
-    		if ("updateScoreboard" in $$props) $$invalidate(1, updateScoreboard = $$props.updateScoreboard);
-    		if ("inputs" in $$props) $$invalidate(4, inputs = $$props.inputs);
-    		if ("state" in $$props) $$invalidate(5, state = $$props.state);
-    	};
-
-    	if ($$props && "$$inject" in $$props) {
-    		$$self.$inject_state($$props.$$inject);
-    	}
-
-    	return [
-    		canvas,
-    		updateScoreboard,
-    		socket,
-    		username,
-    		inputs,
-    		state,
-    		scoreboard_updateScoreboard_binding,
-    		canvas_1_binding
-    	];
-    }
-
-    class Desktop extends SvelteComponentDev {
-    	constructor(options) {
-    		super(options);
-
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
-    			socket: 2,
-    			username: 3,
-    			canvas: 0,
-    			updateScoreboard: 1,
-    			inputs: 4,
-    			state: 5
-    		});
-
-    		dispatch_dev("SvelteRegisterComponent", {
-    			component: this,
-    			tagName: "Desktop",
-    			options,
-    			id: create_fragment$2.name
-    		});
-
-    		const { ctx } = this.$$;
-    		const props = options.props || {};
-
-    		if (/*socket*/ ctx[2] === undefined && !("socket" in props)) {
-    			console.warn("<Desktop> was created without expected prop 'socket'");
-    		}
-
-    		if (/*username*/ ctx[3] === undefined && !("username" in props)) {
-    			console.warn("<Desktop> was created without expected prop 'username'");
-    		}
-
-    		if (/*canvas*/ ctx[0] === undefined && !("canvas" in props)) {
-    			console.warn("<Desktop> was created without expected prop 'canvas'");
-    		}
-
-    		if (/*updateScoreboard*/ ctx[1] === undefined && !("updateScoreboard" in props)) {
-    			console.warn("<Desktop> was created without expected prop 'updateScoreboard'");
-    		}
-
-    		if (/*inputs*/ ctx[4] === undefined && !("inputs" in props)) {
-    			console.warn("<Desktop> was created without expected prop 'inputs'");
-    		}
-
-    		if (/*state*/ ctx[5] === undefined && !("state" in props)) {
-    			console.warn("<Desktop> was created without expected prop 'state'");
-    		}
-    	}
-
-    	get socket() {
-    		throw new Error("<Desktop>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set socket(value) {
-    		throw new Error("<Desktop>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get username() {
-    		throw new Error("<Desktop>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set username(value) {
-    		throw new Error("<Desktop>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get canvas() {
-    		throw new Error("<Desktop>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set canvas(value) {
-    		throw new Error("<Desktop>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get updateScoreboard() {
-    		throw new Error("<Desktop>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set updateScoreboard(value) {
-    		throw new Error("<Desktop>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get inputs() {
-    		throw new Error("<Desktop>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set inputs(value) {
-    		throw new Error("<Desktop>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get state() {
-    		throw new Error("<Desktop>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set state(value) {
-    		throw new Error("<Desktop>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-    }
-
     /* src\game\views\GameClient\GameClient.svelte generated by Svelte v3.24.0 */
 
-    // (42:0) {:else}
+    // (21:0) {:else}
     function create_else_block$1(ctx) {
     	let desktop;
     	let current;
@@ -3599,11 +3540,10 @@ var app = (function () {
     	desktop = new Desktop({
     			props: {
     				socket: /*socket*/ ctx[0],
-    				canvas: /*canvas*/ ctx[3],
-    				username: /*username*/ ctx[1],
-    				inputs: /*inputs*/ ctx[6],
-    				updateScoreboard: /*updateScoreboard*/ ctx[4],
-    				state: /*state*/ ctx[5]
+    				canvas: /*canvas*/ ctx[2],
+    				inputs: /*inputs*/ ctx[5],
+    				updateScoreboard: /*updateScoreboard*/ ctx[3],
+    				state: /*state*/ ctx[4]
     			},
     			$$inline: true
     		});
@@ -3619,7 +3559,6 @@ var app = (function () {
     		p: function update(ctx, dirty) {
     			const desktop_changes = {};
     			if (dirty & /*socket*/ 1) desktop_changes.socket = /*socket*/ ctx[0];
-    			if (dirty & /*username*/ 2) desktop_changes.username = /*username*/ ctx[1];
     			desktop.$set(desktop_changes);
     		},
     		i: function intro(local) {
@@ -3640,14 +3579,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(42:0) {:else}",
+    		source: "(21:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (40:0) {#if isMobile}
+    // (19:0) {#if isMobile}
     function create_if_block$1(ctx) {
     	let mobile;
     	let current;
@@ -3655,11 +3594,10 @@ var app = (function () {
     	mobile = new Mobile({
     			props: {
     				socket: /*socket*/ ctx[0],
-    				canvas: /*canvas*/ ctx[3],
-    				username: /*username*/ ctx[1],
-    				inputs: /*inputs*/ ctx[6],
-    				updateScoreboard: /*updateScoreboard*/ ctx[4],
-    				state: /*state*/ ctx[5]
+    				canvas: /*canvas*/ ctx[2],
+    				inputs: /*inputs*/ ctx[5],
+    				updateScoreboard: /*updateScoreboard*/ ctx[3],
+    				state: /*state*/ ctx[4]
     			},
     			$$inline: true
     		});
@@ -3675,7 +3613,6 @@ var app = (function () {
     		p: function update(ctx, dirty) {
     			const mobile_changes = {};
     			if (dirty & /*socket*/ 1) mobile_changes.socket = /*socket*/ ctx[0];
-    			if (dirty & /*username*/ 2) mobile_changes.username = /*username*/ ctx[1];
     			mobile.$set(mobile_changes);
     		},
     		i: function intro(local) {
@@ -3696,7 +3633,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(40:0) {#if isMobile}",
+    		source: "(19:0) {#if isMobile}",
     		ctx
     	});
 
@@ -3712,7 +3649,7 @@ var app = (function () {
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
-    		if (/*isMobile*/ ctx[2]) return 0;
+    		if (/*isMobile*/ ctx[1]) return 0;
     		return 1;
     	}
 
@@ -3803,16 +3740,16 @@ var app = (function () {
 
     	$$self.$set = $$props => {
     		if ("socket" in $$props) $$invalidate(0, socket = $$props.socket);
-    		if ("username" in $$props) $$invalidate(1, username = $$props.username);
-    		if ("isMobile" in $$props) $$invalidate(2, isMobile = $$props.isMobile);
+    		if ("username" in $$props) $$invalidate(6, username = $$props.username);
+    		if ("isMobile" in $$props) $$invalidate(1, isMobile = $$props.isMobile);
     	};
 
     	$$self.$capture_state = () => ({
     		Mobile,
+    		Desktop,
     		ClientState,
     		NETWORK_LATENCY,
     		InputProcessor,
-    		Desktop,
     		socket,
     		username,
     		isMobile,
@@ -3824,23 +3761,23 @@ var app = (function () {
 
     	$$self.$inject_state = $$props => {
     		if ("socket" in $$props) $$invalidate(0, socket = $$props.socket);
-    		if ("username" in $$props) $$invalidate(1, username = $$props.username);
-    		if ("isMobile" in $$props) $$invalidate(2, isMobile = $$props.isMobile);
-    		if ("canvas" in $$props) $$invalidate(3, canvas = $$props.canvas);
-    		if ("updateScoreboard" in $$props) $$invalidate(4, updateScoreboard = $$props.updateScoreboard);
+    		if ("username" in $$props) $$invalidate(6, username = $$props.username);
+    		if ("isMobile" in $$props) $$invalidate(1, isMobile = $$props.isMobile);
+    		if ("canvas" in $$props) $$invalidate(2, canvas = $$props.canvas);
+    		if ("updateScoreboard" in $$props) $$invalidate(3, updateScoreboard = $$props.updateScoreboard);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [socket, username, isMobile, canvas, updateScoreboard, state, inputs];
+    	return [socket, isMobile, canvas, updateScoreboard, state, inputs, username];
     }
 
     class GameClient extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { socket: 0, username: 1, isMobile: 2 });
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { socket: 0, username: 6, isMobile: 1 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -3856,11 +3793,11 @@ var app = (function () {
     			console.warn("<GameClient> was created without expected prop 'socket'");
     		}
 
-    		if (/*username*/ ctx[1] === undefined && !("username" in props)) {
+    		if (/*username*/ ctx[6] === undefined && !("username" in props)) {
     			console.warn("<GameClient> was created without expected prop 'username'");
     		}
 
-    		if (/*isMobile*/ ctx[2] === undefined && !("isMobile" in props)) {
+    		if (/*isMobile*/ ctx[1] === undefined && !("isMobile" in props)) {
     			console.warn("<GameClient> was created without expected prop 'isMobile'");
     		}
     	}

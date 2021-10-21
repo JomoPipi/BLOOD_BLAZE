@@ -1,11 +1,11 @@
 
 <script lang="typescript">
     import Mobile from './Mobile.svelte'
+    import Desktop from './Desktop.svelte'
     import { ClientState } from '../../ClientState'
     import { NETWORK_LATENCY } from "../../NETWORK_LATENCY"
     import { InputProcessor } from "../../InputProcessor"
 	import '../../../bots/A'
-import Desktop from './Desktop.svelte';
     export let socket : ClientSocket
     export let username : string
     export let isMobile : boolean
@@ -17,35 +17,11 @@ import Desktop from './Desktop.svelte';
     
     const state = new ClientState(username)
     const inputs = new InputProcessor(state, socket)
-
-    // onMount(() => {
-    //     runClient({ inputs, canvas, updateScoreboard }, state, socket)
-    
-    //     if (!isMobile)
-    //     {
-    //         activateDesktopSupport(
-    //             inputs.moveJoystick.bind(inputs),
-    //             inputs.adjustAim.bind(inputs),
-    //             state.players[username]!,
-    //             canvas)
-    //     }
-    // })
-    
 </script>
 
 
-<!-- <center>{username}
-    <Scoreboard bind:updateScoreboard/>
-    <canvas bind:this={canvas}/>
-</center> -->
-
-<!-- <div class="input-container">
-    <Joystick callback={inputs.moveJoystick.bind(inputs)}/>
-    <PlayerMenu {socket}/>
-    <DirectionPad callback={inputs.adjustAim.bind(inputs)}/>
-</div> -->
 {#if isMobile}
-    <Mobile {socket} {canvas} {username} {inputs} {updateScoreboard} {state} />
+    <Mobile {socket} {canvas} {inputs} {updateScoreboard} {state} />
 {:else}
-    <Desktop {socket} {canvas} {username} {inputs} {updateScoreboard} {state} />
+    <Desktop {socket} {canvas} {inputs} {updateScoreboard} {state} />
 {/if}

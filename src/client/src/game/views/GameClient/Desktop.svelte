@@ -9,7 +9,6 @@
     import { activateDesktopSupport } from '../../activateDesktopSupport';
             
     export let socket : ClientSocket
-    export let username : string
     export let canvas : HTMLCanvasElement
     export let updateScoreboard : (a : any) => void
     export let inputs : InputProcessor
@@ -21,16 +20,13 @@
         activateDesktopSupport(
             inputs.moveJoystick.bind(inputs),
             inputs.adjustAim.bind(inputs),
-            state.players[username]!,
+            state.players[state.myPlayer.name]!,
             canvas)
     })
 </script>
 
-
-<center>{username}
-    <Scoreboard bind:updateScoreboard/>
-    <canvas bind:this={canvas}/>
-</center>
+<Scoreboard bind:updateScoreboard/>
+<canvas bind:this={canvas}/>
 
 <div class="input-container">
     <PlayerMenu {socket}/>
@@ -41,9 +37,6 @@
     canvas {
         background: rgb(255, 255, 255);
         filter: invert(1);
-    }
-    center {
-        color: white;
     }
     .input-container {
         display: flex;

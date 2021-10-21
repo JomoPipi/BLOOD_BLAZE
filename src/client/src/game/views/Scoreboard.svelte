@@ -12,8 +12,7 @@
         newScores => {
             scores = newScores
         }
-
-
+        
 </script>
 
 <div>
@@ -27,18 +26,8 @@
 </div>
 
 <style lang="scss">
-    // h3 {
-    //     -webkit-text-stroke: 1px black;
-    //     text-shadow: 
-    //     black 1px 1px, black 1px -1px, black -1px -1px, black -1px 1px;
-    //     color: white;
-    // }
-
     div {
-        width: calc(100% - 1em);
-        position: absolute;
-        padding: .5em;
-        bottom: .5em;
+        overflow: auto;
+        white-space: nowrap;
     }
 </style>
-<!-- <div class="scoreboard" bind:this={scoreboard}></div> -->
