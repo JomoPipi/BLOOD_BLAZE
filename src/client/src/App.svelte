@@ -2,7 +2,8 @@
 <script lang="ts">
 	export let blaze : string
 	import Title from './game/views/Title/Title.svelte'
-	import GameClient from './game/views/GameClient.svelte'
+	import GameClient from './game/views/GameClient/GameClient.svelte'
+	
 
 	// @ts-ignore
 	const socket = io({transports: ['websocket'], upgrade: false})

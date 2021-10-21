@@ -5,13 +5,15 @@ import type { Player } from "./Player"
 import { SoundEngine } from "./SoundEngine"
 // import { CONSTANTS } from "../../../shared/constants"
 
-const PLAYER_RADIUS = CONSTANTS.PLAYER_RADIUS * window.innerWidth
 export class GameRenderer {
-
     private readonly canvas
     private readonly ctx
     private readonly state
     private lastTimeGettingShot = -1
+
+    private get playerRadius() {
+        return CONSTANTS.PLAYER_RADIUS * this.state.width
+    }
 
     constructor(canvas : HTMLCanvasElement, state : ClientState) {
         this.canvas = canvas
@@ -166,7 +168,7 @@ export class GameRenderer {
         this.ctx.strokeStyle =
             p.isImmune ? `rgb(255,255,${B})` :
             isGettingShot ? `rgb(255,${R},${R})` : color
-        this.circle(x, y, PLAYER_RADIUS, !isGettingShot && !p.isImmune)
+        this.circle(x, y, this.playerRadius, !isGettingShot && !p.isImmune)
 
         // Draw Special Effects
         if (p.name === this.state.myPlayer.name && isGettingShot)
@@ -185,10 +187,10 @@ export class GameRenderer {
         const dy = Math.sin(p.angle)
         const barrel = 1.8
         const [x1, y1, x2, y2] = 
-            [ x + PLAYER_RADIUS * dx
-            , y + PLAYER_RADIUS * dy
-            , x + PLAYER_RADIUS * dx * barrel
-            , y + PLAYER_RADIUS * dy * barrel
+            [ x + this.playerRadius * dx
+            , y + this.playerRadius * dy
+            , x + this.playerRadius * dx * barrel
+            , y + this.playerRadius * dy * barrel
             ]
         this.ctx.lineWidth = 6
         this.line(x1,y1,x2,y2)

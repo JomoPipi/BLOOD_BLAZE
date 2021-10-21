@@ -1,0 +1,13 @@
+- Todo -
+1. leaderboard icons to distinguish mobile vs desktop players
+2. fix desktop shooting lag
+
+Optional accessibility:
+1. Colorblind mode
+2. Omit Trauma
+
+- Big ideas -
+1. mandala skins attributed to different builds
+
+
+// REALLY IMPLEMENT DESKTOP MODE!!

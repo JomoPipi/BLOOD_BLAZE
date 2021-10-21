@@ -7,7 +7,12 @@ export function activateDesktopSupport(
     ) {
 
     // AIMING STUFF //
-    document.onmousemove = e => {
+    document.onmousedown =
+    document.onmouseup =
+    document.onmousemove =
+        triggerAim
+
+    function triggerAim(e : MouseEvent) {
         const my = e.offsetY
         const mx = e.offsetX
         const H = canvas.height
@@ -20,6 +25,7 @@ export function activateDesktopSupport(
         const isPressing = e.buttons === 1
         moveAim(angle, isPressing)
     }
+
     // END AIMING STUFF //
 
     // JOYSTICK STUFF //    
