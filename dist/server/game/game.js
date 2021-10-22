@@ -163,8 +163,10 @@ export class Game {
                     // Damage Transaction
                     const h = CONSTANTS.PLAYER_BASE_HEALTH;
                     if (--player.data.health <= 0) {
-                        offender && (offender.data.score += Math.ceil(player.data.score / 8.0),
-                            offender.data.health = Math.min(h, offender.data.health + h / 2));
+                        offender && (
+                        // Give the offender some points and health
+                        offender.data.score += Math.ceil(player.data.score / 4.0),
+                            offender.data.health = Math.min(h, offender.data.health + h * .75));
                         this.kill(player, now);
                     }
                     this.deletedBullets[bullet.id] = true;
@@ -185,7 +187,7 @@ export class Game {
         return message;
     }
     kill(p, now) {
-        p.data.score = Math.floor(p.data.score / 2);
+        p.data.score = Math.floor(p.data.score * 2.0 / 3.0);
         p.data.x = p.data.y = 0.5;
         p.data.health = CONSTANTS.PLAYER_BASE_HEALTH;
         p.data.isImmune = true;

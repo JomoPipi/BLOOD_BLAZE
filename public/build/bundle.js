@@ -2692,9 +2692,9 @@ var app = (function () {
     			t3 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(canvas_1, "class", "svelte-1nq23nq");
-    			add_location(canvas_1, file$2, 21, 4, 626);
+    			add_location(canvas_1, file$2, 53, 4, 1727);
     			attr_dev(div, "class", "input-container svelte-1nq23nq");
-    			add_location(div, file$2, 23, 0, 658);
+    			add_location(div, file$2, 55, 0, 1759);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2783,7 +2783,38 @@ var app = (function () {
 
     	onMount(() => {
     		runClient({ inputs, canvas, updateScoreboard }, state, socket);
-    	});
+    		const playerData = state.players[state.myPlayer.name];
+    		const moveAim = inputs.adjustAim.bind(inputs);
+
+    		// AIMING STUFF //
+    		$$invalidate(0, canvas.ontouchstart = document.ontouchend = document.ontouchmove = triggerAim, canvas);
+
+    		let lastAngle = 0;
+    		let active = false;
+
+    		function triggerAim(e) {
+    			if (e.type !== "touchstart" && !active) return;
+
+    			if (e.type === "touchend") {
+    				active = false;
+    				moveAim(lastAngle, false);
+    				return;
+    			}
+
+    			if (e.type === "touchstart") active = true;
+    			const { top, left } = canvas.getBoundingClientRect();
+    			const my = e.touches[0].clientY - top;
+    			const mx = e.touches[0].clientX - left;
+    			const H = canvas.height;
+    			const W = canvas.width;
+    			const y = playerData.data.y;
+    			const x = playerData.data.x;
+    			const dy = my - H * y;
+    			const dx = mx - W * x;
+    			const angle = lastAngle = Math.atan2(dy, dx);
+    			moveAim(angle, true);
+    		}
+    	}); // END AIMING STUFF //
 
     	const writable_props = ["socket", "canvas", "updateScoreboard", "inputs", "state"];
 

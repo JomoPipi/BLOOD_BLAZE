@@ -203,13 +203,15 @@ export class Game {
                     // Add a point to the shooter for landing a hit
                     const offender = this.getPlayerByName[shooter]
                     offender && offender.data.score++
+                    
                     // Damage Transaction
                     const h = CONSTANTS.PLAYER_BASE_HEALTH
                     if (--player.data.health <= 0)
                     {
                         offender && (
-                            offender.data.score += Math.ceil(player.data.score / 8.0),
-                            offender.data.health = Math.min(h, offender.data.health + h/2)
+                            // Give the offender some points and health
+                            offender.data.score += Math.ceil(player.data.score / 4.0),
+                            offender.data.health = Math.min(h, offender.data.health + h * .75)
                             )
                         this.kill(player, now)
                     }
@@ -235,7 +237,7 @@ export class Game {
     }
 
     private kill(p : Player, now : number) {
-        p.data.score = Math.floor(p.data.score / 2)
+        p.data.score = Math.floor(p.data.score * 2.0 / 3.0)
         p.data.x = p.data.y = 0.5
         p.data.health = CONSTANTS.PLAYER_BASE_HEALTH
         p.data.isImmune = true

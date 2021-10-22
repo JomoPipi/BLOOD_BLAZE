@@ -18,6 +18,41 @@
     
     onMount(() => {
         runClient({ inputs, canvas, updateScoreboard }, state, socket)
+
+        const playerData = state.players[state.myPlayer.name]!
+        const moveAim = inputs.adjustAim.bind(inputs)
+        
+        // AIMING STUFF //
+        canvas.ontouchstart =
+        document.ontouchend =
+        document.ontouchmove =
+            triggerAim
+
+        let lastAngle = 0
+        let active = false
+        function triggerAim(e : TouchEvent) {
+            if (e.type !== 'touchstart' && !active) return;
+            if (e.type === 'touchend')
+            {
+                active = false
+                moveAim(lastAngle, false)
+                return;
+            }
+            if (e.type === 'touchstart') active = true
+            const { top, left } = canvas.getBoundingClientRect()
+            const my = e.touches[0]!.clientY - top
+            const mx = e.touches[0]!.clientX - left
+            const H = canvas.height
+            const W = canvas.width
+            const y = playerData.data.y
+            const x = playerData.data.x
+            const dy = my - H * y
+            const dx = mx - W * x
+            const angle = lastAngle = Math.atan2(dy, dx)
+            moveAim(angle, true)
+        }
+        // END AIMING STUFF //
+
     })
 </script>
 
