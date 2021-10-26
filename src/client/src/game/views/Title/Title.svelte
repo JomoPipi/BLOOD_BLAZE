@@ -74,7 +74,7 @@
 				bind:this={nameInput}
 				on:keyup={sanitizeText}/>
 			<button> GO </button>
-			<h3> last update - 10/14/2021 </h3>
+			<h3> last update - 10/26/2021 </h3>
 		</form>
 	</div>
 	<bloodblaze/>
@@ -185,8 +185,8 @@
 		border-radius: 5px;
 		background: radial-gradient(rgb(85, 72, 0),rgb(29, 0, 0));
 		color: rgb(252, 198, 82);
-		width: 50px;
-
+		width: 60px;
+		text-align: center;
 	}
 	bloodblaze {
 		z-index: -1;

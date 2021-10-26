@@ -611,32 +611,32 @@ var app = (function () {
     			button.textContent = "GO";
     			t7 = space();
     			h3 = element("h3");
-    			h3.textContent = "last update - 10/14/2021";
+    			h3.textContent = "last update - 10/26/2021";
     			t9 = space();
     			bloodblaze = element("bloodblaze");
-    			attr_dev(span0, "class", "_1 svelte-13efgdb");
+    			attr_dev(span0, "class", "_1 svelte-1dyam05");
     			add_location(span0, file$a, 49, 2, 1411);
-    			attr_dev(span1, "class", "_2 svelte-13efgdb");
+    			attr_dev(span1, "class", "_2 svelte-1dyam05");
     			add_location(span1, file$a, 50, 2, 1447);
-    			attr_dev(h1, "class", "svelte-13efgdb");
+    			attr_dev(h1, "class", "svelte-1dyam05");
     			add_location(h1, file$a, 48, 1, 1402);
     			attr_dev(input, "autocomplete", "off");
     			attr_dev(input, "placeholder", "Enter a username...");
     			attr_dev(input, "pattern", "[A-Za-z0-9 _]*");
     			attr_dev(input, "maxlength", /*charLimit*/ ctx[3]);
-    			attr_dev(input, "class", "svelte-13efgdb");
+    			attr_dev(input, "class", "svelte-1dyam05");
     			add_location(input, file$a, 55, 3, 1582);
-    			attr_dev(button, "class", "svelte-13efgdb");
+    			attr_dev(button, "class", "svelte-1dyam05");
     			add_location(button, file$a, 61, 3, 1768);
-    			attr_dev(h3, "class", "svelte-13efgdb");
+    			attr_dev(h3, "class", "svelte-1dyam05");
     			add_location(h3, file$a, 62, 3, 1794);
     			attr_dev(form, "type", "text");
     			attr_dev(form, "action", "");
     			add_location(form, file$a, 54, 2, 1525);
     			add_location(div, file$a, 52, 1, 1491);
-    			attr_dev(bloodblaze, "class", "svelte-13efgdb");
+    			attr_dev(bloodblaze, "class", "svelte-1dyam05");
     			add_location(bloodblaze, file$a, 65, 1, 1852);
-    			attr_dev(main, "class", "svelte-13efgdb");
+    			attr_dev(main, "class", "svelte-1dyam05");
     			add_location(main, file$a, 47, 0, 1393);
     		},
     		l: function claim(nodes) {
@@ -2403,7 +2403,7 @@ var app = (function () {
                 });
             }
             if (DEV_SETTINGS.showIdealClientBullet) {
-                this.ctx.fillStyle = '#00f';
+                this.ctx.fillStyle = '#ffff00';
                 this.state.bullets = this.state.bullets.filter(b => {
                     if (b.data.shooter === this.state.myPlayer.name)
                         return false;
@@ -2439,7 +2439,7 @@ var app = (function () {
                     const traveled = distance(b.x, b.y, bx, by);
                     if (traveled >= b.expirationDistance)
                         return false;
-                    this.ctx.fillStyle = '#c0c';
+                    this.ctx.fillStyle = '#33ff33';
                     this.circle(x, y, 2);
                     // Hit debugger / Powerup
                     // this.ctx.fillStyle = 'red'
@@ -2458,10 +2458,10 @@ var app = (function () {
                 }
                 if (DEV_SETTINGS.showInterpolatedEnemyPositions) {
                     const data = CONSTANTS.INTERPOLATE_PLAYER_POSITION(p.data, now, p.interpolationBuffer);
-                    this.drawPlayer(data, now, 'blue');
+                    this.drawPlayer(data, now, '#ff9b00');
                 }
                 if (DEV_SETTINGS.showUninterpolatedEnemyPositions) {
-                    this.drawPlayer(p.data, now, 'red');
+                    this.drawPlayer(p.data, now, '#0FF');
                 }
             }
             if (DEV_SETTINGS.showServerPlayer) {
@@ -2476,14 +2476,14 @@ var app = (function () {
             //     }
             // }
             if (DEV_SETTINGS.showPredictedPlayer) {
-                this.drawPlayer(this.state.myPlayer.predictedPosition, now, '#730');
+                this.drawPlayer(this.state.myPlayer.predictedPosition, now, '#88ccff');
             }
             if (DEV_SETTINGS.showWhatOtherClientsPredict) {
                 const data = this.getExtrapolatedPlayer(this.state.players[this.state.myPlayer.name], msgDelta, renderDelta);
                 this.drawPlayer(data, now, 'cyan');
             }
         }
-        drawPlayer(p, now, color = '#037') {
+        drawPlayer(p, now, color = '#bba871') {
             const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height];
             const bloodCooldown = 255;
             const R = (now - p.lastTimeGettingShot);
@@ -2492,9 +2492,9 @@ var app = (function () {
             // Draw Body
             this.ctx.fillStyle =
                 this.ctx.strokeStyle =
-                    p.isImmune ? `rgb(255,255,${B})` :
-                        isGettingShot ? `rgb(255,${R},${R})` : color;
-            this.circle(x, y, this.playerRadius, !isGettingShot && !p.isImmune);
+                    p.isImmune ? `rgb(0,0,${B})` :
+                        isGettingShot ? `rgb(${R},0,0)` : color;
+            this.circle(x, y, this.playerRadius, !p.isImmune);
             // Draw Special Effects
             if (p.name === this.state.myPlayer.name && isGettingShot) {
                 if (p.lastTimeGettingShot !== this.lastTimeGettingShot) {
@@ -2517,21 +2517,21 @@ var app = (function () {
             this.line(x1, y1, x2, y2);
             this.ctx.lineWidth = 2;
             // Draw Username
-            this.ctx.fillStyle = '#40f';
+            this.ctx.fillStyle = '#bbff00';
             this.ctx.fillText(p.name, x - (p.name.length * 2), y - 21);
             // Draw Health
             const barWidth = 20;
             const a = barWidth / 2;
-            this.ctx.strokeStyle = 'cyan'; // 'red'
+            this.ctx.strokeStyle = '#ff0000';
             this.line(x - a, y - 16, x + a, y - 16);
-            this.ctx.strokeStyle = 'purple'; // 'green'
+            this.ctx.strokeStyle = '#00ff00';
             this.line(x - a, y - 16, x - a + (p.health / CONSTANTS.PLAYER_BASE_HEALTH) * barWidth, y - 16);
         }
         drawWalls(w, h) {
             this.ctx.lineWidth = 2;
             const wallColors = [['#0e8', WallType.NON_NEWTONIAN],
-                ['#44f', WallType.FENCE],
-                ['#410', WallType.BRICK]
+                ['#ff1177', WallType.FENCE],
+                ['#bbeeff', WallType.BRICK]
             ];
             for (const [color, type] of wallColors) {
                 this.ctx.strokeStyle = color;
@@ -2691,10 +2691,10 @@ var app = (function () {
     			create_component(playermenu.$$.fragment);
     			t3 = space();
     			create_component(directionpad.$$.fragment);
-    			attr_dev(canvas_1, "class", "svelte-1nq23nq");
-    			add_location(canvas_1, file$2, 53, 4, 1727);
-    			attr_dev(div, "class", "input-container svelte-1nq23nq");
-    			add_location(div, file$2, 55, 0, 1759);
+    			attr_dev(canvas_1, "class", "svelte-4vudk1");
+    			add_location(canvas_1, file$2, 53, 4, 1737);
+    			attr_dev(div, "class", "input-container svelte-4vudk1");
+    			add_location(div, file$2, 55, 0, 1769);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2787,7 +2787,7 @@ var app = (function () {
     		const moveAim = inputs.adjustAim.bind(inputs);
 
     		// AIMING STUFF //
-    		$$invalidate(0, canvas.ontouchstart = document.ontouchend = document.ontouchmove = triggerAim, canvas);
+    		$$invalidate(0, canvas.ontouchstart = document.ontouchend = $$invalidate(0, canvas.ontouchmove = triggerAim, canvas), canvas);
 
     		let lastAngle = 0;
     		let active = false;
@@ -2803,8 +2803,8 @@ var app = (function () {
 
     			if (e.type === "touchstart") active = true;
     			const { top, left } = canvas.getBoundingClientRect();
-    			const my = e.touches[0].clientY - top;
-    			const mx = e.touches[0].clientX - left;
+    			const my = e.targetTouches[0].clientY - top;
+    			const mx = e.targetTouches[0].clientX - left;
     			const H = canvas.height;
     			const W = canvas.width;
     			const y = playerData.data.y;
@@ -3054,9 +3054,9 @@ var app = (function () {
     			t1 = space();
     			div = element("div");
     			create_component(playermenu.$$.fragment);
-    			attr_dev(canvas_1, "class", "svelte-1nq23nq");
+    			attr_dev(canvas_1, "class", "svelte-4vudk1");
     			add_location(canvas_1, file$1, 20, 0, 703);
-    			attr_dev(div, "class", "input-container svelte-1nq23nq");
+    			attr_dev(div, "class", "input-container svelte-4vudk1");
     			add_location(div, file$1, 22, 0, 735);
     		},
     		l: function claim(nodes) {

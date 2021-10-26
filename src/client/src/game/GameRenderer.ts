@@ -50,7 +50,7 @@ export class GameRenderer {
 
         if (DEV_SETTINGS.showIdealClientBullet)
         {
-            this.ctx.fillStyle = '#00f' 
+            this.ctx.fillStyle = '#ffff00' 
             this.state.bullets = this.state.bullets.filter(b => {
                 if (b.data.shooter === this.state.myPlayer.name) return false;
                 const age = now - b.receptionTime
@@ -93,7 +93,7 @@ export class GameRenderer {
                 const traveled = distance(b.x, b.y, bx, by)
                 if (traveled >= b.expirationDistance) return false
 
-                this.ctx.fillStyle = '#c0c'
+                this.ctx.fillStyle = '#33ff33'
                 this.circle(x, y, 2)
 
                 // Hit debugger / Powerup
@@ -119,12 +119,12 @@ export class GameRenderer {
             if (DEV_SETTINGS.showInterpolatedEnemyPositions)
             {
                 const data = CONSTANTS.INTERPOLATE_PLAYER_POSITION(p.data, now, p.interpolationBuffer)
-                this.drawPlayer(data, now, 'blue')
+                this.drawPlayer(data, now, '#ff9b00')
             }
 
             if (DEV_SETTINGS.showUninterpolatedEnemyPositions)
             {
-                this.drawPlayer(p.data, now, 'red')
+                this.drawPlayer(p.data, now, '#0FF')
             }
         }
 
@@ -146,7 +146,7 @@ export class GameRenderer {
     
         if (DEV_SETTINGS.showPredictedPlayer)
         {
-            this.drawPlayer(this.state.myPlayer.predictedPosition, now, '#730')
+            this.drawPlayer(this.state.myPlayer.predictedPosition, now, '#88ccff')
         }
         
         if (DEV_SETTINGS.showWhatOtherClientsPredict)
@@ -156,7 +156,7 @@ export class GameRenderer {
         }
     }
 
-    drawPlayer(p : SocketPlayer, now : number, color = '#037') {
+    drawPlayer(p : SocketPlayer, now : number, color = '#bba871') {
         const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height]
         const bloodCooldown = 255
         const R = (now - p.lastTimeGettingShot)
@@ -166,9 +166,9 @@ export class GameRenderer {
         // Draw Body
         this.ctx.fillStyle =
         this.ctx.strokeStyle =
-            p.isImmune ? `rgb(255,255,${B})` :
-            isGettingShot ? `rgb(255,${R},${R})` : color
-        this.circle(x, y, this.playerRadius, !isGettingShot && !p.isImmune)
+            p.isImmune ? `rgb(0,0,${B})` :
+            isGettingShot ? `rgb(${R},0,0)` : color
+        this.circle(x, y, this.playerRadius, !p.isImmune)
 
         // Draw Special Effects
         if (p.name === this.state.myPlayer.name && isGettingShot)
@@ -197,15 +197,15 @@ export class GameRenderer {
         this.ctx.lineWidth = 2
             
         // Draw Username
-        this.ctx.fillStyle = '#40f'
+        this.ctx.fillStyle = '#bbff00'
         this.ctx.fillText(p.name, x - (p.name.length * 2), y - 21)
 
         // Draw Health
         const barWidth = 20
         const a = barWidth / 2
-        this.ctx.strokeStyle = 'cyan' // 'red'
+        this.ctx.strokeStyle = '#ff0000'
         this.line(x - a, y - 16, x + a, y - 16)
-        this.ctx.strokeStyle = 'purple' // 'green'
+        this.ctx.strokeStyle = '#00ff00'
         this.line(x - a, y - 16
             , x - a + (p.health / CONSTANTS.PLAYER_BASE_HEALTH) * barWidth
             , y - 16)
@@ -216,8 +216,8 @@ export class GameRenderer {
         this.ctx.lineWidth = 2
         const wallColors =
             [ ['#0e8', WallType.NON_NEWTONIAN]
-            , ['#44f', WallType.FENCE]
-            , ['#410', WallType.BRICK]
+            , ['#ff1177', WallType.FENCE]
+            , ['#bbeeff', WallType.BRICK]
             ] as const
         for (const [color, type] of wallColors)
         {

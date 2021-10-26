@@ -35,8 +35,7 @@
 
 <style lang="scss">
     canvas {
-        background: rgb(255, 255, 255);
-        filter: invert(1);
+        background: rgb(0, 0, 0);
     }
     .input-container {
         display: flex;

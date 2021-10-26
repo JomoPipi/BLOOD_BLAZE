@@ -25,7 +25,7 @@
         // AIMING STUFF //
         canvas.ontouchstart =
         document.ontouchend =
-        document.ontouchmove =
+        canvas.ontouchmove =
             triggerAim
 
         let lastAngle = 0
@@ -40,8 +40,8 @@
             }
             if (e.type === 'touchstart') active = true
             const { top, left } = canvas.getBoundingClientRect()
-            const my = e.touches[0]!.clientY - top
-            const mx = e.touches[0]!.clientX - left
+            const my = e.targetTouches[0]!.clientY - top
+            const mx = e.targetTouches[0]!.clientX - left
             const H = canvas.height
             const W = canvas.width
             const y = playerData.data.y
@@ -69,8 +69,8 @@
 
 <style lang="scss">
     canvas {
-        background: rgb(255, 255, 255);
-        filter: invert(1);
+        background: rgb(0, 0, 0);
+        // filter: invert(1);
     }
 
     .input-container {
