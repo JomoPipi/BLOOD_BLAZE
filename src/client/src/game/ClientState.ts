@@ -37,7 +37,7 @@ export class ClientState {
     players : Record<string, Player>
     myPlayer : MyPlayer
     lastGameTickMessageTime : number
-    lastGameTickMessage : Omit<GameTickMessage, 'deletedBullets'>
+    lastGameTickMessage : Omit<GameTickMessage, 'bulletsToDelete'>
     width = 100
     height = 100
 
@@ -47,7 +47,7 @@ export class ClientState {
         this.lastGameTickMessageTime = Date.now()
         this.lastGameTickMessage = 
             { players: []
-            , newBullets: []
+            , bulletsToAdd: []
             // , bullets: []
             }
     }
@@ -58,10 +58,10 @@ export class ClientState {
         this.lastGameTickMessage = msg
         this.lastGameTickMessageTime = now
         
-        this.myPlayer.bullets = this.myPlayer.bullets.filter(b => !msg.deletedBullets[b.data.id])
-        this.bullets = this.bullets.filter(b => !msg.deletedBullets[b.data.id])
+        this.myPlayer.bullets = this.myPlayer.bullets.filter(b => !msg.bulletsToDelete[b.data.id])
+        this.bullets = this.bullets.filter(b => !msg.bulletsToDelete[b.data.id])
     
-        for (const b of msg.newBullets)
+        for (const b of msg.bulletsToAdd)
         {
             // These are the coodinates of the player's gun
             // We have these x,y so we can show the bullet coming out of the player's gun

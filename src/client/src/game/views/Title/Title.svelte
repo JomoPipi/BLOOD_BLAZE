@@ -12,12 +12,13 @@
 
 	onMount(() => {
 		socket.on('nomination', ([success, name]) => {
+			alert(success ? `Welcome, ${name}!` : `Sorry, "${name}" is not available.`)
+			console.log('yooo!')
 			if (success)
 			{
         		socket.removeAllListeners('nomination')
 				proceed(name)
 			}
-			alert(success ? `Welcome, ${name}!` : `Sorry, "${name}" is not available.`)
 		})
 
 		socket.on('error' as any, data => {

@@ -8,8 +8,8 @@ export class Game {
     players = [];
     getPlayerByName = {};
     bullets = [];
-    newBullets = [];
-    deletedBullets = {};
+    bulletsToAdd = [];
+    bulletsToDelete = {};
     io;
     structures = new Walls();
     constructor(io) {
@@ -100,7 +100,7 @@ export class Game {
         //         if (bullet.shooter !== player.data.name && collidesWith(player.data))
         //         {
         //             player.data.lastTimeGettingShot = now
-        //             this.deletedBullets[bullet.data.id] = true
+        //             this.bulletsToDelete[bullet.data.id] = true
         //             if (this.getPlayerByName[bullet.shooter])
         //             {
         //                 this.getPlayerByName[bullet.shooter]!.data.score++
@@ -130,7 +130,7 @@ export class Game {
                     // Don't tell the client to delete bullets for this.
                     // Let them do it at the right time.
                     // And leave the following line commented out:
-                    // this.deletedBullets[bullet.data.id] = true
+                    // this.bulletsToDelete[bullet.data.id] = true
                     return false;
                 }
                 collisionArgs[bullet.data.id] = [bx, by, newbx, newby, dt, bullet.shooter];
@@ -169,21 +169,21 @@ export class Game {
                             offender.data.health = Math.min(h, offender.data.health + h * .75));
                         this.kill(player, now);
                     }
-                    this.deletedBullets[bullet.id] = true;
+                    this.bulletsToDelete[bullet.id] = true;
                     continue;
                 }
             }
         }
-        this.bullets = this.bullets.filter(b => !this.deletedBullets[b.data.id]);
+        this.bullets = this.bullets.filter(b => !this.bulletsToDelete[b.data.id]);
     }
     getRenderData() {
         const message = { players: this.players.map(p => p.data),
             bullets: this.bullets.map(b => b.data),
-            newBullets: this.newBullets.filter(b => !this.deletedBullets[b.data.id]).map(b => b.data),
-            deletedBullets: this.deletedBullets
+            bulletsToAdd: this.bulletsToAdd.filter(b => !this.bulletsToDelete[b.data.id]).map(b => b.data),
+            bulletsToDelete: this.bulletsToDelete
         };
-        this.newBullets = [];
-        this.deletedBullets = {};
+        this.bulletsToAdd = [];
+        this.bulletsToDelete = {};
         return message;
     }
     kill(p, now) {
@@ -196,7 +196,7 @@ export class Game {
     addBullet(p, bulletData) {
         const bullet = new Bullet(p.data, bulletData);
         this.bullets.push(bullet);
-        this.newBullets.push(bullet);
+        this.bulletsToAdd.push(bullet);
         p.lastTimeShooting = bullet.timeCreated;
     }
     playerExists = (name) => this.getPlayerByName[name];

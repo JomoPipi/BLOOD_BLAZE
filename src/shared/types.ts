@@ -27,8 +27,8 @@ type ClientToServerMessageTypes = {
 
 type GameTickMessage = { // <T extends typeof CONSTANTS.DEV_MODE = typeof CONSTANTS.DEV_MODE> = {
   readonly players : SocketPlayer[]
-  readonly newBullets : SocketBullet[]
-  readonly deletedBullets : Record<number, true>
+  readonly bulletsToAdd : SocketBullet[]
+  readonly bulletsToDelete : Record<number, true>
 } 
 // & (T extends true ? 
 // { 

@@ -70,7 +70,6 @@
 <style lang="scss">
     canvas {
         background: rgb(0, 0, 0);
-        // filter: invert(1);
     }
 
     .input-container {

@@ -18,6 +18,3 @@
         background-image: url(https://media3.giphy.com/media/RkhMKpIYLT9sukfuXg/giphy.gif?cid=790b7611935df56404b5a0e348108c78c1f4fae2452bbd68&rid=giphy.gif&ct=g);
     }
 </style>
-
-    
-    
