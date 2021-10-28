@@ -12,8 +12,8 @@
 </button>
 
 <div class="settings-page" class:show={settingsPage.isOpen}>
-    <button on:click={settingsPage.toggle}>
-        back
+    <button class="exit-button" on:click={settingsPage.toggle}>
+        ✕
     </button>
 
     <slot></slot>
@@ -21,10 +21,16 @@
 
 
 <style lang="scss">
+    .exit-button {
+        width: 1.5em;
+        height: 1.5em;
+    }
     .settings-button {
         background-color: transparent;
         padding: 0 0.75rem;
         text-align: center;
+        border: 1px solid white;
+        border-radius: 5px;
     }
     .settings-page {
         display: none;
@@ -34,7 +40,7 @@
         width: 100%;
         height: 100%;
         background: rgba(77, 77, 67, 0.75);
-        backdrop-filter: blur(.5rem) invert(100%);
+        backdrop-filter: blur(.3rem) invert(100%);
         // -webkit-backdrop-filter: blur(.5rem) invert(1);
         color: white;
 

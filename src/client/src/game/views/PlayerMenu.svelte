@@ -12,6 +12,11 @@
             RANDOMIZE MAP
         </button>
 
+        <PageButton btnText={'GIVE FEEDBACK'}>
+            <br/>
+            Your feedback is super important to us!!
+        </PageButton>
+
         <div class="begging">
             <h4>
                 about me: <a href="https://ronald-ronaldmcorona.vercel.app" target="_blank">https://ronald-ronaldmcorona.vercel.app</a>        
@@ -34,6 +39,14 @@
         flex-direction: column;
         justify-content: space-around;
         height: 50%;
+    }
+    button {
+        margin: auto;
+        margin-top: 0.5em;
+        padding: 0 1em;
+        font-size: 2em;
+        width: 95%;
+        border-radius: 4px;
     }
     .begging {
         text-align:center;

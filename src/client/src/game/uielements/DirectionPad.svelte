@@ -22,9 +22,15 @@
         
         render()
 
-        canvas.ontouchstart = () => callback(angle, true)
+        canvas.ontouchstart = () => {
+            canvas.style.backgroundColor = 'rgba(255,0,0,0.2)'
+            callback(angle, true)
+        }
         canvas.ontouchmove = touchmove
-        canvas.ontouchend = () => callback(angle, false)
+        canvas.ontouchend = () => {
+            canvas.style.backgroundColor = 'transparent'
+            callback(angle, false)
+        }
         
         function touchmove(e : TouchEvent) {
             const l = +canvas.offsetLeft
@@ -64,5 +70,6 @@
     canvas {
         border-radius: 50%;
         border: 2px solid black;
+        transition: background-color 0.2s;
     }
 </style>

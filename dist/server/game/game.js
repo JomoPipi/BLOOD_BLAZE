@@ -152,9 +152,11 @@ export class Game {
             const points = bulletQT.getPointsInCircle({ ...player.data, r: radius });
             for (const bullet of points) {
                 const [bx, by, newbx, newby, dt, shooter] = collisionArgs[bullet.id];
+                if (shooter === player.data.name)
+                    continue;
                 const bulletCollidesWith = makeCollisionFunc(bx, by, newbx, newby);
-                const extrapolated = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(player.data, dt);
-                if (shooter !== player.data.name && bulletCollidesWith(extrapolated)) {
+                const extrapolatedPlayer = CONSTANTS.EXTRAPOLATE_PLAYER_POSITION(player.data, dt);
+                if (bulletCollidesWith(extrapolatedPlayer)) {
                     // Record the last time the player was shot
                     player.data.lastTimeGettingShot = now;
                     // Add a point to the shooter for landing a hit
@@ -219,7 +221,7 @@ function makeCollisionFunc(bx, by, newbx, newby) {
         /* The bullet hits the player if:
         1. The player is in the line of fire.
         2. The bullet is within a frame of the closest point from the player to the line of fire.
-            */
+        */
         // more robust: bullet.absoluteSpeed = sqrt (speedX ** 2 + speedY ** 2)
         // then we can use dx * bullet.absoluteSpeed
         const collides = distance(p.x, p.y, x, y) <= CONSTANTS.PLAYER_RADIUS
