@@ -3,21 +3,24 @@ const CONSTANTS = (() => {
 
     const DEV_MODE = false
 
+    const KEEP_PLAYER_IN_CENTER = false
+    const MAP_VIEWABLE_PORTION = KEEP_PLAYER_IN_CENTER ? 1 : 0.5
+
     const PLAYER_BASE_HEALTH = 20
-    const PLAYER_RADIUS = 0.02
-    const PLAYER_SPEED = 0.0002
-    // const PLAYER_SPEED = 0.00015
+    const PLAYER_RADIUS = 0.02 * MAP_VIEWABLE_PORTION
+    const PLAYER_SPEED = 0.00025 * MAP_VIEWABLE_PORTION
 
     // const BULLET_COOLDOWN = 80
     // const BULLET_SPEED = 0.0006 / 2
 
     const BULLET_COOLDOWN = 80
-    const BULLET_SPEED = 0.0006 / 1.5
+    const BULLET_SPEED = 2 * (0.0006 / 1.5) * MAP_VIEWABLE_PORTION
 
     const FPS = 20
     const GAME_TICK = 1000 / FPS
 
     const USERNAME_CHARACTER_LIMIT = 12
+
 
     const CONST = 
         { DEV_MODE
@@ -36,6 +39,8 @@ const CONSTANTS = (() => {
         , GET_PLAYER_POSITION_AFTER_WALL_COLLISION
         , LINE_SEGMENT_INTERSECTION_POINT
         , USERNAME_CHARACTER_LIMIT
+        , MAP_VIEWABLE_PORTION
+        , KEEP_PLAYER_IN_CENTER
         } as const
 
     return Object.freeze(CONST)
@@ -49,12 +54,6 @@ const CONSTANTS = (() => {
         p.x = clamp(0, p.x + controls.x * controls.deltaTime * PLAYER_SPEED, 1)
         p.y = clamp(0, p.y + controls.y * controls.deltaTime * PLAYER_SPEED, 1)
     }
-
-    // function GET_CONTROLS(oldX : number, oldY : number, newX : number, newY : number, dt : number) {
-    //     const x = (newX - oldX) / (dt * PLAYER_SPEED)
-    //     const y = (newY - oldY) / (dt * PLAYER_SPEED)
-    //     return [x, y]
-    // }
 
     function CREATE_PLAYER(name : string) : SocketPlayer { 
         return (

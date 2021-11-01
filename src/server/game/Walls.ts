@@ -154,9 +154,9 @@ export class Walls {
             const marked = {} as Record<string, typeof TRAVERSING | typeof BLOCKED>
             const path = [] as string[];
             for (const key in g) {
-                if (graphContainsCycle(key)) {
-                    return false;
-                }
+                // if (graphContainsCycle(key)) {
+                //     return false;
+                // }
                 function graphContainsCycle(node : string) {
                     if (marked[node] === TRAVERSING) {
                         const nodeIndex = path.indexOf(node);

@@ -139,9 +139,9 @@ export class Walls {
             const marked = {};
             const path = [];
             for (const key in g) {
-                if (graphContainsCycle(key)) {
-                    return false;
-                }
+                // if (graphContainsCycle(key)) {
+                //     return false;
+                // }
                 function graphContainsCycle(node) {
                     if (marked[node] === TRAVERSING) {
                         const nodeIndex = path.indexOf(node);

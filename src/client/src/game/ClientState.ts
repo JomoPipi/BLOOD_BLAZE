@@ -71,8 +71,8 @@ export class ClientState {
             if (DEV_SETTINGS.showExtrapolatedEnemyPositions)
             {
                 const display = 
-                    { x: (player.lastExtrapolatedPosition.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * this.width
-                    , y: (player.lastExtrapolatedPosition.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * this.height
+                    { x: player.lastExtrapolatedPosition.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)
+                    , y: player.lastExtrapolatedPosition.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)
                     }
                 this.bullets.push(new Bullet(b, now, display))
             }

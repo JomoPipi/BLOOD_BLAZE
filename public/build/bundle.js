@@ -2475,9 +2475,8 @@ var app = (function () {
                     const age = now - b.receptionTime;
                     const bx = b.data.x + b.data.speedX * age;
                     const by = b.data.y + b.data.speedY * age;
-                    const x = bx * W;
-                    const y = by * H;
-                    this.circle(x, y, 2);
+                    const [newX, newY] = this.mapToViewableRange(W, H, bx, by);
+                    this.circle(newX, newY, 2);
                     return 0 <= bx && bx <= 1 && 0 <= by && by <= 1;
                 });
             }
@@ -2489,12 +2488,12 @@ var app = (function () {
                     const age = now - b.receptionTime;
                     const bx = b.data.x + b.data.speedX * age;
                     const by = b.data.y + b.data.speedY * age;
-                    const x = bx * W;
-                    const y = by * H;
+                    // const x = bx * W
+                    // const y = by * H
+                    const [x, y] = this.mapToViewableRange(W, H, bx, by);
                     const secondsToMerge = 0.5;
                     const mergeRate = Math.min(now - b.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge;
-                    const x1 = b.display.x + age * b.data.speedX * W;
-                    const y1 = b.display.y + age * b.data.speedY * H;
+                    const [x1, y1] = this.mapToViewableRange(W, H, b.display.x + age * b.data.speedX, b.display.y + age * b.data.speedY);
                     const dx = x - x1;
                     const dy = y - y1;
                     const X = x1 + dx * mergeRate;
@@ -2513,8 +2512,9 @@ var app = (function () {
                     const b = bullet.data;
                     const bx = b.x + b.speedX * age;
                     const by = b.y + b.speedY * age;
-                    const x = bx * W;
-                    const y = by * H;
+                    // const x = bx * W
+                    // const y = by * H
+                    const [x, y] = this.mapToViewableRange(W, H, bx, by);
                     const traveled = distance(b.x, b.y, bx, by);
                     if (traveled >= b.expirationDistance)
                         return false;
@@ -2563,17 +2563,20 @@ var app = (function () {
             }
         }
         drawPlayer(p, now, color = '#bba871') {
-            const [x, y] = [p.x * this.canvas.width, p.y * this.canvas.height];
+            const W = this.canvas.width;
+            const H = this.canvas.height;
+            const [x, y] = this.mapToViewableRange(W, H, p.x, p.y);
             const bloodCooldown = 255;
             const R = (now - p.lastTimeGettingShot);
             const B = Math.sin(now / 90) * 128 + 128 | 0;
             const isGettingShot = R <= bloodCooldown;
+            const PR = this.playerRadius / CONSTANTS.MAP_VIEWABLE_PORTION;
             // Draw Body
             this.ctx.fillStyle =
                 this.ctx.strokeStyle =
                     p.isImmune ? `rgb(0,0,${B})` :
                         isGettingShot ? `rgb(${R},0,0)` : color;
-            this.circle(x, y, this.playerRadius, !p.isImmune);
+            this.circle(x, y, PR, !p.isImmune);
             // Draw Special Effects
             if (p.name === this.state.myPlayer.name && isGettingShot) {
                 if (p.lastTimeGettingShot !== this.lastTimeGettingShot) {
@@ -2587,10 +2590,10 @@ var app = (function () {
             const dx = Math.cos(p.angle);
             const dy = Math.sin(p.angle);
             const barrel = 1.8;
-            const [x1, y1, x2, y2] = [x + this.playerRadius * dx,
-                y + this.playerRadius * dy,
-                x + this.playerRadius * dx * barrel,
-                y + this.playerRadius * dy * barrel
+            const [x1, y1, x2, y2] = [x + PR * dx,
+                y + PR * dy,
+                x + PR * dx * barrel,
+                y + PR * dy * barrel
             ];
             this.ctx.lineWidth = 6;
             this.line(x1, y1, x2, y2);
@@ -2615,9 +2618,23 @@ var app = (function () {
             for (const [color, type] of wallColors) {
                 this.ctx.strokeStyle = color;
                 for (const [p1, p2] of this.state.structures[type]) {
-                    this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h);
+                    const [x1, y1] = this.mapToViewableRange(w, h, p1.x, p1.y);
+                    const [x2, y2] = this.mapToViewableRange(w, h, p2.x, p2.y);
+                    // this.line(p1.x * w, p1.y * h, p2.x * w, p2.y * h)
+                    // console.log(x1,x2)
+                    this.line(x1, y1, x2, y2);
                 }
             }
+        }
+        mapToViewableRange(w, h, x, y) {
+            if (CONSTANTS.KEEP_PLAYER_IN_CENTER) {
+                return [w * x, h * y];
+            }
+            const P = CONSTANTS.MAP_VIEWABLE_PORTION;
+            const p = this.state.myPlayer.predictedPosition;
+            const newX = w * x / P + w / 2 - w * p.x / P;
+            const newY = w * y / P + w / 2 - w * p.y / P;
+            return [newX, newY];
         }
         circle(x, y, r, stroke) {
             this.ctx.beginPath();
@@ -3439,8 +3456,8 @@ var app = (function () {
                     break;
                 const p = player.data;
                 if (DEV_SETTINGS.showExtrapolatedEnemyPositions) {
-                    const display = { x: (player.lastExtrapolatedPosition.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle)) * this.width,
-                        y: (player.lastExtrapolatedPosition.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)) * this.height
+                    const display = { x: player.lastExtrapolatedPosition.x + CONSTANTS.PLAYER_RADIUS * Math.cos(p.angle),
+                        y: player.lastExtrapolatedPosition.y + CONSTANTS.PLAYER_RADIUS * Math.sin(p.angle)
                     };
                     this.bullets.push(new Bullet(b, now, display));
                 }
