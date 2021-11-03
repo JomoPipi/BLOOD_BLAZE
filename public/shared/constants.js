@@ -1,8 +1,8 @@
 "use strict";
 const CONSTANTS = (() => {
     const DEV_MODE = false;
-    const KEEP_PLAYER_IN_CENTER = false;
-    const MAP_VIEWABLE_PORTION = KEEP_PLAYER_IN_CENTER ? 1 : 0.5;
+    const USING_SINGLE_PLAYER_MAP = false;
+    const MAP_VIEWABLE_PORTION = USING_SINGLE_PLAYER_MAP ? 1 : 0.5;
     const PLAYER_BASE_HEALTH = 20;
     const PLAYER_RADIUS = 0.02 * MAP_VIEWABLE_PORTION;
     const PLAYER_SPEED = 0.00025 * MAP_VIEWABLE_PORTION;
@@ -30,7 +30,7 @@ const CONSTANTS = (() => {
         LINE_SEGMENT_INTERSECTION_POINT,
         USERNAME_CHARACTER_LIMIT,
         MAP_VIEWABLE_PORTION,
-        KEEP_PLAYER_IN_CENTER
+        USING_SINGLE_PLAYER_MAP
     };
     return Object.freeze(CONST);
     function CAN_SHOOT(now, lastTimeShot, p) {

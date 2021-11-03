@@ -17,8 +17,10 @@ export function activateDesktopSupport(
         const mx = e.offsetX
         const H = canvas.height
         const W = canvas.width
-        const y = playerData.data.y
-        const x = playerData.data.x
+        const [x, y] = CONSTANTS.USING_SINGLE_SCREEN_MAP
+            ? [playerData.data.x, playerData.data.y]
+            : [0.5, 0.5]
+            
         const dy = my - H * y
         const dx = mx - W * x
         const angle = Math.atan2(dy, dx)

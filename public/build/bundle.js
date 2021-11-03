@@ -611,7 +611,7 @@ var app = (function () {
     			button.textContent = "GO";
     			t7 = space();
     			h3 = element("h3");
-    			h3.textContent = "last update - 10/26/2021";
+    			h3.textContent = "last update - 11/2/2021";
     			t9 = space();
     			bloodblaze = element("bloodblaze");
     			attr_dev(span0, "class", "_1 svelte-1dyam05");
@@ -635,7 +635,7 @@ var app = (function () {
     			add_location(form, file$a, 55, 2, 1556);
     			add_location(div, file$a, 53, 1, 1522);
     			attr_dev(bloodblaze, "class", "svelte-1dyam05");
-    			add_location(bloodblaze, file$a, 66, 1, 1883);
+    			add_location(bloodblaze, file$a, 66, 1, 1882);
     			attr_dev(main, "class", "svelte-1dyam05");
     			add_location(main, file$a, 48, 0, 1424);
     		},
@@ -2626,7 +2626,7 @@ var app = (function () {
             }
         }
         mapToViewableRange(w, h, x, y) {
-            if (CONSTANTS.KEEP_PLAYER_IN_CENTER) {
+            if (CONSTANTS.USING_SINGLE_SCREEN_MAP) {
                 return [w * x, h * y];
             }
             const P = CONSTANTS.MAP_VIEWABLE_PORTION;
@@ -2636,7 +2636,7 @@ var app = (function () {
             return [newX, newY];
         }
         mapFromViewableRange(w, h, vx, vy) {
-            if (CONSTANTS.KEEP_PLAYER_IN_CENTER) {
+            if (CONSTANTS.USING_SINGLE_SCREEN_MAP) {
                 return [vx / w, vy / h];
             }
             const P = CONSTANTS.MAP_VIEWABLE_PORTION;
@@ -3082,8 +3082,9 @@ var app = (function () {
             const mx = e.offsetX;
             const H = canvas.height;
             const W = canvas.width;
-            const y = playerData.data.y;
-            const x = playerData.data.x;
+            const [x, y] = CONSTANTS.USING_SINGLE_SCREEN_MAP
+                ? [playerData.data.x, playerData.data.y]
+                : [0.5, 0.5];
             const dy = my - H * y;
             const dx = mx - W * x;
             const angle = Math.atan2(dy, dx);

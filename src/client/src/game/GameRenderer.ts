@@ -248,7 +248,7 @@ export class GameRenderer {
     }
 
     mapToViewableRange(w : number, h : number, x : number, y : number) {
-        if (CONSTANTS.KEEP_PLAYER_IN_CENTER)
+        if (CONSTANTS.USING_SINGLE_SCREEN_MAP)
         {
             return  [w * x, h * y] as const
         }
@@ -260,7 +260,7 @@ export class GameRenderer {
     }
 
     mapFromViewableRange(w : number, h : number, vx : number, vy : number) {
-        if (CONSTANTS.KEEP_PLAYER_IN_CENTER)
+        if (CONSTANTS.USING_SINGLE_SCREEN_MAP)
         {
             return [vx / w, vy / h] as const
         }
