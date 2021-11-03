@@ -27,7 +27,7 @@ export class Walls {
     }
     generateBeautifulSymmetricWalls(n) {
         const minLength = 0.1;
-        const maxLength = 0.5;
+        const maxLength = 0.4;
         const slopeCount = 4;
         const angles = [...Array(slopeCount)].map((_, i) => Math.PI / 2 + i * Math.PI / slopeCount);
         const randomPoint = () => ([Math.random() * 0.5, Math.random() * 0.5]);
@@ -35,7 +35,9 @@ export class Walls {
             const length = minLength + Math.random() * (maxLength - minLength);
             const [x, y] = randomPoint();
             const rndAngle = angles[Math.random() * slopeCount | 0];
-            const p2 = [x + Math.cos(rndAngle) * length, y + Math.sin(rndAngle) * length];
+            const p2 = [clamp(0, x + Math.cos(rndAngle) * length, 1),
+                clamp(0, y + Math.sin(rndAngle) * length, 1)
+            ];
             const s = [[x, y], p2];
             return s;
         })
@@ -139,9 +141,10 @@ export class Walls {
             const marked = {};
             const path = [];
             for (const key in g) {
-                // if (graphContainsCycle(key)) {
-                //     return false;
-                // }
+                if (graphContainsCycle(key)) {
+                    console.log('Generating another map.');
+                    return false;
+                }
                 function graphContainsCycle(node) {
                     if (marked[node] === TRAVERSING) {
                         const nodeIndex = path.indexOf(node);

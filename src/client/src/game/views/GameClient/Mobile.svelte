@@ -44,8 +44,9 @@
             const mx = e.targetTouches[0]!.clientX - left
             const H = canvas.height
             const W = canvas.width
-            const y = playerData.data.y
-            const x = playerData.data.x
+            const [x, y] = CONSTANTS.USING_SINGLE_SCREEN_MAP
+                ? [playerData.data.x, playerData.data.y]
+                : [0.5, 0.5]
             const dy = my - H * y
             const dx = mx - W * x
             const angle = lastAngle = Math.atan2(dy, dx)

@@ -2797,9 +2797,9 @@ var app = (function () {
     			t3 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(canvas_1, "class", "svelte-4vudk1");
-    			add_location(canvas_1, file$2, 53, 4, 1737);
+    			add_location(canvas_1, file$2, 54, 4, 1800);
     			attr_dev(div, "class", "input-container svelte-4vudk1");
-    			add_location(div, file$2, 55, 0, 1769);
+    			add_location(div, file$2, 56, 0, 1832);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2912,8 +2912,11 @@ var app = (function () {
     			const mx = e.targetTouches[0].clientX - left;
     			const H = canvas.height;
     			const W = canvas.width;
-    			const y = playerData.data.y;
-    			const x = playerData.data.x;
+
+    			const [x, y] = CONSTANTS.USING_SINGLE_SCREEN_MAP
+    			? [playerData.data.x, playerData.data.y]
+    			: [0.5, 0.5];
+
     			const dy = my - H * y;
     			const dx = mx - W * x;
     			const angle = lastAngle = Math.atan2(dy, dx);

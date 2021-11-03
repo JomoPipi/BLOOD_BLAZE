@@ -1,4 +1,3 @@
-// import { CONSTANTS } from "../../shared/constants.js"
 import { Bullet } from "./bullet.js";
 import { Player } from "./player.js";
 import { Walls } from "./Walls.js";
@@ -222,8 +221,6 @@ function makeCollisionFunc(bx, by, newbx, newby) {
         1. The player is in the line of fire.
         2. The bullet is within a frame of the closest point from the player to the line of fire.
         */
-        // more robust: bullet.absoluteSpeed = sqrt (speedX ** 2 + speedY ** 2)
-        // then we can use dx * bullet.absoluteSpeed
         const collides = distance(p.x, p.y, x, y) <= CONSTANTS.PLAYER_RADIUS
             && distance(bx, by, x, y) <= bulletDist
             && distance(newbx, newby, x, y) <= bulletDist;
