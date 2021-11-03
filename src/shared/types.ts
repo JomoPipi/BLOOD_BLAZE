@@ -25,16 +25,11 @@ type ClientToServerMessageTypes = {
   readonly disconnect : never
 }
 
-type GameTickMessage = { // <T extends typeof CONSTANTS.DEV_MODE = typeof CONSTANTS.DEV_MODE> = {
+type GameTickMessage = {
   readonly players : SocketPlayer[]
   readonly bulletsToAdd : SocketBullet[]
   readonly bulletsToDelete : Record<number, true>
 } 
-// & (T extends true ? 
-// { 
-//   readonly bullets : SocketBullet[]
-// } 
-// : {})
 
 interface ServerSocket {
   on <T extends ClientToServerSocketEvents>

@@ -2486,20 +2486,19 @@ var app = (function () {
                     if (b.data.shooter === this.state.myPlayer.name)
                         return false;
                     const age = now - b.receptionTime;
-                    const bx = b.data.x + b.data.speedX * age;
-                    const by = b.data.y + b.data.speedY * age;
-                    // const x = bx * W
-                    // const y = by * H
+                    const dx = b.data.speedX * age;
+                    const dy = b.data.speedY * age;
+                    const bx = b.data.x + dx;
+                    const by = b.data.y + dy;
                     const [x, y] = this.mapToViewableRange(W, H, bx, by);
                     const secondsToMerge = 0.5;
                     const mergeRate = Math.min(now - b.receptionTime, 1000 * secondsToMerge) * 0.001 / secondsToMerge;
-                    const [x1, y1] = this.mapToViewableRange(W, H, b.display.x + age * b.data.speedX, b.display.y + age * b.data.speedY);
-                    const dx = x - x1;
-                    const dy = y - y1;
-                    const X = x1 + dx * mergeRate;
-                    const Y = y1 + dy * mergeRate;
+                    const [x1, y1] = this.mapToViewableRange(W, H, b.display.x + dx, b.display.y + dy);
+                    const X = x1 + (x - x1) * mergeRate;
+                    const Y = y1 + (y - y1) * mergeRate;
+                    const [X1, Y1] = this.mapFromViewableRange(W, H, X, Y);
                     const lag = -(this.state.players[b.data.shooter]?.data.latency || 0);
-                    const traveled = distance(b.data.x + b.data.speedX * lag, b.data.y + b.data.speedY * lag, X / W, Y / H);
+                    const traveled = distance(b.display.x + b.data.speedX * lag, b.display.y + b.data.speedY * lag, X1, Y1);
                     if (traveled >= b.data.expirationDistance)
                         return false;
                     this.circle(X, Y, 2);
@@ -2514,10 +2513,10 @@ var app = (function () {
                     const by = b.y + b.speedY * age;
                     // const x = bx * W
                     // const y = by * H
-                    const [x, y] = this.mapToViewableRange(W, H, bx, by);
                     const traveled = distance(b.x, b.y, bx, by);
                     if (traveled >= b.expirationDistance)
                         return false;
+                    const [x, y] = this.mapToViewableRange(W, H, bx, by);
                     this.ctx.fillStyle = '#33ff33';
                     this.circle(x, y, 2);
                     // Hit debugger / Powerup
@@ -2635,6 +2634,16 @@ var app = (function () {
             const newX = w * x / P + w / 2 - w * p.x / P;
             const newY = w * y / P + w / 2 - w * p.y / P;
             return [newX, newY];
+        }
+        mapFromViewableRange(w, h, vx, vy) {
+            if (CONSTANTS.KEEP_PLAYER_IN_CENTER) {
+                return [vx / w, vy / h];
+            }
+            const P = CONSTANTS.MAP_VIEWABLE_PORTION;
+            const p = this.state.myPlayer.predictedPosition;
+            const x = P * (vx + w * p.x / P - w / 2) / w;
+            const y = P * (vy + h * p.y / P - h / 2) / h;
+            return [x, y];
         }
         circle(x, y, r, stroke) {
             this.ctx.beginPath();
@@ -3439,7 +3448,6 @@ var app = (function () {
             this.lastGameTickMessage =
                 { players: [],
                     bulletsToAdd: []
-                    // , bullets: []
                 };
         }
         processGameTick(msg) {

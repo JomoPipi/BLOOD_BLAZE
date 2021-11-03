@@ -48,7 +48,6 @@ export class ClientState {
         this.lastGameTickMessage = 
             { players: []
             , bulletsToAdd: []
-            // , bullets: []
             }
     }
 
