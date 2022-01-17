@@ -45,6 +45,7 @@
 	Object.assign(window, { tryUsername })
 
 	const charLimit = CONSTANTS.USERNAME_CHARACTER_LIMIT
+	console.log('char limit is',charLimit)
 	let firstTime = true
 	function sanitizeText(event : any) {
 		if (firstTime)

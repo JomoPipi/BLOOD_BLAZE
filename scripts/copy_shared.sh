@@ -3,6 +3,6 @@
 var="Executing copy shared"
  
 # print it 
-echo "$var"
+echo $var
 
 cp -r ./dist/shared ./public

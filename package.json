@@ -9,10 +9,7 @@
     "test": "jest",
     "setup": "npm install && cd src/client && npm install && cd ../..",
     "dev-client": "cd src/client && npx rollup -c -w",
-    "dev-server": "concurrently npm:dev-server:*",
-    "dev-server:compile": "tsc -w",
-    "dev-server:copy-shared": "sh ./scripts/copy_shared.sh",
-    "dev-server:run": "nodemon",
+    "dev-server": "nodemon",
     "start": "node dist/server/main.js"
   },
   "engines": {
@@ -30,8 +27,7 @@
       "src/server/",
       "src/shared/"
     ],
-    "exeec": "node --loader ts-node/esm src/server/main.ts --emit | bash ./scripts/copy_shared.sh",
-    "exec": "node --loader ts-node/esm src/server/main.ts --emit",
+    "exec": "tsc && bash ./scripts/copy_shared.sh && node --loader ts-node/esm src/server/main.ts --emit",
     "env": {
       "NODE_ENV": "development"
     },

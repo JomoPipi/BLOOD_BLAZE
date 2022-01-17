@@ -615,29 +615,29 @@ var app = (function () {
     			t9 = space();
     			bloodblaze = element("bloodblaze");
     			attr_dev(span0, "class", "_1 svelte-1dyam05");
-    			add_location(span0, file$a, 50, 2, 1392);
+    			add_location(span0, file$a, 51, 2, 1433);
     			attr_dev(span1, "class", "_2 svelte-1dyam05");
-    			add_location(span1, file$a, 51, 2, 1427);
+    			add_location(span1, file$a, 52, 2, 1468);
     			attr_dev(h1, "class", "svelte-1dyam05");
-    			add_location(h1, file$a, 49, 1, 1384);
+    			add_location(h1, file$a, 50, 1, 1425);
     			attr_dev(input, "autocomplete", "off");
     			attr_dev(input, "placeholder", "Enter a username...");
     			attr_dev(input, "pattern", "[A-Za-z0-9 _]*");
     			attr_dev(input, "maxlength", /*charLimit*/ ctx[3]);
     			attr_dev(input, "class", "svelte-1dyam05");
-    			add_location(input, file$a, 56, 3, 1557);
+    			add_location(input, file$a, 57, 3, 1598);
     			attr_dev(button, "class", "svelte-1dyam05");
-    			add_location(button, file$a, 62, 3, 1737);
+    			add_location(button, file$a, 63, 3, 1778);
     			attr_dev(h3, "class", "svelte-1dyam05");
-    			add_location(h3, file$a, 63, 3, 1762);
+    			add_location(h3, file$a, 64, 3, 1803);
     			attr_dev(form, "type", "text");
     			attr_dev(form, "action", "");
-    			add_location(form, file$a, 55, 2, 1501);
-    			add_location(div, file$a, 53, 1, 1469);
+    			add_location(form, file$a, 56, 2, 1542);
+    			add_location(div, file$a, 54, 1, 1510);
     			attr_dev(bloodblaze, "class", "svelte-1dyam05");
-    			add_location(bloodblaze, file$a, 66, 1, 1816);
+    			add_location(bloodblaze, file$a, 67, 1, 1857);
     			attr_dev(main, "class", "svelte-1dyam05");
-    			add_location(main, file$a, 48, 0, 1376);
+    			add_location(main, file$a, 49, 0, 1417);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -747,6 +747,7 @@ var app = (function () {
 
     	Object.assign(window, { tryUsername });
     	const charLimit = CONSTANTS.USERNAME_CHARACTER_LIMIT;
+    	console.log("char limit is", charLimit);
     	let firstTime = true;
 
     	function sanitizeText(event) {

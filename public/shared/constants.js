@@ -10,9 +10,9 @@ const CONSTANTS = (() => {
     // const BULLET_SPEED = 0.0006 / 2
     const BULLET_COOLDOWN = 80;
     const BULLET_SPEED = 2 * (0.0006 / 1.5) * MAP_VIEWABLE_PORTION;
-    const FPS = 20;
+    const FPS = 12;
     const GAME_TICK = 1000 / FPS;
-    const USERNAME_CHARACTER_LIMIT = 12;
+    const USERNAME_CHARACTER_LIMIT = 120;
     const CONST = { DEV_MODE,
         PLAYER_BASE_HEALTH,
         PLAYER_RADIUS,

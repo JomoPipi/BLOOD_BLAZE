@@ -21,6 +21,7 @@ app.use(express.static(staticPath))
 
 console.log('FPS =', CONSTANTS.FPS)
 console.log('GAME_TICK =',CONSTANTS.GAME_TICK)
+console.log('char limit in server is', CONSTANTS.USERNAME_CHARACTER_LIMIT)
 
 const DEFAULT_MAP_CONFIG = 
     { [WallType.BRICK]: 3
