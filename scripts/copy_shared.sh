@@ -1,6 +1,6 @@
 #!/bin/bash
 
-var="Hello World"
+var="Executing copy shared"
  
 # print it 
 echo "$var"

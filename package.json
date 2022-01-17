@@ -30,7 +30,8 @@
       "src/server/",
       "src/shared/"
     ],
-    "exec": "node --loader ts-node/esm src/server/main.ts --emit | bash ./scripts/copy_shared.sh",
+    "exeec": "node --loader ts-node/esm src/server/main.ts --emit | bash ./scripts/copy_shared.sh",
+    "exec": "node --loader ts-node/esm src/server/main.ts --emit",
     "env": {
       "NODE_ENV": "development"
     },
