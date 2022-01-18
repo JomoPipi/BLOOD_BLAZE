@@ -661,8 +661,8 @@
       "vsicons.customIconFolderPath": ".vscode\\x",
       "vsicons.projectDetection.autoReload": true,
       "workbench.colorCustomizations": {
-        "activityBar.background": "#123232",
-        "titleBar.activeBackground": "#1A4646",
-        "titleBar.activeForeground": "#F6FCFC"
+        "activityBar.background": "#000000",
+        "titleBar.activeBackground": "#000000",
+        "titleBar.activeForeground": "#9999ff"
       },
 }

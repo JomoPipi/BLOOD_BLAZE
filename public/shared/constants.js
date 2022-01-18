@@ -57,7 +57,7 @@ const CONSTANTS = (() => {
     function INTERPOLATE_PLAYER_POSITION(data, now, buffer) {
         // Don't mutate data
         data = JSON.parse(JSON.stringify(data));
-        // // "standard" interpolation/
+        // // "standard" interpolation /
         // ///////////////////////////////////////////////////////////////
         const props = ['x', 'y', 'angle'];
         const oneGameTickAway = now - CONSTANTS.GAME_TICK;

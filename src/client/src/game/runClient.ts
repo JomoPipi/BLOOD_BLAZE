@@ -6,7 +6,8 @@ import type { InputProcessor } from "./InputProcessor"
 type ClientElements = { 
     inputs : InputProcessor
     canvas : HTMLCanvasElement
-    updateScoreboard : (scores : ({ name : string, value : number })[]) => void
+    updateScoreboard(scores : ({ name : string, value : number })[]) : void
+    canvasSize : number
 }
 
 let isRunning = false
@@ -23,8 +24,7 @@ export function runClient(elements : ClientElements, state : ClientState, socket
     elements.canvas.height =
     elements.canvas.width =
     state.width =
-    state.height =
-        Math.min(window.innerHeight, window.innerWidth)
+    state.height = elements.canvasSize
 
     const renderer = new GameRenderer(elements.canvas, state)
 

@@ -2710,8 +2710,7 @@ var app = (function () {
         elements.canvas.height =
             elements.canvas.width =
                 state.width =
-                    state.height =
-                        Math.min(window.innerHeight, window.innerWidth);
+                    state.height = elements.canvasSize;
         const renderer = new GameRenderer(elements.canvas, state);
         socket.on('mapdata', segments => {
             console.log('got the mapdata');
