@@ -8,12 +8,13 @@
     "_build": "tsc && cd src/client && ls ./src/bots && npx rollup -c | bash ./scripts/copy_shared.sh",
     "test": "jest",
     "setup": "npm install && cd src/client && npm install && cd ../..",
+    "deploy": "./dockerize.sh",
     "dev-client": "cd src/client && npx rollup -c -w",
     "dev-server": "nodemon",
     "start": "node dist/server/main.js"
   },
   "engines": {
-    "node": "14.16.0"
+    "node": ">=14.16.0"
   },
   "nodemonConfig": {
     "restartable": "rs",

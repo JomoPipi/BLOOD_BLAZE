@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  blood_blaze:
+    build: .
+    ports:
+      - "0.0.0.0:3000:3000"
+    init: true
+    entrypoint: npm run start
+    restart: unless-stopped
