@@ -10,11 +10,11 @@ const CONSTANTS = (() => {
     const PLAYER_RADIUS = 0.02 * MAP_VIEWABLE_PORTION
     const PLAYER_SPEED = 0.00025 * MAP_VIEWABLE_PORTION
 
-    // const BULLET_COOLDOWN = 80
     // const BULLET_SPEED = 0.0006 / 2
 
     const BULLET_COOLDOWN = 80
-    const BULLET_SPEED = 2 * (0.0006 / 1.5) * MAP_VIEWABLE_PORTION
+    // const BULLET_SPEED = 2 * (0.0006 / 1.5) * MAP_VIEWABLE_PORTION
+    const BULLET_SPEED = 2 * (0.0003 / 1.5) * MAP_VIEWABLE_PORTION
 
     const FPS = 12
     const GAME_TICK = 1000 / FPS

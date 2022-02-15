@@ -58,6 +58,5 @@ export function runClient(elements : ClientElements, state : ClientState, socket
             .map(p => ({ name: p.data.name, value: p.data.score }))
 
         elements.updateScoreboard(scores)
-        
     })()
 }

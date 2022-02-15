@@ -15,7 +15,8 @@
     export let state : ClientState
     
     onMount(() => {
-        runClient({ inputs, canvas, updateScoreboard }, state, socket)
+        const canvasSize = Math.min(window.innerWidth, window.innerHeight) * .8
+        runClient({ inputs, canvas, updateScoreboard, canvasSize }, state, socket)
     
         activateDesktopSupport(
             inputs.moveJoystick.bind(inputs),

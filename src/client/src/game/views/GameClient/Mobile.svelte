@@ -17,7 +17,8 @@
     export let state : ClientState
     
     onMount(() => {
-        runClient({ inputs, canvas, updateScoreboard }, state, socket)
+        const canvasSize = Math.min(window.innerWidth, window.innerHeight)
+        runClient({ inputs, canvas, updateScoreboard, canvasSize }, state, socket)
 
         const playerData = state.players[state.myPlayer.name]!
         const moveAim = inputs.adjustAim.bind(inputs)

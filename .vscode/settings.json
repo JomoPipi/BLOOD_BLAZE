@@ -665,4 +665,5 @@
         "titleBar.activeBackground": "#000000",
         "titleBar.activeForeground": "#9999ff"
       },
+      "vsicons.presets.angular": true,
 }

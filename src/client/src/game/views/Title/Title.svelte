@@ -76,7 +76,7 @@
 				bind:this={nameInput}
 				on:keyup={sanitizeText}/>
 			<button> GO </button>
-			<h3> last update - 11/2/2021 </h3>
+			<h3> last update - 1/17/2021 </h3>
 		</form>
 	</div>
 	<bloodblaze/>

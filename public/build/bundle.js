@@ -611,7 +611,7 @@ var app = (function () {
     			button.textContent = "GO";
     			t7 = space();
     			h3 = element("h3");
-    			h3.textContent = "last update - 11/2/2021";
+    			h3.textContent = "last update - 1/17/2021";
     			t9 = space();
     			bloodblaze = element("bloodblaze");
     			attr_dev(span0, "class", "_1 svelte-1dyam05");
@@ -2797,9 +2797,9 @@ var app = (function () {
     			t3 = space();
     			create_component(directionpad.$$.fragment);
     			attr_dev(canvas_1, "class", "svelte-4vudk1");
-    			add_location(canvas_1, file$2, 54, 4, 1746);
+    			add_location(canvas_1, file$2, 55, 4, 1830);
     			attr_dev(div, "class", "input-container svelte-4vudk1");
-    			add_location(div, file$2, 56, 0, 1776);
+    			add_location(div, file$2, 57, 0, 1860);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2887,7 +2887,19 @@ var app = (function () {
     	let { state } = $$props;
 
     	onMount(() => {
-    		runClient({ inputs, canvas, updateScoreboard }, state, socket);
+    		const canvasSize = Math.min(window.innerWidth, window.innerHeight);
+
+    		runClient(
+    			{
+    				inputs,
+    				canvas,
+    				updateScoreboard,
+    				canvasSize
+    			},
+    			state,
+    			socket
+    		);
+
     		const playerData = state.players[state.myPlayer.name];
     		const moveAim = inputs.adjustAim.bind(inputs);
 
@@ -3164,9 +3176,9 @@ var app = (function () {
     			div = element("div");
     			create_component(playermenu.$$.fragment);
     			attr_dev(canvas_1, "class", "svelte-4vudk1");
-    			add_location(canvas_1, file$1, 20, 0, 683);
+    			add_location(canvas_1, file$1, 21, 0, 772);
     			attr_dev(div, "class", "input-container svelte-4vudk1");
-    			add_location(div, file$1, 22, 0, 713);
+    			add_location(div, file$1, 23, 0, 802);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3238,7 +3250,19 @@ var app = (function () {
     	let { state } = $$props;
 
     	onMount(() => {
-    		runClient({ inputs, canvas, updateScoreboard }, state, socket);
+    		const canvasSize = Math.min(window.innerWidth, window.innerHeight) * 0.8;
+
+    		runClient(
+    			{
+    				inputs,
+    				canvas,
+    				updateScoreboard,
+    				canvasSize
+    			},
+    			state,
+    			socket
+    		);
+
     		activateDesktopSupport(inputs.moveJoystick.bind(inputs), inputs.adjustAim.bind(inputs), state.players[state.myPlayer.name], canvas);
     	});
 
