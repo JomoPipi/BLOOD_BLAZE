@@ -8,7 +8,7 @@
     "_build": "tsc && cd src/client && ls ./src/bots && npx rollup -c | bash ./scripts/copy_shared.sh",
     "test": "jest",
     "setup": "npm install && cd src/client && npm install && cd ../..",
-    "dockerize": "./dockerize.sh",
+    "deploy": "./dockerize.sh",
     "dev-client": "cd src/client && npx rollup -c -w",
     "dev-server": "nodemon",
     "start": "node dist/server/main.js"
