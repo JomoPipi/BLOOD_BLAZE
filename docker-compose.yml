@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   blood_blaze:
+    container_name: BLOOD_BLAZE
     build: .
     ports:
       - "0.0.0.0:3000:3000"
